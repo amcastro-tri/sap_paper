@@ -1,0 +1,222 @@
+
+\section{Solving the Unconstrained Minimization Problem}
+\label{sec:solver_details}
+
+Since we hava analytical expressions for both the gradient and Hessian of
+$\ell_p(\mf{v})$, we will use Newton's method to find the minimum. That is, at
+each $k\text{-th}$ iteration we compute a search direction with
+\begin{equation}
+	\Delta\mf{v} = -\mf{H}^{-1}(\mf{v}^k)\nabla_\mf{v}\ell_p(\mf{v}^k)
+	\label{eq:Newton_iteration}
+\end{equation}
+
+\subsection{Line Search}
+We now perform a line search along $\Delta\mf{v}$. That is, we want to find
+$\alpha$ that minimizes the function
+$\ell_p(\alpha)=\ell_p(\mf{v}^k+\alpha\Delta\mf{v})$. Before choosing a method,
+we make the following observations
+\begin{enumerate}
+	\item $\ell_p(\alpha)$ is strictly convex, i.e. there is a unique minimum.
+	\item Since $\ell_p(\alpha)$ is strictly convex, a Newton step is guaranteed
+	to be well formed given that $d^2\ell_p/d\alpha^2>0$.
+	\item $\ell_p(\alpha)$ is a piecewise $C^0$ function.
+	\item the intervals in $\alpha$ where $\ell_p(\alpha)$ is continuous can be
+	found analytically be computing the intersection of the boundary
+	$\partial\mathcal{C}$ (and $\partial\mathcal{C}^\circ$) with ray
+	$\mf{v}^k+\alpha\Delta\mf{v}$.
+	\item Given the regularization used to model friction and stiff compliance,
+	gradients of $\ell_p(\alpha)$ can undergo large changes, even within a
+	region where $\ell_p(\alpha)$ is continuous.
+\end{enumerate}
+
+This led us to choose a one-dimensional strategy that is robust under these
+conditions. We found the method \verb;rtsafe; in \cite[\S
+9.4]{bib:numerical_recipes} to work the best. \verb;rtsafe; is one-dimensional
+root finder that uses the Newton-Raphson method and switches to bisection
+whenever Newton's method leads to an iterate outside the search bracket or
+whenever its convergence is slow. We found this method to perform so well, that
+we iterate $\alpha$ to a machine epsilon precision at a negligible impact on the
+computational cost. This allow us to use very tight regularization parameters
+without having to tune tolerances in the line search.
+
+\subsection{Line Search Gradients}
+
+A method like \verb;rtsafe; requires the first and second derivatives of
+$\ell_p$. Defining $\ell(\alpha) = \ell(\mf{v}+\alpha\Delta\mf{v})$ we can
+compute first and second derivatives with respect to $\alpha$ using the gradient
+and Hessian
+\begin{eqnarray}
+	\frac{d\ell}{d\alpha}&=&\Delta\mf{v}^T\nabla_\mf{v}\ell(\alpha)\nonumber\\
+	\frac{d^2\ell}{d\alpha^2}&=&\Delta\mf{v}^T\nabla_\mf{v}^2\ell(\alpha)\Delta\mf{v}\nonumber
+\end{eqnarray}
+
+These are expensive to compute derivatives for general non-linear functions and
+most line search variations in practice are approximations that avoid their
+computation altogether. Here we show that for the formulation presented in this
+work first and second derivatives can be computed efficiently given the
+structure of the problem.
+
+Using the gradients from Section \ref{sec:gradients} we can write
+\begin{eqnarray}
+	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{v}^T\mf{A}(\mf{v}(\alpha)-\mf{v}^*)\\
+	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}^T\mf{J}^T\bgamma
+\end{eqnarray}
+and defining the change of constraint velocity
+$\Delta\mf{v}_c=\mf{J}\Delta\mf{v}$ and change of momentum $\Delta\mf{p} =
+\mf{A}\Delta\mf{v}$ we obtain the much simpler and faster to compute versions
+\begin{eqnarray}
+	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{p}^T(\mf{v}(\alpha)-\mf{v}^*)\\
+	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}_c^T\bgamma(\alpha)
+\end{eqnarray}
+which only require dot products that can be computed in $\mathcal{O}(n)$ and
+$\mathcal{O}(n_k)$ respectively.
+
+Using the same definitions we can write simple expressions for the second
+derivatives as well
+\begin{eqnarray}
+	\frac{d^2\ell_M}{d\alpha^2}(\alpha)&=&\Delta\mf{v}^T\mf{A}\Delta\mf{v}=\Delta\mf{v}^T\Delta\mf{p}\\
+	\frac{d^2\ell_R}{d\alpha^2}(\alpha)&=&-\Delta\mf{v}_c^T
+	\nabla_{\mf{v}_c}\bgamma\Delta\mf{v}_c
+\end{eqnarray}
+where notice that $\frac{d^2\ell_M}{d\alpha^2}$ is independent of $\alpha$ and
+can be precomputed before proceeding into the line search and
+$\frac{d^2\ell_R}{d\alpha^2}$ only involves $\mathcal{O}(n_k)$ operations given
+the structure of $\nabla_{\mf{v}_c}\bgamma$, a block diagonal matrix.
+
+With analytical first and second derivatives, our line search simply reduces to
+finding the unique root of $d\ell/d\alpha$ using the \verb;rtsafe; algorithm.
+
+\subsection{Problem Sparsity}
+
+The sparsity patterns of the Hessian matrix in Eq. (\ref{eq:ell_hessian}) will
+be described through an example. We will describe in general the sparsity of a
+multibody system as a collection of \text{tree structures}, or a
+\textit{forest}. Consider the system in Fig. (\ref{fig:sparsity_example}).
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{figures/sparsity_example.png}
+	\caption{\label{fig:sparsity_example} 
+	Example used to describe sparsity patterns commonly encountered in the
+	simulation of robotic mechanical systems. The graph on the right puts
+	\textit{trees} as nodes and contact \textit{patches} as edges. Notice how
+	this graph exactly describes the sparsity pattern of the matrix
+	$\mf{J}^T\mf{G}\mf{J}$ in Eq. (\ref{eq:JTGJ_sparsity}).}
+\end{figure}
+In this example a robot arm mounted on a mobile base constitutes its own tree,
+here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
+will be denoted with $n_t$. A free body is a special case of a tree where
+$n_t=6$, this is a very common case. In general the mass matrix will have a
+block diagonal structure where the $t\text{-th}$ diagonal block corresponds to
+the mass matrix of the $t\text{-th}$ tree. For the example in Fig.
+(\ref{fig:sparsity_example}) the mass matrix will look like\\\\
+\begin{equation}
+	\mf{M}=\quad
+	\begin{bmatrix}
+		\tikzmark{M_topleft}
+		\diagentry{\mf{M}_{\cc{11}}}&&&\tikzmark{M_topright}\\
+		&\diagentry{\mf{M}_{\cc{22}}}\\
+		&&\diagentry{\mf{M}_{\cc{33}}}\\		
+		\tikzmark{M_bottomleft}&&&\diagentry{\mf{M}_{\cc{44}}}
+	\end{bmatrix}
+% Draw lil arrows on top and to the left.
+\tikz[overlay,remember picture] {
+	\draw[->,thick,color=cyan]
+  ([yshift=3ex]M_topleft) -- ([yshift=3ex]M_topright) node[midway,above]
+  {\scriptsize $t$}; 
+  \draw[->,thick,color=cyan]
+  ([yshift=1.5ex,xshift=-2ex]M_topleft) -- ([xshift=-4ex]M_bottomleft)
+  node[near end,left] {\scriptsize $t$};}	
+\end{equation}
+
+In general, we define as \textit{patches} as a collection of contact pairs
+between the same two trees. We label in red all contact patches in Fig.
+(\ref{fig:sparsity_example}). Each pair will correspond to a single cone
+$k\text{-th}$ constraint in our contact formulation. The set of constraint
+indexes $k$ that belong to patch $p$ is denoted with $\mathcal{I}_p$ of size
+(cardinality) $|\mathcal{I}_p| = r_p$.
+
+Notice that our definition of \textit{patches} as used here to describe sparsity
+has nothing to do with the actual geometrical topology of the contact surface
+between two trees. That is, the \textit{patches} as defined here, could in
+general correspond to a simple connected surface or even a complex contact area
+formed by a set of disconnected surfaces. Figure (\ref{fig:sparsity_example})
+labels trees and patches and shows the corresponding graph where the nodes are
+the trees and the edges are the contact patches.
+
+Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} = \nabla_{\mf{v}_c}\bgamma$
+is a block diagonal matrix, with $\mf{G}_k = \nabla_{\mf{v}_{c,k}}\bgamma_k \in
+\mathbb{R}^{3\times 3}$ at the $k\text{-th}$ diagonal block. We can write this
+also as $\mf{G} = \text{diag}(\mf{G}_p)$ if we group contact pairs by patches to
+define $\mf{G}_p=\text{diag}(\mf{G}_k), \,\forall k\in\mathcal{I}_p$.
+
+The contact Jacobian will in general be a sparse since the relative velocity at
+a contact pair $k$ will only involve the generalized velocities of the trees in
+contact. For the case in Fig. (\ref{fig:sparsity_example}) the Jacobian will
+look like\\\\
+\begin{equation}
+	\mf{J}=\quad
+	\begin{bmatrix}
+		\tikzmark{J_topleft}\mf{0} & 
+		\mf{0} & \mf{0} & \mf{J}_{\rr{1}\cc{4}}\tikzmark{J_topright}\\		
+		\mf{0} & \mf{J}_{\rr{2}\cc{2}} & \mf{0} & \mf{0}\\
+		\mf{J}_{\rr{3}\cc{1}} & \mf{0} & \mf{0} & \mf{0}\\
+		\mf{J}_{\rr{4}\cc{1}} & \mf{0} & \mf{J}_{\rr{4}\cc{3}} & \mf{0}\\
+		\tikzmark{J_bottomleft}
+		\mf{0} & \mf{J}_{\rr{5}\cc{2}} & \mf{J}_{\rr{5}\cc{3}} & \mf{0}		
+	\end{bmatrix}
+% Draw lil arrows on top and to the left.
+\tikz[overlay,remember picture] {
+	\draw[->,thick,color=cyan]
+  ([yshift=3ex]J_topleft) -- ([yshift=3ex]J_topright) node[midway,above]
+  {\scriptsize $t$}; 
+  \draw[->,thick,color=red]
+  ([yshift=1.5ex,xshift=-3ex]J_topleft) -- ([xshift=-3ex]J_bottomleft)
+  node[near end,left] {\scriptsize $p$};}	
+\end{equation}
+where each non-zero block is the Jacobian $\mf{J}_{\rr{p}\cc{t}}$ of size
+$3r_p\times n_t$.
+
+We have now the elements to describe the sparsity of the product
+$\mf{J}^T\mf{G}\mf{J}$ in Eq. (\ref{eq:ell_hessian}). For the example in Fig.
+(\ref{fig:sparsity_example}) this is
+\begin{equation}
+	\mf{J}^T\mf{G}\mf{J}=\quad
+	\begin{bmatrix}
+		\tikzmark{JTGJ_topleft}
+		\JTGJ{3}{1}{1} + \JTGJ{4}{1}{1} & \mf{0} & \JTGJ{4}{1}{3} & \mf{0}
+		\tikzmark{JTGJ_topright}\\		
+		\mf{0} & \JTGJ{2}{2}{2} + \JTGJ{5}{2}{2} & \JTGJ{5}{2}{3} & \mf{0}\\
+		\JTGJ{4}{3}{1} & \JTGJ{5}{3}{2} & \JTGJ{4}{3}{3} + \JTGJ{5}{3}{3} & \mf{0}\\
+		\tikzmark{JTGJ_bottomleft}
+		\mf{0} & \mf{0} & \mf{0} & \JTGJ{1}{4}{4}\\
+	\end{bmatrix}
+	\label{eq:JTGJ_sparsity}
+% Draw lil arrows on top and to the left.
+\tikz[overlay,remember picture] {
+	\draw[->,thick,color=cyan]
+  ([yshift=3ex]JTGJ_topleft) -- ([yshift=3ex]JTGJ_topright) node[midway,above]
+  {\scriptsize $t$}; 
+  \draw[->,thick,color=cyan]
+  ([yshift=1.5ex,xshift=-2.5ex]JTGJ_topleft) -- ([xshift=-13ex]JTGJ_bottomleft)
+  node[near end,left] {\scriptsize $t$};}	
+\end{equation}
+
+Notice how the sparsity pattern of $\mf{J}^T\mf{G}\mf{J}$ exactly matches the
+graph from Fig. (\ref{fig:sparsity_example}). Moreover, given blocks $\mf{G}_p$
+are symmetric, so is the product $\mf{J}^T\mf{G}\mf{J}$.
+
+Finally the Hessian will have the sparsity structure of $\mf{A} +
+\mf{J}^T\mf{G}\mf{J}$. \RedHighlight{Frank: for now, for rigid body dynamics, we
+can assume $\mf{A}=\mf{M}$, the mass matrix. I'll see how to update the text to
+reflect that. At least I believe this is ok as a good start for us to talk about
+this.}
+
+
+\subsection{Termination Conditions}
+\todo{Writ this brief section or merge it to previous text.}
+
+\subsection{Reusing Factorizations}
+Essentially expose the idea of \textit{monitoring modes} which we can do
+analytically. The Hessian will only undergo large changes when we have mode
+changes, otherwise it could be safely reused in a quasi-Newton fashion.
+\todo{Obtain some stats. Write this section.}

@@ -1,0 +1,26 @@
+\section{Future Research Directions}
+
+I summarize here a few ideas
+\begin{itemize}
+	\item \textbf{Exploiting sparsity}. This would entail investigating custom
+	linear solvers that exploit the structure of the problem by using
+	Featherstone's $\mathcal{O}(n)$ operators.
+	\item \textbf{Other solvers}. The current strategy might not scale well for
+	simulations with a large amount of objects. It is worth investigating other
+	alternatives that exploit sparsity and can be parallelized. In particular,
+	we'll explore the Conex solver developed by Frank Permenter
+	\cite{bib:permenter2020} which exhibits promising warm-starting properties.	
+	\item \textbf{SoftSim}. Simulation of large sparse dynamical systems with
+	much higher number of dofs than constraints could be solved efficiently
+	performing a Schur complement of matrix $\mf{A}$ to split dofs directly
+	involved in contact from those that are not. Then the contact problem
+	reduces to a much smaller system that only includes those dofs directly
+	involved in contact.
+	\item \textbf{Hydroelastics}. We can incorporate discrete Hydroelastics
+	within this framework. We need to solve the \textit{gliding artifact}. For
+	this it is proposed to use the concept of \textit{margins} as introduced by
+	the Bullet physics engine. That is, our hydroelastic meshes would extend
+	outwards from the boundary of the object to represent a \textit{negative}
+	pressure field that'd allow us to detect contact before it happens, much
+	like using SDFs for point contact.
+\end{itemize}

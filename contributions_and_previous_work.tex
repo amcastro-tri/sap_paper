@@ -1,0 +1,108 @@
+\section{Novel Contributions}
+
+Since we build on previous work \cite{bib:anitescu2006,
+bib:anitescu2010,bib:todorov2014}, it is worth summarizing our novel
+contributions:
+\begin{itemize}
+	\item Clear algebraic expressions for the \textit{inverse dynamics} of
+	contact are provided.
+	\item We show how to use these expressions do model true compliant contact.
+	This is different from \cite{bib:todorov2014} where regularization is used
+	as a Baumgarte-like stabilization.
+	\item The analasis of the analytical inverse dynamics expressions here
+	provided allows to make a clear analogy with compliant contact.
+	\item Our clear analogy with compliant contact allow us to succinctly
+	describe the artifacts introduced by the convex approximation of contact.
+	\item We write a primal formulation of compliant contact written in terms of
+	velocities, in contrast to its dual in terms of impulses.
+	\item We show how the primal formulation when combined with the analytical
+	 inverse dynamics leads to an unconstrained convex optimization problem.
+	\item We develop a custom solver for this unconstrained formulation and
+	provide thorough details for a practical implementation.
+	\item We conclude with a number of demonstrations illustrating the
+	effectiveness of our methodology and provide future research directions.
+\end{itemize}
+
+\section{Previous Work}
+\label{sec:previous_work}
+
+The momentum equations for the dynamics of contact with friction read
+\begin{eqnarray}
+	\mathbf{M}\mathbf{v} = \mathbf{M}\mathbf{v}^* + \mathbf{J}^T\mathbf{\gamma}
+	\label{eq:momentum_balance}
+\end{eqnarray}
+where $\mathbf{v}^*$ are the generalized velocities of the system in the absence
+of contact forces and $\bgamma$ are the impulses in the contact space. For rigid
+body dynamics the formulation is completed with the following constraints
+\begin{enumerate}
+	\item non-penetration constraint, $0\le\phi_i\perp\gamma_n\ge0$
+	\item friction cone constraint and, $\Vert\bgamma_{t,i}\Vert\le
+	\mu_i\gamma_{n,i}$
+	\item principle of maximum dissipation
+\end{enumerate}
+
+Anitescu introduces a \textit{convex relaxation} of the contact problem in
+\cite{bib:anitescu2006}. This relaxation is introduced as a modification to the
+complementarity constraint between the signed distance $\phi$ and normal impulse
+$\gamma_n$ as
+\begin{equation}
+	0 < \phi - h \Vert {\bm v}_t \Vert \perp \gamma_n > 0
+	\label{eq:convex_relaxation_complementarity_condition}
+\end{equation}
+where $h$ is the discrete time step.
+
+\RedHighlight{Sherm: Somehow mention how to jump from the "KKT" to the conic
+optimization problem below.}
+
+This relaxation leads to a convex quadratic program with conic constraints as
+\begin{eqnarray}
+	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
+	\frac{1}{2}\bgamma^T\mathbf{W}\bgamma + {\bm r}^T
+	\bgamma
+	\label{eq:dual_cost}
+\end{eqnarray}
+where $\bgamma$ are the contact point impulses (i.e. with units of
+$\text{N}\cdot\text{s}$), $\mathbf{W} = \mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}$
+is the Delassus operator (the inverse of the inertia matrix projected on the
+contact space), $\mathcal{F}$ is the feasible set of all contact impulses
+satisfying the cone constraint and, ${\bm r} = {\bm v}^* - \hat{\mf{v}}$, with
+$\hat{\mf{v}}$ a \textit{stabilization velocity}. Refer to Section
+\ref{sec:constraints_based_modeling_framework} for details on how $\hat{\mf{v}}$
+is used to model physical compliance.
+
+In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regulariztion to
+the formulation in Eq. (\ref{eq:dual_cost}), though the derivation is inspired
+on the Gauss's principle of least constraint. The regularized formulation reads
+
+\begin{eqnarray}
+	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
+	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
+	\bgamma
+	\label{eq:dual_regularized}
+\end{eqnarray}
+where $\mathbf{R}$ is a diagonal positive definite matrix that has the effect of
+making $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
+\succeq 0$. This makes the problem strictly convex, with a unique solution. 
+
+For this regularized formulation it is shown in \cite{bib:todorov2014} that if
+we do know the velocities at the next time step, we can write analytical
+algebraic expressions for the impulses, i.e. $\bgamma = \bgamma(\mf{v})$. This
+remarkable result is a consequence of the separable structure of the constraints
+in the dual formulation. Thanks to this structure we can solve for the impulses
+for each $k\text{-th}$ constraint \textit{separately} from
+\begin{eqnarray}
+	\bgamma_k&=&
+	\begin{aligned}
+		\argmin_{\bgamma\in\mathcal{C}} \quad &
+	\frac{1}{2}(\bgamma-\mf{y}_k)^T\mf{R}_k(\bgamma-\mf{y}_k) \end{aligned}\\
+	\mf{y}_k &=& -\vf{R}_k^{-1}(\mf{v}_{c,k}-\hat{\mf{v}}_k)
+\end{eqnarray}
+where $\mf{v}_{c,k}$ is the $k\text{-th}$ constraint velocity and
+$\hat{\mf{v}}_k$ is a stabilization term we use to model compliance. We show a
+detailed calculation of this \textit{inverse dynamics} and its gradients in
+Appendix \ref{app:analytical_inverse_dynamics_derivations}.
+
+In this work we will show in Section \ref{sec:unconstrained_convex_formulation}
+how to exploit this algebraic inverse dynamics to write an unconstrained convex
+formulation that can be solved with Newton's method. The resulting strategy is
+accurate, robust and can be warm-started from the previous time step solution.

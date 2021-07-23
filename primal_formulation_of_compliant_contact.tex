@@ -1,0 +1,211 @@
+
+\section{A Primal Formulation of Compliant Contact}
+
+\RedHighlight{Frank: so, presentation tip, i would introduce the QPs (40) and
+(44) before Section 5, assuming the goal of Section 5 is to provide the
+solutions of (40) and (44)}
+
+It turns out that the formulation in Eq. (\ref{eq:dual_cost}) is very ill
+conditioned. This is due to the fact that contact forces for rigid body dynamics
+problems are more often than not underdetermined. Even if compliance is added in
+the normal direction, friction forces for the simplest problem configurations
+will be underdetermined. Regularization in Eq. (\ref{eq:dual_regularized}) helps
+to solve this problem in theory but it leads to very ill conditioned systems of
+equations in practice. 
+
+Even if the set of contact forces is not unique (when no regularization is
+added), velocities are unique. This fact inspired the search for an equivalent
+formulation but in velocities instead of impulses. Such a \textit{primal}
+formulation is presented in \cite{bib:mazhar2014} for rigid contact, though to
+the knowledge of the author a practical solver based on this formulation has
+never been presented.
+
+In this section we extend the formulation in \cite{bib:mazhar2014} to include
+the modeling of compliance and in Sections
+\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
+describe a methodology to solve it in practice.
+
+Given a set of $n_k$ constraints defined by their constraint velocity
+$\vf{v}_{c,k}$ and impulse $\bgamma_k\in\mathcal{C}_k$, we form a global vector
+$\vf{v}_c$ that concatenates all constraint velocities and define the Cartesian
+product $\mathcal{C}=\prod_{k=1}^{n_k}\mathcal{C}_k$. Since each $\mathcal{C}_k$
+is convex, so is $\mathcal{C}$. We proceed in a similar way with $\bgamma_k$,
+$\hat{\vf{v}}_k$, $\mf{R}_k$, $\mf{J}_k$ to obtain the global quantities
+$\bgamma$, $\hat{\mf{v}}$, $\mf{R}$, $\mf{J}$. With these definitions we can
+compactly write the constraint $\bgamma\in\mathcal{C}$ for all impulses in the
+problem.
+
+We write our primal that includes compliance by introducing a new decision
+variable $\vf{\sigma}$ as
+
+\begin{equation}
+	\begin{aligned}
+	\min_{\mf{v},\mf{\sigma}} \quad & \ell_p(\mf{v},\mf{\sigma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\mf\sigma\Vert_{R}^2\\
+	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}} + \mf{R}\mf\sigma) \in \mathcal{C}^*\\
+	\end{aligned}
+	\label{eq:primal_regularized}
+\end{equation}
+where $\mathcal{C}^*$ is the dual of the convex set $\mathcal{C}$. Notice how
+the regularization needs to appear not only in the cost but also in the
+constraint. 
+
+\RedHighlight{Per Frank's request. The fact that \ref{eq:primal_regularized},
+\ref{eq:dual_regularized} and \ref{eq:primal_unconstrained} are equivalent is
+very important. State that as a theorem even if the proof is simple.}
+
+\RedHighlight{Frank: You should say then that (v, sigma) is primal optimal and
+gamma is dual optimal, and then give the explicit formulae, pointing out that
+sigma = gamma.}
+
+The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
+\begin{equation}
+	\mathcal{L}(\mf{v},\mf{\sigma},\vf{\gamma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\mf\sigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
+	\label{eq:primal_lagrangian}
+\end{equation}
+with $\vf{\gamma}\in\mathcal{C}$ the dual variable to enforce the constraint
+$\vf{g}\in \mathcal{C}^*$. We can obtain the dual of Eq.
+(\ref{eq:primal_regularized}) by minimizing the Lagrangian jointly in the
+variables $\mf{v}$ and $\mf{\sigma}$ and replacing the result back to obtain the
+dual cost $\ell_d(\vf{\gamma})$. Minimizing jointly in the variables $\mf{v}$
+and $\mf{\sigma}$ leads to the conditions
+\begin{eqnarray}
+	\mf{A}(\mf{v}-\mf{v}^*) &=& \mf{J}^T\vf{\gamma}\\
+	\vf{\sigma} &=& \vf{\gamma}
+\end{eqnarray}
+where with the first equation we find out that multipliers $\bgamma$ are indeed
+impulses and we recover the balance of momentum, and the second equation allows
+us to eliminate $\vf{\sigma}$. When we replace these results back into the
+Lagrangian in Eq. (\ref{eq:primal_lagrangian}) we obtain the dual
+\begin{eqnarray}
+	\min_{\gamma\in \mathcal{C}} \ell(\bgamma) =
+	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
+	\bgamma
+	\label{eq:dual_regularized}
+\end{eqnarray}
+where, in contrast to Eq. (\ref{eq:dual_regularized}), the Delassus operator
+$\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
+force elements and $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$.
+
+\section{An Unconstrained Convex Formulation}
+\label{sec:unconstrained_convex_formulation}
+
+The primal formulation in Eq. (\ref{eq:primal_regularized}) and its dual in Eq.
+(\ref{eq:dual_regularized}) are equivalent. Since both are strictly convex, they
+share the same unique solution. In particular, they both share the same
+analytical inverse dynamics solution described in Section
+\ref{sec:constraints_based_modeling_framework}.
+
+Recall from Section \ref{sec:constraints_based_modeling_framework} that the
+inverse dynamics solution provides the impulse as a function of the constraint
+velocity as
+\begin{eqnarray}
+	\bgamma(\mf{v}_c) = P_\mathcal{C}(\mf{y}(\mf{v}_c))
+\end{eqnarray}
+where $\mf{y}(\mf{v}_c) = -\mf{R}^{-1}(\mf{v}_c-\hat{\mf{v}})$ and we have
+analytical algebraic expressions for the projection $P_\mathcal{C}(\mf{y})$.
+
+This allow us then to substitute $\mf{\sigma}=\bgamma=P_\mathcal{C}(\mf{y})$
+into Eq. (\ref{eq:primal_regularized}) to obtain an unconstrained convex
+optimization problem in the velocities only
+\begin{eqnarray}
+	\min_{\mf{v}} \ell_p(\mf{v}) =
+	\frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) +
+	\ell_R(\mf{y}(\mf{v}))
+	\label{eq:primal_unconstrained}
+\end{eqnarray}
+with the regularizer
+\begin{equation}
+	\ell_R(\mf{y}(\mf{v})) = \frac{1}{2}\Vert P_\mathcal{C}(\mf{y}(\mf{v}))\Vert_R^2
+\end{equation}
+
+Though this problem is strictly convex and can be solved using Newton's method
+we make the following observations
+\begin{enumerate}
+	\item Since projections $P_\mathcal{C}$ are piecewise continuous, the cost
+	$\ell_p$ is piecewise continuous.
+	\item The Hessian $\mf{H}=\nabla^2\ell_p$ is not continuous, with large
+	variations of \textit{curvature}. While this is not a problem for Newton's
+	method given its \textit{affine invariance} property in theory, in practice
+	we will use an analytically computed Hessian to avoid numerical round-off
+	errors.
+	\item\label{item:line_sarch} Since the problem is strictly convex, line
+	search combined with Newton's method leads to guaranteed convergence.
+	However, given the piecewise nature of $\ell_p$ and its large variations in
+	curvature, in practice we find we need a specially designed line search to
+	preserve accuracy.
+\end{enumerate}
+
+Item \ref{item:line_sarch} is of utmost important in practice. We'll show a
+strategy that allows to perform line search with machine epsilon precision. A
+careful pre-computation of commonly occurring terms enable us to perform this
+step for a small computation cost when compared to Hessian assembly and
+factorization. While machine epsilon accuracy is not required in practice, we
+show that the cost to achieve this level of convergence is negligible and it is
+well worth it for a robust implementation that can handle very stiff systems
+(with small regularization).
+
+In the next subsection we show how to compute the required gradients for
+Newton's method and, as a consequence, we verify the strict convexity of
+$\ell_p$.
+
+
+\subsection{Gradients}
+\label{sec:gradients}
+
+In this section we summarize the main results required for implementation.
+Detailed derivations are provide in the Appendix \ref{app:gradients_derivation}.
+We will see that in order to compute both the gradient and Hessian of the cost
+we only need analytical expressions of the projection $P_\mathcal{C}$ and its
+gradient.
+
+The gradient of the primal cost $\ell_p$ is
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
+\end{equation}
+
+Computing this gradient might seem a daunting enterprise, but after substitution
+of $\nabla_\mf{v}P_\mathcal{C}$ the result is beautifully simple
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma
+	\label{eq:primal_gradient}
+\end{equation}
+
+Which recovers the momentum balance since Newton's method solves for
+$\nabla_\mf{v}\ell_p=\mf{0}$.
+
+Instead of directly computing the Hessian $\nabla_\mf{v}^2\ell_R$ (which would
+lead to exactly the same result), we can instead compute $\nabla_\mf{v}^2\ell_p$
+by taking the gradient of Eq. (\ref{eq:primal_gradient}). The result is
+\begin{eqnarray}
+	\nabla_\mf{v}^2\ell_R(\mf{v}) &=&
+	\mf{J}^T\nabla_{\mf{v}_c}\!\bgamma\,\mf{J}\nonumber\\
+	\nabla_{\mf{v}_c}\bgamma &=& -\nabla_\mf{y}\bgamma \mf{R}^{-1}
+	\label{eq:ellR_hessian}
+\end{eqnarray}
+where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
+diagonal elements is the $n_k\times n_k$ matrix
+$\nabla_{\mf{v}_{c,k}}\!\bgamma_k$ for the $k\text{-th}$ constraint. As shown in
+Appendix \ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and
+thus $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
+
+Finally, the Hessian needed in Newtons's method is
+\begin{equation}
+	\mf{H}= \nabla_\mf{v}^2\ell_p(\mf{v}) = \mf{A} -\mf{J}^T\nabla_\mf{y}\bgamma \mf{R}^{-1}\mf{J}	
+	\label{eq:ell_hessian}
+\end{equation}
+which, since $A\succ 0$, is strictly positive definite. We note however that
+showing $\nabla_\mf{v}^2\ell_p(\mf{v})\succ 0$ is not enough for $\ell_p$ to be
+strictly convex. Since $\ell_p$ is a piecewise function, we must additionally
+require that the directional derivative across the boundary
+$\partial\mathcal{C}$, of $\mathcal{C}$ increases. Formally, if $\mf{\nu}$ is
+the normal to $\partial\mathcal{C}$, then we require
+\begin{equation}
+	\frac{\partial \ell_p^-}{\partial \nu} \le \frac{\partial \ell_p^+}{\partial \nu}
+\end{equation}
+we show this to be the case in Appendix \ref{app:gradients_derivation} which
+then leads to the confirmation that $\mf{H}\succ 0$.
+
+
+\section{Assembling Equality Constraints}
+\label{sec:assembling_equality_constraints}
+\todo{Write how to the Hessian for equality constraints is constant and can be pre-computed.}

@@ -1,0 +1,44 @@
+% The very first letter is a 2 line initial drop letter followed
+% by the rest of the first word in caps.
+% 
+% form to use if the first word consists of a single letter:
+% \IEEEPARstart{A}{demo} file is ....
+% 
+% form to use if you need the single drop letter followed by
+% normal text (unknown if ever used by the IEEE):
+% \IEEEPARstart{A}{}demo file is ....
+% 
+% Some journals put the first two words in caps:
+% \IEEEPARstart{T}{his demo} file is ....
+
+\section{Introduction}
+\IEEEPARstart{A}{Anitescu}'s convex relaxation of contact
+\cite{bib:anitescu2006} has been in existence for 14 years. However to my
+knowledge there are no simulation/trajectory optimization codes out there that
+can exploit this formulation. In other words, the formulation is theoretically
+beautiful, but there are no practical solvers out there for it. The best
+reported solver for this formulation, later on presented by Anitescu in
+\cite{bib:anitescu2010, bib:tasora2011}, consists of a Projected Gauss-Seidel
+(PGS) iteration which is very well known not to converge in practice and it is
+usually stoped at a fixed number of iterations with an unknown amount of
+numerical error. Therefore, it is unclear even today whether Anitescu's
+formulation presents any advantage over other non-convex solution strategies. In
+\cite{bib:todorov2014} Todorov mentions a so called \textit{generalized}
+projected Gauss-Seidel (though the details were never published), which
+generalizes PGS to deal with the true quadratic friction cone, anisotropy,
+torsional and rolling friction.
+
+The objectives of this reasearch are:
+\begin{enumerate}
+	\item To develop a \textit{practical} solution strategy that is robust and
+	has good scalability to number of bodies and contacts.
+	\item To extend the formulation to enable the simulation of soft deformable
+	bodies with contact.
+	\item To properly quantify the \textit{unphysical artifacts} introduced by
+	the convex relaxation of the original physics.
+	\item To answer the questions ``does the Convex formulation provide any
+	significant advantage over other methods?'', ``are the unphysical artifacts
+	introduced worth the price?''
+	\item To provide an open source implementation of this research that
+	outperforms existing methods.
+\end{enumerate}
