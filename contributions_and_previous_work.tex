@@ -23,56 +23,101 @@ contributions:
 	effectiveness of our methodology and provide future research directions.
 \end{itemize}
 
-\section{Previous Work}
-\label{sec:previous_work}
+\section{Multibody Dynamics with Contact}
+\label{sec:multibody_dynamics_with_contact}
 
-The momentum equations for the dynamics of contact with friction read
+We model our multibody system using generalized coordinates. Therefore the state
+is fully described by the generalized positions $\mf{q}\in\mathbb{R}^{n_q}$ and
+the generalized velocities $\mf{v}\in\mathbb{R}^{n_v}$. We describe the
+$k\text{-th}$ contact between two bodies by the relative velocity
+$\vf{v}_{c,k}\in\mathbb{R}^3$ between these two bodies at this point, expressed
+in a contact frame $C_k$ for which we arbitrarily choose the $z\text{-axis}$ to
+coincide with the surface normal $\hat{\vf{n}}_k$ reported by the geometry
+engine. We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact
+velocities by stacking velocites $\vf{v}_{c,k}$ for all contacts together.
+Similarly, we denote with $\bgamma_k\in\mathbb{R}^3$ the contact impulse at a
+specific contact point and with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all
+contact impulses. In general, unless otherwise specified, we use bold italics
+for vectors in $\mathbb{R}^3$ and non-italics bold for their stacked
+counterpart.
+
+The contact Jacobian $\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ relates
+generalized velocities to contact velocity by $\mf{v}_c=\mf{J}\,\mf{v}$.
+
+We use a discrete time stepping approach to advance the dynamics of the system
+forward in time and we write the balance of momentum as
 \begin{eqnarray}
 	\mathbf{M}\mathbf{v} = \mathbf{M}\mathbf{v}^* + \mathbf{J}^T\mathbf{\gamma}
 	\label{eq:momentum_balance}
 \end{eqnarray}
-where $\mathbf{v}^*$ are the generalized velocities of the system in the absence
-of contact forces and $\bgamma$ are the impulses in the contact space. For rigid
-body dynamics the formulation is completed with the following constraints
-\begin{enumerate}
-	\item non-penetration constraint, $0\le\phi_i\perp\gamma_n\ge0$
-	\item friction cone constraint and, $\Vert\bgamma_{t,i}\Vert\le
-	\mu_i\gamma_{n,i}$
-	\item principle of maximum dissipation
-\end{enumerate}
+where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
+$\mf{v}^*\in\mathbb{R}^{n_v}$ are the \textit{free motion} generalized
+velocities when there is no contact.
 
-Anitescu introduces a \textit{convex relaxation} of the contact problem in
+Denoting with $\phi_k$ the \textit{gap function} or \textit{signed distance} at
+a contact point and with $\gamma_{n,k}$ and with $\bgamma_{t,k}$ the normal and
+tangential components of the impulse $\bgamma_k=[\bgamma_{t,k}\,\gamma_{n,k}]$
+at that point, the formulation is most often completed with the following set of
+standard constraints to be satisfied at each contact
+\begin{enumerate}
+	\item non-penetration constraint $0\le\phi_k\perp\gamma_{n,k}\ge0$,
+	\item\label{it:cone_constraint} friction cone constraint
+	$\Vert\bgamma_{t,k}\Vert\le \mu_k\gamma_{n,k}$ and,
+	\item the principle of maximum dissipation.
+\end{enumerate}
+where $\mu_k$ is the coefficient of friction for the $k\text{-th}$ contact.
+Condition \ref{it:cone_constraint} states that contact impulses at point $k$ are
+constrained to belong to the friction cone
+$\mathcal{F}_k=\{\vf{x}\in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le \mu_k x_n\}$.
+
+While these constraints model the widely accepted model of Colulomb friction,
+the resulting formulation leads to a very difficult to solve, non-convex,
+Non-linear Complimentarity Problem. 
+
+\RedHighlight{Alejandro: say something how other author's impose the principle
+of maximum dissipation and more or less what it means.}
+
+\RedHighlight{Alejandro: say something about
+the existence of solutions for this formulation. Reference other people's work.}
+
+\section{Convex Approximation of Contact Dynamics}
+\label{sec:previous_work}
+
+
+In pursuit of a formulation for which the existence of a solution is guaranteed
+and with the hope that such a formulation leads to more robust and efficient
+solvers, Anitescu introduces a \textit{convex relaxation} of the contact problem in
 \cite{bib:anitescu2006}. This relaxation is introduced as a modification to the
 complementarity constraint between the signed distance $\phi$ and normal impulse
 $\gamma_n$ as
 \begin{equation}
-	0 < \phi - h \Vert {\bm v}_t \Vert \perp \gamma_n > 0
+	0 < \phi - dt \Vert {\bm v}_t \Vert \perp \gamma_n > 0
 	\label{eq:convex_relaxation_complementarity_condition}
 \end{equation}
-where $h$ is the discrete time step.
-
-\RedHighlight{Sherm: Somehow mention how to jump from the "KKT" to the conic
-optimization problem below.}
-
-This relaxation leads to a convex quadratic program with conic constraints as
+where $dt$ is the discrete time step and $\vf{v}_t$ is the tangential component
+of the contact velocity $\vf{v}_c = [\vf{v}_t\,v_n]$. Together with a set of
+complementarity conditions to impose maximum dissipation on a linearized
+friction cone, Anitescu shows in \cite{bib:anitescu2006} that the new set of
+constraints corresponds to the optimality conditions of the following quadratic
+program with conic constraints as
 \begin{eqnarray}
 	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
 	\frac{1}{2}\bgamma^T\mathbf{W}\bgamma + {\bm r}^T
 	\bgamma
 	\label{eq:dual_cost}
 \end{eqnarray}
-where $\bgamma$ are the contact point impulses (i.e. with units of
-$\text{N}\cdot\text{s}$), $\mathbf{W} = \mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}$
-is the Delassus operator (the inverse of the inertia matrix projected on the
-contact space), $\mathcal{F}$ is the feasible set of all contact impulses
-satisfying the cone constraint and, ${\bm r} = {\bm v}^* - \hat{\mf{v}}$, with
-$\hat{\mf{v}}$ a \textit{stabilization velocity}. Refer to Section
-\ref{sec:constraints_based_modeling_framework} for details on how $\hat{\mf{v}}$
-is used to model physical compliance.
+where $\mathbf{W} =
+\mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
+Delassus operator, $\mathcal{F} = \Pi_k \mathcal{F}_k$ is the feasible set of
+all contact impulses satisfying the friction cone constraints and, the linear
+cost ${\bm r}$ encodes the free motions $\mf{v}^*$ and stabilization terms to
+impose non-interpenetration at the positions level.
 
-In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regulariztion to
-the formulation in Eq. (\ref{eq:dual_cost}), though the derivation is inspired
-on the Gauss's principle of least constraint. The regularized formulation reads
+In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regularization to
+the formulation in Eq. (\ref{eq:dual_cost}). Though not strictly applicable to
+contact problems, Todorov uses the \textit{Gauss's principle of least
+constraint} to obtain this convex approximation of the contact problem. The
+regularized formulation reads
 
 \begin{eqnarray}
 	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
@@ -80,29 +125,19 @@ on the Gauss's principle of least constraint. The regularized formulation reads
 	\bgamma
 	\label{eq:dual_regularized}
 \end{eqnarray}
-where $\mathbf{R}$ is a diagonal positive definite matrix that has the effect of
-making $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
+where $\mathbf{R}$ is a diagonal positive definite matrix introduced to
+make $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
 \succeq 0$. This makes the problem strictly convex, with a unique solution. 
 
-For this regularized formulation it is shown in \cite{bib:todorov2014} that if
-we do know the velocities at the next time step, we can write analytical
-algebraic expressions for the impulses, i.e. $\bgamma = \bgamma(\mf{v})$. This
-remarkable result is a consequence of the separable structure of the constraints
-in the dual formulation. Thanks to this structure we can solve for the impulses
-for each $k\text{-th}$ constraint \textit{separately} from
-\begin{eqnarray}
-	\bgamma_k&=&
-	\begin{aligned}
-		\argmin_{\bgamma\in\mathcal{C}} \quad &
-	\frac{1}{2}(\bgamma-\mf{y}_k)^T\mf{R}_k(\bgamma-\mf{y}_k) \end{aligned}\\
-	\mf{y}_k &=& -\vf{R}_k^{-1}(\mf{v}_{c,k}-\hat{\mf{v}}_k)
-\end{eqnarray}
-where $\mf{v}_{c,k}$ is the $k\text{-th}$ constraint velocity and
-$\hat{\mf{v}}_k$ is a stabilization term we use to model compliance. We show a
-detailed calculation of this \textit{inverse dynamics} and its gradients in
-Appendix \ref{app:analytical_inverse_dynamics_derivations}.
+One fo the most remarkable results from \cite{bib:todorov2014} is that if we
+ happen to know the velocities of the system, we can write analytical algebraic
+ expressions for the impulses. Moreover, the the separable structure of the
+ constraints allows us to write the impulse $\bgamma_k$ at contact $k$ solely as
+ a function of the relative contact velocity $\vf{v}_{c,k}$ at that point, i.e.
+ $\bgamma_k = \bgamma_k(\vf{v}_{c,k})$.
 
 In this work we will show in Section \ref{sec:unconstrained_convex_formulation}
-how to exploit this algebraic inverse dynamics to write an unconstrained convex
-formulation that can be solved with Newton's method. The resulting strategy is
-accurate, robust and can be warm-started from the previous time step solution.
+how to exploit this \textit{analytical inverse dynamics} to write an
+unconstrained convex formulation that can be solved using Newton's method. The
+resulting strategy is accurate, robust and can be effectively warm-started from
+the previous time step solution.
