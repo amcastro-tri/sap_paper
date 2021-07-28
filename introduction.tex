@@ -12,6 +12,8 @@
 % \IEEEPARstart{T}{his demo} file is ....
 
 \section{Introduction}
+\RedHighlight{TODO: Rewrite for paper.}
+
 \IEEEPARstart{A}{Anitescu}'s convex relaxation of contact
 \cite{bib:anitescu2006} has been in existence for 14 years. However to my
 knowledge there are no simulation/trajectory optimization codes out there that
@@ -41,4 +43,21 @@ The objectives of this reasearch are:
 	introduced worth the price?''
 	\item To provide an open source implementation of this research that
 	outperforms existing methods.
+\end{enumerate}
+
+\section{Other Papers Worth Citing}
+
+\begin{enumerate}
+	\item Acary \cite{bib:acary2011formulation} also uses the same convex
+	formulation. It might be worth mentioning differences, contributions and
+	specific field of engineering.
+	\item Kaufman's thesis on staggered projections
+	\cite{bib:kaufman2009coupled} states this interesting observation on LCP's:
+	``It has been recently noted, however, that direct LCP solvers do not, in
+	practice, scale. They are not, in fact, currently able to return solutions
+	for non-trivial frictionally contacting problems beyond relatively
+	small-scale examples [Anitescu and Hart 2004; Erleben 2007]. In Chapter 5 we
+	will discuss these difficulties further and investigate the reasons why
+	these methods often fail.'' This is backed up on the works of Anitescu and
+	Hart 2004; Erleben 2007 \cite{bib:anitescu2004fixed,bib:erleben2007velocity}.
 \end{enumerate}
