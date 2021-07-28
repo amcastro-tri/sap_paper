@@ -1,74 +1,85 @@
 \section{Formulation}
 
-In this section we describe our formulation that extends the work in
+\RedHighlight{TODO: consider removing this paragraph or maybe move it into the
+intro section that might describe the outline of the paper. But this doesn't
+seem to add anything.}
+\sout{In this section we describe our formulation that extends the work in
 \cite{bib:anitescu2010}, \cite{bib:todorov2014} to implicitly include force
 elements such as springs and dampers and internal forces for soft body
 simulation. In addition we show how to achive higher order with the symplectic
 second order implicit midpoint rule. Then Section
 \ref{sec:constraints_based_modeling_framework} extends the work in
 \cite{bib:todorov2014} by using regularization to model true physical compliance
-instead of a means to introduce a Baumgarte-style stabilization.
+instead of a means to introduce a Baumgarte-style stabilization.}
 
-To be concrete, we will consider the $\theta\text{-method}$ that defines the
-state at time $t+\theta dt$ as
+We introduce our variant of the $\theta\text{-method}$ via the update 
 \begin{eqnarray}
-	\mf{v}^\theta(\mf{v}) &=& \theta\mf{v}+(1-\theta)\mf{v}_0\\
-	\dot{\mf{q}}^\theta(\mf{v}) &=& \mf{N}(\mf{q}_0)\mf{v}^\theta\\
-	\mf{q}^\theta(\mf{v}) &=& \mf{q}_0 + dt\dot{\mf{q}}^\theta
+	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) + 
+	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) = \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
+	\label{eq:v_update}\\
+	&&\mf{q} = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+	\label{eq:q_update}
 \end{eqnarray}
-where $\mf{q}_0$ and $\mf{v}_0$ are the positions and velocities at time $t$,
-$\mf{N}(\mf{q})$ is the kinematic mapping between generalized velocities and
-position rates and $\theta$ is a scalar in the range $[0, 1]$. Typical choices
-of $\theta$ are $\theta = 0$ for explicit Euler, $\theta=1$ for implicit Euler
-and $\theta=1/2$ for the second order implicit midpoint rule.
+where from now on \textit{nought} variables refer to quantities evaluated at the
+previous time step. $\mf{F}(\mf{q}, \mf{v})$ includes Coriolis and gyroscopic
+terms in multibody dynamics and modeling elements such as springs, dampers and
+even internal forces when modeling soft body dynamics. Mid-step quantities are
+defined in accordance to the standard $\theta\text{-method}$ method as
+\begin{eqnarray}
+	\mf{q}^{\theta} &=& \theta\mf{q} + (1-\theta)\mf{q}_0,\\
+	\mf{v}^{\theta} &=& \theta\mf{v} + (1-\theta)\mf{v}_0.
+\end{eqnarray}
 
-After discretizing the conservation of momentum in time using the
-$\theta\text{-method}$, the equations describing the update step from an initial
-velocity $\mf{v}_0$ to the next velocity $\mf{v}$ in general looks like
-\begin{equation}
-	\mf{M}(\mf{v}-\mf{v}_0) + dt\,\mf{F}(\mf{q}^\theta(\mf{v}), \mf{v}^\theta(\mf{v})) = \mf{J}^T\mf{\gamma}
-	\label{eq:general_momentum_equations}
-\end{equation}
-where $\mf{M}\succ 0$ is the mass matrix, in general a function of the
-configuration $\mf{q}$ and $\mf{F}(\mf{q}, \mf{v})$ encodes modeling elements
-such as springs and dampers and even internal forces when modeling soft body
-dynamics.
+In this form, parameters $\theta$ allow us to obtain some of the most popular
+schemes for forward dynamics:
+\begin{itemize}
+	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
+	\item Symplectic Euler with $\theta_{q} = 0$ and $\theta_v = \theta_{vq}=1$,
+	\item Implicit Euler with $\theta_{q} = \theta_v = \theta_{vq}= 1$,
+	\item Symplectic midpoint rule, which is second order, with $\theta_{q} =
+	\theta_v = \theta_{vq}= 1/2$,
+\end{itemize}
 
-We will solve Eq. (\ref{eq:general_momentum_equations}) in two stages. In the
-first stage we solve for a velocity $\mf{v}^*$ in the absence of constraint
-impulses 
-\begin{equation}
-	\mf{M}(\mf{v}^*-\mf{v}_0) + dt\,\mf{F}(\mf{q}^\theta(\mf{v}^*), \mf{v}^\theta(\mf{v}^*)) = \mf{0}
-	\label{eq:vstar_definition}
-\end{equation}
-
-This stage might require a Newton-Raphson iteration to account for
-nonlinearities in $\mf{F}(\mf{q}, \mf{v})$. Notice that, in the absence of
-constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and it is
-computed with the order of accuracy of the  $\theta\text{-method}$. We also
+We solve Eqs. (\ref{eq:v_update}) and (\ref{eq:q_update}) in two stages. In the
+first stage we solve for the \textit{free motion} velocities $\mf{v}^*$ in the
+absence of constraint impulses 
+\begin{eqnarray}
+	&&\mf{M}^*(\mf{v}^*-\mf{v}_0) + dt\,\mf{F}(\mf{q}^{\theta_q}(\mf{v}^*), \mf{v}^{\theta_v}(\mf{v}^*)) = \mf{0},
+	\label{eq:vstar_definition}\\
+	&&\mf{q}^{\theta_q}(\mf{v}^*) = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}^*),
+	\label{eq:qstar_definition}
+\end{eqnarray}
+where $\mf{M}^* = \mf{M}(\mf{q}^{\theta_q}(\mf{v}^*))$. For implicit schemes,
+we need an iterative method to solver for $\mf{v}^*$. Notice that, in the
+absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
+it is computed with the order of accuracy of the $\theta\text{-method}$. We also
 expect to recover the order of accuracy of the $\theta\text{-method}$ when
 constraints do not produce work. This is the case of equality constraints and
 rolling friction for instance. That is, we'd expect very good energy
 conservation for a rolling wheel when using the second order, symplectic,
-implicit midpoint rule, with $\theta=1/2$.
+midpoint rule, with $\theta=1/2$.
 
-For the second stage we linearize Eq. (\ref{eq:general_momentum_equations})
+For the second stage we linearize Eq. (\ref{eq:v_update})
 around $\mf{v}^*$ to obtain
 \begin{eqnarray}
 	\mf{A}(\mf{v}-\mf{v}^*)= \mf{J}^T\mf{\gamma}
 	\label{eq:momentum_linearized}
 \end{eqnarray}
-where we have defined
+with
 \begin{eqnarray}
-	\mf{K}&=&\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{q}}\\
-	\mf{D}&=&\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{v}}\\
-	\mf{A}&=&\mf{M}+\theta dt^2\,\mf{K}+\theta dt\,\mf{D}
+	\mf{A}&=&\mf{M}+\theta_q\theta_{qv} dt^2\,\mf{K}+\theta_v dt\,\mf{D},
+	\label{eq:expression_for_A}\\
+	\mf{K}&=&\frac{\partial \mf{F}}{\partial \mf{q}}\Bigr|_{(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})},\\
+	\mf{D}&=&\frac{\partial \mf{F}}{\partial \mf{v}}\Bigr|_{(\mf{q}^{\theta_q},
+	\mf{v}^{\theta_v})}.
+	\label{eq:dissipation_matrix}
 \end{eqnarray}
-
-When $\mf{F}(\mf{q}, \mf{v})$ is linear the stiffness matrix $\mf{K}$ and the
+where the only assumption in Eq. (\ref{eq:expression_for_A}) is that the map
+$\mf{N}(\mf{q})$ is the identity, which is commonly the case for compliant
+elements. When $\mf{F}(\mf{q}, \mf{v})$ is linear the stiffness matrix $\mf{K}$ and the
 damping matrix $\mf{D}$ are constant and the two stage process described by Eqs.
-(\ref{eq:vstar_definition}) and (\ref{eq:momentum_linearized}) is exact and
-solves the original problem stated by Eq. (\ref{eq:general_momentum_equations}).
+(\ref{eq:vstar_definition}) to (\ref{eq:momentum_linearized}) is exact and
+solves the original problem stated by Eq. (\ref{eq:v_update}).
 
 
 A typical example of constant stiffness and damping is that of a spring-damper
@@ -78,6 +89,15 @@ elements to matrix $\mf{A}$, increasing the stability of the scheme.
 An example of complex stiffness and damping matrices is when using a Finite
 Element Model (FEM) of large soft body deformations. In this case $\mf{K}$ and
 $\mf{D}$ are large sparse, positive definite, matrices.
+
+Our convex approximation of contact requires $\mf{A}\succ 0$. Therefore only
+compliant and dissipation elements that lead to positive definite matrices can
+be included in Eq. (\ref{eq:expression_for_A}). This is the case for joint
+spring-damper models and deformable models. It is not the case for Coriolis and
+gyroscopic terms. These terms can still be treated implicitly in Eqs.
+(\ref{eq:vstar_definition}) and (\ref{eq:qstar_definition}), but their
+derivative is assumed to be zero in Eq. (\ref{eq:dissipation_matrix}), only
+accurate to first order.
 
 \section{Constraints Based Modeling Framework}
 \label{sec:constraints_based_modeling_framework}
@@ -111,7 +131,7 @@ problem.
 
 In the discrete time setting we again use the $\theta\text{-method}$ with
 parameter $\theta_c$, different from $\theta$ in Eq.
-(\ref{eq:general_momentum_equations}) to gain more control on the stability and
+(\ref{eq:v_update}) to gain more control on the stability and
 accuracy of the method. E.g.: we typically use $\theta_c=1$ for contact
 constraints for additional stability while we use $\theta_c=1/2$ for holonomic
 constraints for better energy conservation. Using $\mf{v}_c^{\theta_c}$ and
@@ -393,9 +413,9 @@ applications:
 Todorov in \cite{bib:todorov2014} sets the regularization parameters as
 $R_i=\varepsilon N_{ii}$, where $\varepsilon$ is a small dimensionless
 coefficient that controls the amount of regularization. Higher regularization
-will make the problem better conditioned though at the expense of large
-compliance and a poor stiction approximation. Lower regularization will converge
-to the \textit{hard constraints} limit, however leading to a poorly conditioned
+makes the problem better conditioned though at the expense of large compliance
+and a poor stiction approximation. Lower regularization will converge to the
+\textit{hard constraints} limit, however leading to a poorly conditioned
 formulation. 
 
 In this work we choose $\varepsilon$ from an analysis of the time scales
