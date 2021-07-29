@@ -43,21 +43,20 @@ physical meaning for these terms when we provide analytical expressions for the
 impulses in Section \ref{sec:analytical_inverse_dynamics}. Finally,
 $\Vert\bsigma\Vert_R^2=\bsigma^T\mf{R}\bsigma$.
 
-\RedHighlight{Per Frank's request. The fact that \ref{eq:primal_regularized},
-\ref{eq:dual_regularized} and \ref{eq:primal_unconstrained} are equivalent is
-very important. State that as a theorem even if the proof is simple.}
+\begin{theorem}
+The dual of Eq. (\ref{eq:primal_regularized}) is given by Eq.
+(\ref{eq:dual_regularized}). The pair $\{\mf{v},\bsigma\}$ is primal optimal and
+$\bgamma$ is dual optimal. Moreover, $\bsigma = \bgamma$.
+\end{theorem}
 
-\RedHighlight{Frank: You should say then that (v, sigma) is primal optimal and
-gamma is dual optimal, and then give the explicit formulae, pointing out that
-sigma = gamma.}
-
+\begin{proof}
 The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
 \begin{equation}
 	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
 	\label{eq:primal_lagrangian}
 \end{equation}
-with $\vf{\gamma}\in\mathcal{C}$ the dual variable to enforce the constraint
-$\vf{g}\in \mathcal{C}^*$. We can obtain the dual of Eq.
+with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
+$\vf{g}\in \mathcal{F}^*$. We obtain the dual of Eq.
 (\ref{eq:primal_regularized}) by minimizing the Lagrangian jointly in the
 variables $\mf{v}$ and $\bsigma$ and replacing the result back to obtain the
 dual cost $\ell_d(\vf{\gamma})$. Minimizing jointly in the variables $\mf{v}$
@@ -71,13 +70,15 @@ impulses and we recover the balance of momentum, and the second equation allows
 us to eliminate $\vf{\sigma}$. When we replace these results back into the
 Lagrangian in Eq. (\ref{eq:primal_lagrangian}) we obtain the dual
 \begin{eqnarray}
-	\min_{\gamma\in \mathcal{C}} \ell(\bgamma) =
+	\min_{\bgamma\in \mathcal{F}} \ell_d(\bgamma) =
 	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
 	\bgamma
 \end{eqnarray}
-where, in contrast to Eq. (\ref{eq:dual_regularized}), the Delassus operator
+where, in contrast to previous work, our Delassus operator
 $\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
-force elements and $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$.
+force elements (through Eq. (\ref{eq:expression_for_A})) and
+$\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
+\end{proof}
 
 \section{Analytical Inverse Dynamics}
 \label{sec:analytical_inverse_dynamics}
