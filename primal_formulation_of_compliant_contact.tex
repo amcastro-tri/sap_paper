@@ -1,53 +1,47 @@
 
 \section{A Primal Formulation of Compliant Contact}
 
-\RedHighlight{Frank: so, presentation tip, i would introduce the QPs (40) and
-(44) before Section 5, assuming the goal of Section 5 is to provide the
-solutions of (40) and (44)}
+In this section we augment the balance of momentum stated in Eq.
+(\ref{eq:momentum_linearized}) so that contact impulses model Colulomb friction
+and satisfy the principle of maximum dissipation when sliding. 
 
-It turns out that the formulation in Eq. (\ref{eq:dual_cost}) is very ill
-conditioned. This is due to the fact that contact forces for rigid body dynamics
-problems are more often than not underdetermined. Even if compliance is added in
-the normal direction, friction forces for the simplest problem configurations
-will be underdetermined. Regularization in Eq. (\ref{eq:dual_regularized}) helps
-to solve this problem in theory but it leads to very ill conditioned systems of
-equations in practice. 
+An alternative is to use a convex approximation as stated in Eq.
+(\ref{eq:dual_cost}). However, this formulation is severely ill conditioned due
+to the fact that contact forces for rigid body dynamics problems are most often
+underdetermined. Even if compliance is added in the normal direction, friction
+forces for the simplest problem configurations will be underdetermined.
+Regularization in Eq. (\ref{eq:dual_regularized}) helps to solve this problem in
+theory but it leads to very ill conditioned systems of equations in practice. 
 
-Even if the set of contact forces is not unique (when no regularization is
-added), velocities are unique. This fact inspired the search for an equivalent
-formulation but in velocities instead of impulses. Such a \textit{primal}
-formulation is presented in \cite{bib:mazhar2014} for rigid contact, though to
-the knowledge of the authors a practical solver based on this formulation has
-never been presented.
+We make the following observation for the convex approximation in Eq.
+(\ref{eq:dual_cost}); even if the set of contact forces is not unique (when no
+regularization is added), velocities are. This fact inspired the search
+for an equivalent formulation but in velocities instead of impulses. Such a
+\textit{primal} formulation is presented in \cite{bib:mazhar2014} for rigid
+contact, though to the knowledge of the authors a practical solver based on this
+formulation has never been presented.
 
 In this section we extend the formulation in \cite{bib:mazhar2014} to include
 the modeling of compliance and in Sections
 \ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
 describe a methodology to solve it in practice.
 
-Given a set of $n_k$ constraints defined by their constraint velocity
-$\vf{v}_{c,k}$ and impulse $\bgamma_k\in\mathcal{C}_k$, we form a global vector
-$\vf{v}_c$ that concatenates all constraint velocities and define the Cartesian
-product $\mathcal{C}=\prod_{k=1}^{n_k}\mathcal{C}_k$. Since each $\mathcal{C}_k$
-is convex, so is $\mathcal{C}$. We proceed in a similar way with $\bgamma_k$,
-$\hat{\vf{v}}_k$, $\mf{R}_k$, $\mf{J}_k$ to obtain the global quantities
-$\bgamma$, $\hat{\mf{v}}$, $\mf{R}$, $\mf{J}$. With these definitions we can
-compactly write the constraint $\bgamma\in\mathcal{C}$ for all impulses in the
-problem.
-
-We write our primal that includes compliance by introducing a new decision
-variable $\vf{\sigma}$ as
-
+We write our primal formulation of compliant contact by introducing a new
+decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
 \begin{equation}
 	\begin{aligned}
-	\min_{\mf{v},\mf{\sigma}} \quad & \ell_p(\mf{v},\mf{\sigma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\mf\sigma\Vert_{R}^2\\
-	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}} + \mf{R}\mf\sigma) \in \mathcal{C}^*\\
+	\min_{\mf{v},\bsigma} \quad & \ell_p(\mf{v},\bsigma) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2\\
+	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}} + \mf{R}\bsigma) \in \mathcal{F}^*\\
 	\end{aligned}
 	\label{eq:primal_regularized}
 \end{equation}
-where $\mathcal{C}^*$ is the dual of the convex set $\mathcal{C}$. Notice how
-the regularization needs to appear not only in the cost but also in the
-constraint. 
+where $\mathcal{F^*}=\prod_{k=1}^{n_k}\mathcal{F}^*_k$ is the dual of the convex
+set $\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
+3n_c}$ and the vector of stabilization velocities $\hat{\mf{v}}$ encode the
+problem data needed to model compliant contact. We will establish a very clear
+physical meaning for these terms when we provide analytical expressions for the
+impulses in Section \ref{sec:analytical_inverse_dynamics}. Finally,
+$\Vert\bsigma\Vert_R^2=\bsigma^T\mf{R}\bsigma$.
 
 \RedHighlight{Per Frank's request. The fact that \ref{eq:primal_regularized},
 \ref{eq:dual_regularized} and \ref{eq:primal_unconstrained} are equivalent is
@@ -59,15 +53,15 @@ sigma = gamma.}
 
 The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
 \begin{equation}
-	\mathcal{L}(\mf{v},\mf{\sigma},\vf{\gamma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\mf\sigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
+	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
 	\label{eq:primal_lagrangian}
 \end{equation}
 with $\vf{\gamma}\in\mathcal{C}$ the dual variable to enforce the constraint
 $\vf{g}\in \mathcal{C}^*$. We can obtain the dual of Eq.
 (\ref{eq:primal_regularized}) by minimizing the Lagrangian jointly in the
-variables $\mf{v}$ and $\mf{\sigma}$ and replacing the result back to obtain the
+variables $\mf{v}$ and $\bsigma$ and replacing the result back to obtain the
 dual cost $\ell_d(\vf{\gamma})$. Minimizing jointly in the variables $\mf{v}$
-and $\mf{\sigma}$ leads to the conditions
+and $\bsigma$ leads to the conditions
 \begin{eqnarray}
 	\mf{A}(\mf{v}-\mf{v}^*) &=& \mf{J}^T\vf{\gamma}\\
 	\vf{\sigma} &=& \vf{\gamma}
@@ -84,6 +78,20 @@ Lagrangian in Eq. (\ref{eq:primal_lagrangian}) we obtain the dual
 where, in contrast to Eq. (\ref{eq:dual_regularized}), the Delassus operator
 $\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
 force elements and $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$.
+
+\section{Analytical Inverse Dynamics}
+\label{sec:analytical_inverse_dynamics}
+
+Given a set of $n_k$ constraints defined by their constraint velocity
+$\vf{v}_{c,k}$ and impulse $\bgamma_k\in\mathcal{C}_k$, we form a global vector
+$\vf{v}_c$ that concatenates all constraint velocities and define the Cartesian
+product $\mathcal{C}=\prod_{k=1}^{n_k}\mathcal{C}_k$. Since each $\mathcal{C}_k$
+is convex, so is $\mathcal{C}$. We proceed in a similar way with $\bgamma_k$,
+$\hat{\vf{v}}_k$, $\mf{R}_k$, $\mf{J}_k$ to obtain the global quantities
+$\bgamma$, $\hat{\mf{v}}$, $\mf{R}$, $\mf{J}$. With these definitions we can
+compactly write the constraint $\bgamma\in\mathcal{C}$ for all impulses in the
+problem.
+
 
 \section{An Unconstrained Convex Formulation}
 \label{sec:unconstrained_convex_formulation}
@@ -103,7 +111,7 @@ velocity as
 where $\mf{y}(\mf{v}_c) = -\mf{R}^{-1}(\mf{v}_c-\hat{\mf{v}})$ and we have
 analytical algebraic expressions for the projection $P_\mathcal{C}(\mf{y})$.
 
-This allow us then to substitute $\mf{\sigma}=\bgamma=P_\mathcal{C}(\mf{y})$
+This allow us then to substitute $\bsigma=\bgamma=P_\mathcal{C}(\mf{y})$
 into Eq. (\ref{eq:primal_regularized}) to obtain an unconstrained convex
 optimization problem in the velocities only
 \begin{eqnarray}
