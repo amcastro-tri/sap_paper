@@ -17,7 +17,7 @@ Even if the set of contact forces is not unique (when no regularization is
 added), velocities are unique. This fact inspired the search for an equivalent
 formulation but in velocities instead of impulses. Such a \textit{primal}
 formulation is presented in \cite{bib:mazhar2014} for rigid contact, though to
-the knowledge of the author a practical solver based on this formulation has
+the knowledge of the authors a practical solver based on this formulation has
 never been presented.
 
 In this section we extend the formulation in \cite{bib:mazhar2014} to include
@@ -80,7 +80,6 @@ Lagrangian in Eq. (\ref{eq:primal_lagrangian}) we obtain the dual
 	\min_{\gamma\in \mathcal{C}} \ell(\bgamma) =
 	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
 	\bgamma
-	\label{eq:dual_regularized}
 \end{eqnarray}
 where, in contrast to Eq. (\ref{eq:dual_regularized}), the Delassus operator
 $\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
