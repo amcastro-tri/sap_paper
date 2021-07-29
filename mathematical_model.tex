@@ -12,7 +12,7 @@ second order implicit midpoint rule. Then Section
 \cite{bib:todorov2014} by using regularization to model true physical compliance
 instead of a means to introduce a Baumgarte-style stabilization.}
 
-We introduce our variant of the $\theta\text{-method}$ via the update 
+We introduce a variant of the $\theta\text{-method}$ via the update 
 \begin{eqnarray}
 	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) + 
 	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) = \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
@@ -96,6 +96,6 @@ be included in Eq. (\ref{eq:expression_for_A}). This is the case for joint
 spring-damper models and deformable models. It is not the case for Coriolis and
 gyroscopic terms. These terms can still be treated implicitly in Eqs.
 (\ref{eq:vstar_definition}) and (\ref{eq:qstar_definition}), but their
-derivative is assumed to be zero in Eq. (\ref{eq:dissipation_matrix}), only
-accurate to first order.
+derivative is assumed to be zero in Eq. (\ref{eq:dissipation_matrix}), an
+approximation only accurate to first order.
 

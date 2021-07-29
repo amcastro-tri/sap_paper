@@ -112,10 +112,10 @@ program with conic constraints as
 \end{eqnarray}
 where $\mathbf{W} =
 \mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
-Delassus operator, $\mathcal{F} = \Pi_k \mathcal{F}_k$ is the feasible set of
-all contact impulses satisfying the friction cone constraints and, the linear
-cost ${\bm r}$ encodes the free motions $\mf{v}^*$ and stabilization terms to
-impose non-interpenetration at the positions level.
+Delassus operator, $\mathcal{F}=\prod_{k=1}^{n_c}\mathcal{F}_k$ is the feasible
+set of all contact impulses satisfying the friction cone constraints and, the
+linear cost ${\bm r}$ encodes the free motions $\mf{v}^*$ and stabilization
+terms to impose non-interpenetration at the positions level.
 
 In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regularization to
 the formulation in Eq. (\ref{eq:dual_cost}). Though not strictly applicable to
@@ -135,7 +135,7 @@ make $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
 
 One fo the most remarkable results from \cite{bib:todorov2014} is that if we
  happen to know the velocities of the system, we can write analytical algebraic
- expressions for the impulses. Moreover, the the separable structure of the
+ expressions for the impulses. Moreover, the separable structure of the
  constraints allows us to write the impulse $\bgamma_k$ at contact $k$ solely as
  a function of the relative contact velocity $\vf{v}_{c,k}$ at that point, i.e.
  $\bgamma_k = \bgamma_k(\vf{v}_{c,k})$.
