@@ -1,0 +1,126 @@
+\section{Compliant Contact, Principle of Maximum Dissipation and Artifacts}
+\label{sec:physical_intuition}
+
+Thus far $\vf{R}_k$ and $\hat{\vf{v}}_k$ have been treated as known problem
+data. This section makes an explicit connection of these quantities with
+physical parameters to model compliant contact with regularized friction.
+
+We want to model compliant contact with stiffness $k$ (with units of N/m) and
+dissipation $c = \tau k$ where $\tau$ (in seconds) is a \textit{dissipation time
+scale}. Once again, dropping subindex $k$ for simplicity, our model is defined
+by
+\begin{eqnarray}
+	\hat{\vf{v}}_c &=&
+	\begin{bmatrix}
+		0\\
+		0\\
+		\hat{v}_n \end{bmatrix}\nonumber\\
+	\hat{v}_n &=& -\frac{\phi_0}{dt+\tau}
+\end{eqnarray}
+where $\phi_0$ is the previous step signed distance. The regularization
+parameters in Eq. (\ref{eq:Rk}) are taken as $R_n^{-1} = dt k(dt+\tau)$ and
+$R_t=\varepsilon_t R_n$, with the dimensionless parameter $\varepsilon_t \ll 1$
+to control the amount of regularization in the tangential direction.
+
+To gain physical insight into our model, we
+substitute $\vf{y}=\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
+(\ref{eq:analytical_y_projection}) to obtain
+\begin{eqnarray}
+	&&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))
+    \label{eq:gamma_analytical_from_vc}\\
+&&\begin{dcases}
+	% Region I, stiction
+	\begin{bmatrix}
+		-\vf{v}_t/R_t\\
+		-dt(k\phi + c v_n)
+	\end{bmatrix}
+	% When we  have: y_r < \mu y_n
+	& \text{stiction, } \\
+	%
+	%
+	% Region II, sliding.
+	\begin{bmatrix}
+		\mu\gamma_n\hat{\vf{t}}\\
+		-\frac{dt}{1+\tilde\mu^2}\left(k(\phi-(dt+\tau)\mu\Vert\vf{v}_t\Vert) + cv_n \right)
+	\end{bmatrix}
+	% When we  have:  -\mu \frac{R_t}{R_n} y_r < y_n \leq \frac{y_r}{\mu}
+	& \text{sliding, }\\
+	%
+	%
+	% Region III, no contact.  y_n \leq -\mu \frac{R_t}{R_n} y_r
+    \vf{0} & \text{no contact, }
+\end{dcases}\nonumber	
+\end{eqnarray}
+where $\phi= \phi_0 + dt\,v_n$. Let us now analyze the resulting forces from
+this model.
+
+\subsection{Friction Forces}
+From Eq. (\ref{eq:gamma_analytical_from_vc}) we see that friction forces behave exactly as a
+model of regularized friction
+\begin{equation}
+	\bgamma_t = \min\left(\frac{\Vert\vf{v}_t\Vert}{R_t}, \mu\gamma_n\right)\hat{\vf{t}}
+\end{equation}
+with $\bgamma_t$ linear to the (very small) slip velocity during stiction and
+with a maximum value given by $\mu\gamma_n$, effectively modeling Coulomb
+friction. Notice that better model stiction, we are interested in small values
+of $\varepsilon_t$, or $\varepsilon_t\ll 1$.
+
+Since $\hat{\vf{t}} = \vf{y}_t/\Vert\vf{y}_t\Vert =
+-\vf{v}_t/\Vert\vf{v}_t\Vert$, friction forces oppose sliding therefore
+satisfying the principle of maximum dissipation as desired.
+
+\subsection{Normal Forces}
+Firstly we observe that in stiction normal forces model compliance with linear
+stiffness $k$ and linear dissipation $c = \tau k$. That is
+\begin{equation}
+    \gamma_n/dt = -(k\phi + c v_n)
+\end{equation}
+
+In the sliding region we see however that the convex approximation introduces
+unphysical artifacts. Recall we are interested in the limit $R_t \ll R_n$ to
+better model stiction and therefore $\tilde\mu \rightarrow 0$. This makes the
+factor $1+\tilde{\mu}^2$ close to one and we can ignore it in our analysis.
+While we'd like to recover $\gamma_n = -dt(k\phi + c v_n)$ as in stiction, we
+instead see that the slip velocity $\Vert\vf{v}_t\Vert$ unphysically couples
+into the normal forces as $\gamma_n=-dt(k(\phi-(dt+\tau)\mu\Vert\vf{v}_t\Vert) +
+cv_n)$. We can write this as
+\begin{equation}
+  \gamma_n/dt=-(k\phi_\text{eff} + c v_n)
+\end{equation}
+with an \textit{effective} signed distance $\phi_\text{eff} =
+\phi-(dt+\tau)\mu\Vert\vf{v}_t\Vert$. That is, we recover a model of compliant
+contact but with a spurious drift of magnitude $(dt+\tau)\mu\Vert\vf{v}_t\Vert$.
+
+This is consistent with the formulation in \cite{bib:anitescu2010} for rigid
+contact when $k\rightarrow \infty$ leading to an unphysical \textit{gliding
+effect} at a positive distance $\phi=dt\mu\Vert\vf{v}_t\Vert$. Notice that
+\textit{gliding} goes away as $dt\rightarrow 0$ since the formulation converges
+to the original contact problem \cite{bib:anitescu2006}. The effect of
+compliance is to \textit{soften} this effect. 
+
+In the limit to $dt\rightarrow 0$ we find out that the convex approximation
+models, when sliding, the force law
+$\gamma_n=-dt(k(\phi-\tau\mu\Vert\vf{v}_t\Vert)$. This tells us that, unlike the
+rigid case, the \textit{gliding} effect unfortunately does not go away as
+$dt\rightarrow 0$ but it persists with a finite value that now depends on the
+dissipation rate, $\phi\approx\tau\mu\Vert\vf{v}_t\Vert$.
+
+We close this discussion by making the following remarks relevant to robotics
+applications:
+\begin{enumerate}
+	\item In robotics applications we are mostly interested in the stiction
+	regime, typically for grasping, locomotion or rolling contact for mobile
+	bases with wheels. This regime is precisely where the convex approximation
+	does not introduce artifacts.
+	\item Sliding is usually avoided or if importnat, it is usually at low
+	velocities and therefore the term $dt\mu\Vert\vf{v}_t\Vert$ is negligible.
+	\item Even though the effect of sliding cannot be neglected in the
+	dissipation term during stiction, we point out that for robotics
+	applications most often dissipation is high to model a zero restitution
+	coefficient. Therefore the high dissipative nature of this term makes the
+	effect of $\Vert\vf{v}_t\Vert$ negligible for most cases with low slip
+	velocities.
+	\item For robotics, we are definitely interested on the onset to sliding.
+	This is captured by the approximation which properly models the Colulomb
+	friction law.
+\end{enumerate}

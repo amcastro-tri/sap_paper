@@ -29,11 +29,13 @@ regularization matrix of the form
 		  0 & R_t & 0\\
 		  0 &   0 & R_n
 	\end{bmatrix}
+    \label{eq:Rk}
 \end{eqnarray} 
 
 The solution can be written as
 \begin{eqnarray}
-	\bgamma &=& P_\mathcal{F}(\vf{y}) = \\
+	\bgamma &=& P_\mathcal{F}(\vf{y})
+    \label{eq:analytical_y_projection}\\
     &=&\begin{dcases}
 	% Region I, stiction
 	\vf{y} 
@@ -53,8 +55,7 @@ The solution can be written as
 	%
 	% Region III, no contact.
     \vf{0} & \text{no contact, } y_n \leq -\hat\mu y_r
-\end{dcases}\nonumber
-	\label{eq:contact_projection}
+\end{dcases}\nonumber	
 \end{eqnarray}
 where $\vf{y}_t$ and $y_n$ are the tangential and normal components of $\vf{y}$,
 the radial component is defined as $y_r=\Vert\vf{y}_t\Vert$ and the tangent
