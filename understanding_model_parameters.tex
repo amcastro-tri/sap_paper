@@ -1,0 +1,91 @@
+\section{Understanding Model Parameters}
+\label{sec:understanding_model_parameters}
+
+Before presenting our test cases, we would like to discuss the effect of our
+contact parameters in the limit to 1) to rigid contact and 2) soft compliant
+contact.
+
+\subsection{Rigid Contact}
+Mathematically, rigid contact can be modeled as the limit to infinite stiffness.
+In practice however this leads to ill-conditioning of the formulation. The
+question is, how stiff must a contact be for a good approximation of rigid
+contact? to answer this question we study the dynamics of a mass $m$ in contact
+with the ground. The stiffness with the ground $k$ induces a dynamics with
+natural frequency $\omega_n^2 = k/m$, or a period $T_n = 2\pi/\omega_n$. To a
+good approximation, we can consider the contact with the ground to be rigid when
+$T_n \ll dt$.
+
+When there are multiple points of contact, we can estimate an \textit{effective}
+point contact mass as $m_k^{-1}=\Vert\mathbf{W}_{kk}\Vert/3$ where
+$\mathbf{W}_{kk}$ is the $3\times 3$ diagonal block of the Delassus operator
+$\mathbf{W}$. The factor $3$ in our definition is to take RMS value
+of the entries of $\mathbf{W}_{kk}$. This definition ensures that $m_k > 0$.
+
+In this \textit{rigid} regime, compliance is only used as a means of a
+Baumgarte-like \textit{stabilization} to avoid constraint drift, as previously
+done in \cite{bib:todorov2011}.
+ Choosing the time scale of the
+contact to be $T_n = \alpha dt$, with $\alpha < 1$, we can the estimate a value
+of stiffness as $k=4\pi^2 m_k/(\alpha^2 dt^2)$. Since $R_n^{-1}\approx dt^2k$ we
+estimate the regularization parameter as
+\begin{equation}
+	R_n = \frac{\alpha^2}{4\pi^2}g_i = \frac{\alpha^2}{4\pi^2}\Vert\mathbf{W}_{ii}\Vert
+\end{equation}
+
+It is useful to estimate the amount of penetration for a point mass resting on
+the ground. In this case we have
+\begin{eqnarray}
+	\phi &=& \frac{m\,g}{k} \nonumber\\
+	&=& \frac{\alpha^2}{4\pi^2}\frac{m}{m_i}\,g\,dt^2\nonumber\\
+	&=& \frac{\alpha^2}{12\pi^2}\,g\,dt^2
+\end{eqnarray}
+
+Taking $\alpha=1.0$ and on Earth's gravity, a typical simulation time step of
+$dt=10^{-3}~\text{s}$ leads to $\phi\approx 8.3\times 10^{-8}~\text{m}$ and
+using a very large simulation time tep of $dt=10^{-2}~\text{s}$ leads to
+$\phi\approx 8.3\times 10^{-6}~\text{m}$, well within acceptable bounds for
+typical robotics applications.
+
+\subsection{Stiction}
+Given out model regularizes friction, we are interested on estimating a bound on
+the slip velocity at stiction. 
+
+Using the point mass $m$ as an example, we can estimate the maximum amount of
+slip $v_s$ due to regularization from the balance of forces right at the
+boundary of the friction cone. In this case
+\begin{equation}
+    \gamma_r = \frac{v_s}{R_t} = dt\mu m g
+\end{equation}
+if we use $R_t=\alpha_t/m$ we obtain for the slip
+\begin{equation}
+    v_s = \alpha_t \mu g dt
+\end{equation}
+
+For a large value of $dt=10^{-2} s$ on Earth's gravity, we'd have a slip of
+about $v_s=10^{-4}~\text{m}/\text{s}$ when $\alpha_t=10^{-3}$.
+
+For very large stiffness $R_n$ can become dangerously small. Therefore we make
+\begin{equation}
+    R_n = \max( (dt(dt+\tau)k^2)^{-1}, \frac{\alpha_n^2}{4\pi^2}\Vert\mf{W}_{kk}\Vert)
+\end{equation}
+which we showed to model rigid contact to good approximation.
+
+Therefore the minimum value of $R_n$ is
+$\frac{\alpha_n^2}{4\pi^2}\Vert\mf{W}_{kk}\Vert$ and the maximum value for
+$R_t/R_n$ will be
+\begin{equation}
+    \frac{R_t}{R_n}\Bigr|_\text{max} = \frac{4\pi^2}{\alpha_n^2}\alpha_t
+\end{equation}
+
+For $\alpha_n=1$ and $\alpha_t=10^{-3}$ this amounts to a maximum value of
+$R_t/R_n\approx 0.04$, much smaller than one as desired.
+
+These values of regularization ensure that both $v_s$ and $R_t/R_n$ are bounded,
+while at the same time bound the amount of ill conditioning. 
+
+\subsection{Stiction for Soft Contact}
+
+On the other side of the spectrum, when modeling soft
+compliance, large values of $R_n$ mean large values of $R_t$ for a fixed
+$\varepsilon_t$. This might lead to undesirably large vales of drift during
+stiction.
