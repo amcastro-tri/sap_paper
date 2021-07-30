@@ -1,27 +1,63 @@
 \section{Analytical Inverse Dynamics}
 \label{sec:analytical_inverse_dynamics}
 
-\sout{Given a set of $n_k$ constraints defined by their constraint velocity
-$\vf{v}_{c,k}$ and impulse $\bgamma_k\in\mathcal{C}_k$, we form a global vector
-$\vf{v}_c$ that concatenates all constraint velocities and define the Cartesian
-product $\mathcal{C}=\prod_{k=1}^{n_k}\mathcal{C}_k$. Since each $\mathcal{C}_k$
-is convex, so is $\mathcal{C}$. We proceed in a similar way with $\bgamma_k$,
-$\hat{\vf{v}}_k$, $\mf{R}_k$, $\mf{J}_k$ to obtain the global quantities
-$\bgamma$, $\hat{\mf{v}}$, $\mf{R}$, $\mf{J}$. With these definitions we can
-compactly write the constraint $\bgamma\in\mathcal{C}$ for all impulses in the
-problem.}
-
-\textit{Inverse dynamics} refers to the computation of the impulses given we
-know the velocities of the system. It is shown in \cite{bib:todorov2014} that
-this problem can be solved analytically given the separable structure of the
-constraints. Then the impulse for each $k\text{-th}$ constraint can be solved
-from
+The work in \cite{bib:todorov2014} shows that the dual in Eq.
+(\ref{eq:dual_regularized}) can be solved analytically if we know the velocities
+of the system. This is referred to as the \textit{inverse dynamics} solution.
+Moreover, given the separable structure of the constraints, the impulse
+$\bgamma_k$ at the $k\text{-th}$ contact point is solution to the following
+convex optimization problem
 \begin{eqnarray}
-	\bgamma_k&=&
-	\begin{aligned}
-		\argmin_{\bgamma\in\mathcal{C}} \quad &
-	\frac{1}{2}(\bgamma-\mf{y}_k)^T\mf{R}_k(\bgamma-\mf{y}_k) \end{aligned}\\
-	\mf{y}_k &=& -\vf{R}_k^{-1}(\mf{v}_{c,k}-\hat{\mf{v}}_k)
+	\bgamma_k(\vf{v}_{c,k})&=& P_{\mathcal{F}_k}(\vf{y}_k(\vf{v}_{c,k})) \nonumber\\
+	&=&\begin{aligned}
+		\argmin_{\bgamma\in\mathcal{F}_k} \quad &
+	\frac{1}{2}(\bgamma-\vf{y}_k)^T\vf{R}_k(\bgamma-\vf{y}_k) \end{aligned}
+    \label{eq:y_projection}\\
+	\vf{y}_k(\vf{v}_{c,k}) &=& -\vf{R}_k^{-1}(\vf{v}_{c,k}-\hat{\vf{v}}_k)    
 \end{eqnarray}
+where $\vf{R}_k\in\mathbb{R}^{3\times3}$ is the $k\text{-th}$ diagonal block of
+the regularization matrix $\mf{R}$. That is, $\bgamma_k$ is the projection onto
+the cone $\mathcal{F}_k$ using the norm defined by $\vf{R}_k$.
 
-From now on we will omit the index $k$. 
+Dropping subscript $k$ for simplicity, we solve Eq. (\ref{eq:y_projection})
+analytically in Appendix \ref{app:analytical_inverse_dynamics_derivations} for a
+regularization matrix of the form
+\begin{eqnarray}	
+	\vf{R} &=& \text{diag}([R_t, R_t, R_n]) = 
+	\begin{bmatrix}
+		R_t &   0 & 0\\
+		  0 & R_t & 0\\
+		  0 &   0 & R_n
+	\end{bmatrix}
+\end{eqnarray} 
+
+The solution can be written as
+\begin{eqnarray}
+	\bgamma &=& P_\mathcal{F}(\vf{y}) = \\
+    &=&\begin{dcases}
+	% Region I, stiction
+	\vf{y} 
+	% When we  have:
+	& \text{stiction, } y_r < \mu y_n\\
+	%
+	%
+	% Region II, sliding.
+	\begin{bmatrix}
+		\mu\gamma_n\hat{\vf{t}}\\
+		\frac{1}{1+\tilde\mu^2}\left(y_n +
+        \hat\mu y_r\right)
+	\end{bmatrix}
+	% When we  have:
+	& \text{sliding, } -\hat\mu y_r < y_n \leq \frac{y_r}{\mu}\\
+	%
+	%
+	% Region III, no contact.
+    \vf{0} & \text{no contact, } y_n \leq -\hat\mu y_r
+\end{dcases}\nonumber
+	\label{eq:contact_projection}
+\end{eqnarray}
+where $\vf{y}_t$ and $y_n$ are the tangential and normal components of $\vf{y}$,
+the radial component is defined as $y_r=\Vert\vf{y}_t\Vert$ and the tangent
+vector as $\hat{\vf{t}}=\vf{y}_t/y_r$. We also defined the
+coefficients $\tilde\mu=\mu\,(R_t/R_n)^{1/2}$ and $\hat\mu=\mu\,R_t/R_n$, result
+of the \textit{warping} introduced by the metric $\vf{R}$.
