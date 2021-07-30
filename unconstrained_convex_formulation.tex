@@ -1,0 +1,118 @@
+\section{An Unconstrained Convex Formulation}
+\label{sec:unconstrained_convex_formulation}
+
+The primal formulation in Eq. (\ref{eq:primal_regularized}) and its dual in Eq.
+(\ref{eq:dual_regularized}) are equivalent. Since both are strictly convex, they
+share the same unique solution. In particular, they both share the same
+analytical inverse dynamics solution described in Section
+\ref{sec:constraints_based_modeling_framework}.
+
+Recall from Section \ref{sec:constraints_based_modeling_framework} that the
+inverse dynamics solution provides the impulse as a function of the constraint
+velocity as
+\begin{eqnarray}
+	\bgamma(\mf{v}_c) = P_\mathcal{C}(\mf{y}(\mf{v}_c))
+\end{eqnarray}
+where $\mf{y}(\mf{v}_c) = -\mf{R}^{-1}(\mf{v}_c-\hat{\mf{v}})$ and we have
+analytical algebraic expressions for the projection $P_\mathcal{C}(\mf{y})$.
+
+This allow us then to substitute $\bsigma=\bgamma=P_\mathcal{C}(\mf{y})$
+into Eq. (\ref{eq:primal_regularized}) to obtain an unconstrained convex
+optimization problem in the velocities only
+\begin{eqnarray}
+	\min_{\mf{v}} \ell_p(\mf{v}) =
+	\frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) +
+	\ell_R(\mf{y}(\mf{v}))
+	\label{eq:primal_unconstrained}
+\end{eqnarray}
+with the regularizer
+\begin{equation}
+	\ell_R(\mf{y}(\mf{v})) = \frac{1}{2}\Vert P_\mathcal{C}(\mf{y}(\mf{v}))\Vert_R^2
+\end{equation}
+
+Though this problem is strictly convex and can be solved using Newton's method
+we make the following observations
+\begin{enumerate}
+	\item Since projections $P_\mathcal{C}$ are piecewise continuous, the cost
+	$\ell_p$ is piecewise continuous.
+	\item The Hessian $\mf{H}=\nabla^2\ell_p$ is not continuous, with large
+	variations of \textit{curvature}. While this is not a problem for Newton's
+	method given its \textit{affine invariance} property in theory, in practice
+	we will use an analytically computed Hessian to avoid numerical round-off
+	errors.
+	\item\label{item:line_sarch} Since the problem is strictly convex, line
+	search combined with Newton's method leads to guaranteed convergence.
+	However, given the piecewise nature of $\ell_p$ and its large variations in
+	curvature, in practice we find we need a specially designed line search to
+	preserve accuracy.
+\end{enumerate}
+
+Item \ref{item:line_sarch} is of utmost important in practice. We'll show a
+strategy that allows to perform line search with machine epsilon precision. A
+careful pre-computation of commonly occurring terms enable us to perform this
+step for a small computation cost when compared to Hessian assembly and
+factorization. While machine epsilon accuracy is not required in practice, we
+show that the cost to achieve this level of convergence is negligible and it is
+well worth it for a robust implementation that can handle very stiff systems
+(with small regularization).
+
+In the next subsection we show how to compute the required gradients for
+Newton's method and, as a consequence, we verify the strict convexity of
+$\ell_p$.
+
+
+\subsection{Gradients}
+\label{sec:gradients}
+
+In this section we summarize the main results required for implementation.
+Detailed derivations are provide in the Appendix \ref{app:gradients_derivation}.
+We will see that in order to compute both the gradient and Hessian of the cost
+we only need analytical expressions of the projection $P_\mathcal{C}$ and its
+gradient.
+
+The gradient of the primal cost $\ell_p$ is
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
+\end{equation}
+
+Computing this gradient might seem a daunting enterprise, but after substitution
+of $\nabla_\mf{v}P_\mathcal{C}$ the result is beautifully simple
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma
+	\label{eq:primal_gradient}
+\end{equation}
+
+Which recovers the momentum balance since Newton's method solves for
+$\nabla_\mf{v}\ell_p=\mf{0}$.
+
+Instead of directly computing the Hessian $\nabla_\mf{v}^2\ell_R$ (which would
+lead to exactly the same result), we can instead compute $\nabla_\mf{v}^2\ell_p$
+by taking the gradient of Eq. (\ref{eq:primal_gradient}). The result is
+\begin{eqnarray}
+	\nabla_\mf{v}^2\ell_R(\mf{v}) &=&
+	\mf{J}^T\nabla_{\mf{v}_c}\!\bgamma\,\mf{J}\nonumber\\
+	\nabla_{\mf{v}_c}\bgamma &=& -\nabla_\mf{y}\bgamma \mf{R}^{-1}
+	\label{eq:ellR_hessian}
+\end{eqnarray}
+where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
+diagonal elements is the $n_k\times n_k$ matrix
+$\nabla_{\mf{v}_{c,k}}\!\bgamma_k$ for the $k\text{-th}$ constraint. As shown in
+Appendix \ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and
+thus $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
+
+Finally, the Hessian needed in Newtons's method is
+\begin{equation}
+	\mf{H}= \nabla_\mf{v}^2\ell_p(\mf{v}) = \mf{A} -\mf{J}^T\nabla_\mf{y}\bgamma \mf{R}^{-1}\mf{J}	
+	\label{eq:ell_hessian}
+\end{equation}
+which, since $A\succ 0$, is strictly positive definite. We note however that
+showing $\nabla_\mf{v}^2\ell_p(\mf{v})\succ 0$ is not enough for $\ell_p$ to be
+strictly convex. Since $\ell_p$ is a piecewise function, we must additionally
+require that the directional derivative across the boundary
+$\partial\mathcal{C}$, of $\mathcal{C}$ increases. Formally, if $\mf{\nu}$ is
+the normal to $\partial\mathcal{C}$, then we require
+\begin{equation}
+	\frac{\partial \ell_p^-}{\partial \nu} \le \frac{\partial \ell_p^+}{\partial \nu}
+\end{equation}
+we show this to be the case in Appendix \ref{app:gradients_derivation} which
+then leads to the confirmation that $\mf{H}\succ 0$.

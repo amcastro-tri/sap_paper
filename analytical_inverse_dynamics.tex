@@ -1,0 +1,27 @@
+\section{Analytical Inverse Dynamics}
+\label{sec:analytical_inverse_dynamics}
+
+\sout{Given a set of $n_k$ constraints defined by their constraint velocity
+$\vf{v}_{c,k}$ and impulse $\bgamma_k\in\mathcal{C}_k$, we form a global vector
+$\vf{v}_c$ that concatenates all constraint velocities and define the Cartesian
+product $\mathcal{C}=\prod_{k=1}^{n_k}\mathcal{C}_k$. Since each $\mathcal{C}_k$
+is convex, so is $\mathcal{C}$. We proceed in a similar way with $\bgamma_k$,
+$\hat{\vf{v}}_k$, $\mf{R}_k$, $\mf{J}_k$ to obtain the global quantities
+$\bgamma$, $\hat{\mf{v}}$, $\mf{R}$, $\mf{J}$. With these definitions we can
+compactly write the constraint $\bgamma\in\mathcal{C}$ for all impulses in the
+problem.}
+
+\textit{Inverse dynamics} refers to the computation of the impulses given we
+know the velocities of the system. It is shown in \cite{bib:todorov2014} that
+this problem can be solved analytically given the separable structure of the
+constraints. Then the impulse for each $k\text{-th}$ constraint can be solved
+from
+\begin{eqnarray}
+	\bgamma_k&=&
+	\begin{aligned}
+		\argmin_{\bgamma\in\mathcal{C}} \quad &
+	\frac{1}{2}(\bgamma-\mf{y}_k)^T\mf{R}_k(\bgamma-\mf{y}_k) \end{aligned}\\
+	\mf{y}_k &=& -\vf{R}_k^{-1}(\mf{v}_{c,k}-\hat{\mf{v}}_k)
+\end{eqnarray}
+
+From now on we will omit the index $k$. 
