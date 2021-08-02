@@ -27,20 +27,20 @@ contributions:
 \section{Multibody Dynamics with Contact}
 \label{sec:multibody_dynamics_with_contact}
 
-We model our multibody system using generalized coordinates. Therefore the state
-is fully described by the generalized positions $\mf{q}\in\mathbb{R}^{n_q}$ and
-the generalized velocities $\mf{v}\in\mathbb{R}^{n_v}$. We describe the
-$k\text{-th}$ contact between two bodies by the relative velocity
-$\vf{v}_{c,k}\in\mathbb{R}^3$ between these two bodies at this point, expressed
-in a contact frame $C_k$ for which we arbitrarily choose the $z\text{-axis}$ to
-coincide with the surface normal $\hat{\vf{n}}_k$ reported by the geometry
-engine. We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact
-velocities by stacking velocites $\vf{v}_{c,k}$ for all contacts together.
-Similarly, we denote with $\bgamma_k\in\mathbb{R}^3$ the contact impulse at a
-specific contact point and with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all
-contact impulses. In general, unless otherwise specified, we use bold italics
-for vectors in $\mathbb{R}^3$ and non-italics bold for their stacked
-counterpart.
+We use generalized coordinates to describe our multibody system. Therefore the
+state is fully described by the generalized positions
+$\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
+$\mf{v}\in\mathbb{R}^{n_v}$. We describe the $k\text{-th}$ contact between two
+bodies by the relative velocity $\vf{v}_{c,k}\in\mathbb{R}^3$ between these two
+bodies at this point, expressed in a contact frame $C_k$ for which we
+arbitrarily choose the $z\text{-axis}$ to coincide with the surface normal
+$\hat{\vf{n}}_k$ reported by the geometry engine. We form the vector
+$\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by stacking velocites
+$\vf{v}_{c,k}$ for all contacts together. Similarly, we denote with
+$\bgamma_k\in\mathbb{R}^3$ the contact impulse at a specific contact point and
+with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all contact impulses. In
+general, unless otherwise specified, we use bold italics for vectors in
+$\mathbb{R}^3$ and non-italics bold for their stacked counterpart.
 
 The contact Jacobian $\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ relates
 generalized velocities to contact velocity by $\mf{v}_c=\mf{J}\,\mf{v}$.
@@ -73,7 +73,7 @@ $\mathcal{F}_k=\{\vf{x}\in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le \mu_k x_n\}$.
 
 While these constraints model the widely accepted model of Colulomb friction,
 the resulting formulation leads to a very difficult to solve, non-convex,
-Non-linear Complimentarity Problem. 
+Non-linear Complementarity Problem (NCP). 
 
 \RedHighlight{Alejandro: say something how other author's impose the principle
 of maximum dissipation and more or less what it means.}
@@ -87,16 +87,21 @@ Plausible good references on this are
 \section{Convex Approximation of Contact Dynamics}
 \label{sec:previous_work}
 
-
 In pursuit of a formulation for which the existence of a solution is guaranteed
 and with the hope that such a formulation leads to more robust and efficient
-solvers, Anitescu introduces a \textit{convex relaxation} of the contact problem in
-\cite{bib:anitescu2006}. This relaxation is introduced as a modification to the
-complementarity constraint between the signed distance $\phi$ and normal impulse
+solvers, Anitescu introduces a \textit{convex approximation} of the contact
+problem in \cite{bib:anitescu2006}. We discuss physical implications and
+artifacts introduced by this approximation in Section
+\ref{sec:physical_intuition} as well as we provide specific guidelines to
+determine its applicability to simulation for robotics.
+
+This approximation is introduced as a
+modification to the complementarity constraint between the signed distance
+$\phi$ and normal impulse
 $\gamma_n$ as
 \begin{equation}
 	0 < \phi - dt \Vert {\bm v}_t \Vert \perp \gamma_n > 0
-	\label{eq:convex_relaxation_complementarity_condition}
+	\label{eq:convex_approximation_complementarity_condition}
 \end{equation}
 where $dt$ is the discrete time step and $\vf{v}_t$ is the tangential component
 of the contact velocity $\vf{v}_c = [\vf{v}_t\,v_n]$. Together with a set of
@@ -133,12 +138,13 @@ where $\mathbf{R}$ is a diagonal positive definite matrix introduced to
 make $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
 \succeq 0$. This makes the problem strictly convex, with a unique solution. 
 
-One fo the most remarkable results from \cite{bib:todorov2014} is that if we
+One of the most remarkable results from \cite{bib:todorov2014} is that if we
  happen to know the velocities of the system, we can write analytical algebraic
  expressions for the impulses. Moreover, the separable structure of the
  constraints allows us to write the impulse $\bgamma_k$ at contact $k$ solely as
  a function of the relative contact velocity $\vf{v}_{c,k}$ at that point, i.e.
- $\bgamma_k = \bgamma_k(\vf{v}_{c,k})$.
+ $\bgamma_k = \bgamma_k(\vf{v}_{c,k})$, see details in Section
+ \ref{sec:analytical_inverse_dynamics}.
 
 In this work we will show in Section \ref{sec:unconstrained_convex_formulation}
 how to exploit this \textit{analytical inverse dynamics} to write an

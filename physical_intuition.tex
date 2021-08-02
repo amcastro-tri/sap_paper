@@ -3,7 +3,10 @@
 
 Thus far $\vf{R}_k$ and $\hat{\vf{v}}_k$ have been treated as known problem
 data. This section makes an explicit connection of these quantities with
-physical parameters to model compliant contact with regularized friction.
+physical parameters to model compliant contact with regularized friction. Notice
+this approach is different from the one in \cite{bib:todorov2014}, where
+regularization is not used to model physical compliance but rather to introduce
+a user tunable Baumgarte-style stabilization.
 
 We want to model compliant contact with stiffness $k$ (with units of N/m) and
 dissipation $c = \tau k$ where $\tau$ (in seconds) is a \textit{dissipation time
@@ -23,7 +26,7 @@ $R_t=\varepsilon_t R_n$, with the dimensionless parameter $\varepsilon_t \ll 1$
 to control the amount of regularization in the tangential direction.
 
 To gain physical insight into our model, we
-substitute $\vf{y}=\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
+substitute $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 (\ref{eq:analytical_y_projection}) to obtain
 \begin{eqnarray}
 	&&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))
@@ -62,8 +65,8 @@ model of regularized friction
 \end{equation}
 with $\bgamma_t$ linear to the (very small) slip velocity during stiction and
 with a maximum value given by $\mu\gamma_n$, effectively modeling Coulomb
-friction. Notice that better model stiction, we are interested in small values
-of $\varepsilon_t$, or $\varepsilon_t\ll 1$.
+friction. Notice that to better model stiction, we are interested in small
+values of $\varepsilon_t$, or $\varepsilon_t\ll 1$.
 
 Since $\hat{\vf{t}} = \vf{y}_t/\Vert\vf{y}_t\Vert =
 -\vf{v}_t/\Vert\vf{v}_t\Vert$, friction forces oppose sliding therefore
