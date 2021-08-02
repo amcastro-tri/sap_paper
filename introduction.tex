@@ -63,3 +63,29 @@ better.}
 	these methods often fail.'' This is backed up on the works of Anitescu and
 	Hart 2004; Erleben 2007 \cite{bib:anitescu2004fixed,bib:erleben2007velocity}.
 \end{enumerate}
+
+\section{Novel Contributions}
+\RedHighlight{TODO: Rewrite for paper.}
+
+Since we build on previous work \cite{bib:anitescu2006,
+bib:anitescu2010,bib:todorov2014}, it is worth summarizing our novel
+contributions:
+\begin{itemize}
+	\item Clear algebraic expressions for the \textit{inverse dynamics} of
+	contact are provided.
+	\item We show how to use these expressions do model true compliant contact.
+	This is different from \cite{bib:todorov2014} where regularization is used
+	as a Baumgarte-like stabilization.
+	\item The analasis of the analytical inverse dynamics expressions here
+	provided allows to make a clear analogy with compliant contact.
+	\item Our clear analogy with compliant contact allow us to succinctly
+	describe the artifacts introduced by the convex approximation of contact.
+	\item We write a primal formulation of compliant contact written in terms of
+	velocities, in contrast to its dual in terms of impulses.
+	\item We show how the primal formulation when combined with the analytical
+	 inverse dynamics leads to an unconstrained convex optimization problem.
+	\item We develop a custom solver for this unconstrained formulation and
+	provide thorough details for a practical implementation.
+	\item We conclude with a number of demonstrations illustrating the
+	effectiveness of our methodology and provide future research directions.
+\end{itemize}
