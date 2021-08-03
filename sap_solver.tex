@@ -1,29 +1,169 @@
+\section{Solvers}
+
+We present two strategies to find the solution to our primal formulation, Eq.
+(\ref{eq:primal_regularized}). First, we present our novel SAP solver designed
+to work on the unconstrained formulation of Section
+\ref{sec:unconstrained_convex_formulation} in the following section. Next, in
+Section \ref{sec:geodesic_solver}, we present a custom implementation of the
+geodesic solver developed in \cite{bib:permenter2020} designed to exploit the
+structure of our contact problem.
+
+\RedHighlight{TODO: say that you present results comparing them both, using the
+same algebra and against Gurobi.}
+
+\section{Semi-Analytical Primal Solver}
+
+Our Semi-Analytical Primal Solver, or SAP for short, essentially is a Newton
+iteration used to find the minimum of the unconstrained formulation stated in
+Eq. (\ref{eq:primal_unconstrained}), where constraints have been eliminated
+using our analytical inverse dynamics, and thus the name of the solver.
+
+Though this new problem is strictly convex and can be solved using Newton's method
+we make the following observations
+\begin{enumerate}
+	\item Since projections $P_\mathcal{F}$ are continuous, we will see when
+	computing gradients, that not only the cost $\ell_p(\mf{v})$ is continuous,
+	but also its gradient.
+	\item The Hessian $\mf{H}=\nabla^2\ell_p$ is piecewise continuous, with
+	large variations of \textit{curvature}. While this is not a problem for
+	Newton's method given its \textit{affine invariance} property in theory, in
+	practice we will use an analytically computed Hessian to avoid numerical
+	round-off errors.
+	\item\label{item:line_sarch} Since the problem is strictly convex, line
+	search combined with Newton's method leads to guaranteed convergence.
+	However, given the large variations in curvature, in practice we find that a
+	specially designed exact line search performs best.
+\end{enumerate}
+
+Item \ref{item:line_sarch} is of utmost important in practice. We'll show a
+strategy that allows to perform line search with machine epsilon accuracy. A
+careful pre-computation of commonly occurring terms enable us to perform this
+step for a small computation cost when compared to Hessian assembly and
+factorization. While machine epsilon accuracy is not required in practice, we
+show that the cost to achieve this level of convergence is negligible and it is
+well worth it for a robust implementation that can handle very stiff systems
+(with small regularization).
+
+In the next subsections we describe each component of the solver in detail.
+
+\subsection{Gradients}
+\label{sec:gradients}
+
+We summarize the main results required for implementation. Detailed derivations
+are provided in the Appendix \ref{app:gradients_derivation}. We will see that in
+order to compute both the gradient and Hessian of the cost we only need
+analytical expressions of the projection $P_\mathcal{F}$ and its gradient.
+
+The gradient of the primal cost $\ell_p$ is
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
+\end{equation}
+
+Computing this gradient might seem a daunting enterprise, but after substitution
+of $\nabla_\mf{v}P_\mathcal{F}$ the result is beautifully simple
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma
+	\label{eq:primal_gradient}
+\end{equation}
+
+Which recovers the original momentum balance in Eq.
+(\ref{eq:momentum_linearized}) since Newton's method solves for
+$\nabla_\mf{v}\ell_p=\mf{0}$.
+
+\begin{lemma}
+	The gradient in Eq. (\ref{eq:primal_gradient}) is continuous.
+\end{lemma}
+\begin{IEEEproof}
+	This results follows from the continuity of the projection in the analytical
+	inverse dynamics in Eq. (\ref{eq:analytical_y_projection}).
+\end{IEEEproof}
+Note however that $\bgamma(\mf{v})$ from the inverse dynamics is only piecewise
+continuous.
+
+Instead of directly computing the Hessian $\nabla_\mf{v}^2\ell_R$ (which would
+lead to exactly the same result), we can instead compute $\nabla_\mf{v}^2\ell_p$
+by taking the gradient of Eq. (\ref{eq:primal_gradient}). The result is
+\begin{eqnarray}
+	\nabla_\mf{v}^2\ell_R(\mf{v}) &=&
+	\mf{J}^T\mf{G}\,\mf{J}\nonumber\\
+	\mf{G} &=& \nabla_{\mf{v}_c}\bgamma = -\nabla_\mf{y}\bgamma \mf{R}^{-1}
+	\label{eq:ellR_hessian}
+\end{eqnarray}
+where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
+diagonal elements is the $3\times 3$ matrix
+$\nabla_{\mf{v}_{c,k}}\!\bgamma_k$ for the $k\text{-th}$ contact. As shown in
+Appendix \ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and
+thus $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
+
+Finally, the Hessian needed in Newtons's method is
+\begin{equation}
+	\mf{H}= \nabla_\mf{v}^2\ell_p(\mf{v}) = \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
+	\label{eq:ell_hessian}
+\end{equation}
+which, since $A\succ 0$, is strictly positive definite. We note however that
+showing $\nabla_\mf{v}^2\ell_p(\mf{v})\succ 0$ is not enough for $\ell_p$ to be
+strictly convex. Since $\nabla_\mf{v}\ell_p$ is a piecewise function, we must
+additionally require that the directional derivative across the boundary
+$\partial\mathcal{F}$, of $\mathcal{F}$ increases. Formally, if $\mf{\nu}$ is
+the normal to $\partial\mathcal{F}$, then we require
+\begin{equation}
+	\frac{\partial \ell_p^-}{\partial \nu} \le \frac{\partial \ell_p^+}{\partial \nu}
+\end{equation}
+we show this to be the case in Appendix \ref{app:gradients_derivation} which
+then leads to the confirmation that $\mf{H}\succ 0$.
+
+\RedHighlight{Question to Frank: what's the easiest way to show that
+$\ell_p(\mf{v})$ is convex? vs. my approach of showing that the Hessian is
+piecewise convex.}
 
 \section{Solving the Unconstrained Minimization Problem}
 \label{sec:solver_details}
 
-Since we hava analytical expressions for both the gradient and Hessian of
-$\ell_p(\mf{v})$, we will use Newton's method to find the minimum. That is, at
-each $k\text{-th}$ iteration we compute a search direction with
+With the analytical expressions for both the gradient and Hessian of
+$\ell_p(\mf{v})$, we use Newton's method to find the unique minimum of Eq.
+(\ref{eq:primal_unconstrained}). At each $k\text{-th}$ iteration we
+compute a search direction according to
 \begin{equation}
-	\Delta\mf{v} = -\mf{H}^{-1}(\mf{v}^k)\nabla_\mf{v}\ell_p(\mf{v}^k)
+	\Delta\mf{v}^{k+1} = -\mf{H}^{-1}(\mf{v}^k)\nabla_\mf{v}\ell_p(\mf{v}^k)
 	\label{eq:Newton_iteration}
 \end{equation}
 
-\subsection{Line Search}
-We now perform a line search along $\Delta\mf{v}$. That is, we want to find
-$\alpha$ that minimizes the function
-$\ell_p(\alpha)=\ell_p(\mf{v}^k+\alpha\Delta\mf{v})$. Before choosing a method,
-we make the following observations
+Since the problem is convex, we can perform a line search along this
+direction to aid convergence towards the global minimum. This step is critical
+to the success of the SAP solver given that the Hessian can undergo large
+changes as $\mf{v}^k$ explores states corresponding to different contact
+modes. We tried two line search strategies that we describe next.
+
+\subsection{Inexact Line Search}
+Most, if not all, mature solver implementations using Newton's method use an
+iterative line search algorithm that find an approximation to the optimization
+problem
+\begin{eqnarray}
+	\min_{\alpha} \ell_p(\mf{v}^k + \alpha \Delta\mf{v}^{k+1})
+\end{eqnarray}
+and update the solution as $\mf{v}^{k+1}=\mf{v}^{k+1} + \alpha
+\Delta\mf{v}^{k+1}$.
+
+Our implementation explores values in a geometric sequence $\alpha_{m} = \rho^m$
+with $\rho \in (0, 1)$ until Armijo's criteria is satisfied, i.e.
+$\ell_p(\alpha_m) < \ell_p(\alpha^k) + c\,\alpha_m d\ell_p/d\alpha(\alpha^k)$.
+We use a parameter $c=10^{-4}$. We refer to this procedure as the
+\textit{inexact} method to differentiate it from our exact (modulo round-off
+errors) line search described next.
+
+\subsection{Exact Line Search}
+Given that $\ell_p$ might exhibit steep gradients, we found out that the
+accuracy of the inexact line search can either lead to a large number of Newton
+iterations or in some cases even make the iteration fail.
+Therefore we propose next an exact method that uses a fast computation of the
+first and second derivatives of $\ell_p$ to drive a local one-dimensional Newton
+method. We make the following additional observations
 \begin{enumerate}
 	\item $\ell_p(\alpha)$ is strictly convex, i.e. there is a unique minimum.
 	\item Since $\ell_p(\alpha)$ is strictly convex, a Newton step is guaranteed
 	to be well formed given that $d^2\ell_p/d\alpha^2>0$.
-	\item $\ell_p(\alpha)$ is a piecewise $C^0$ function.
-	\item the intervals in $\alpha$ where $\ell_p(\alpha)$ is continuous can be
-	found analytically be computing the intersection of the boundary
-	$\partial\mathcal{C}$ (and $\partial\mathcal{C}^\circ$) with ray
-	$\mf{v}^k+\alpha\Delta\mf{v}$.
+	\item $\ell_p(\alpha)$ is a piecewise $C^1$ function. In other words,
+	$d\ell_p/d\alpha$ is continuous but $d^2\ell_p/d\alpha^2$ might not be.	
 	\item Given the regularization used to model friction and stiff compliance,
 	gradients of $\ell_p(\alpha)$ can undergo large changes, even within a
 	region where $\ell_p(\alpha)$ is continuous.
@@ -33,16 +173,22 @@ This led us to choose a one-dimensional strategy that is robust under these
 conditions. We found the method \verb;rtsafe; in \cite[\S
 9.4]{bib:numerical_recipes} to work the best. \verb;rtsafe; is one-dimensional
 root finder that uses the Newton-Raphson method and switches to bisection
-whenever Newton's method leads to an iterate outside the search bracket or
-whenever its convergence is slow. We found this method to perform so well, that
+whenever Newton's method leads to an iterate outside a search bracket or
+whenever its convergence is slow. Using analytical first and second derivatives,
+our line search simply reduces to finding the unique root of $d\ell/d\alpha$
+using the \verb;rtsafe; algorithm. We found this method to perform so well, that
 we iterate $\alpha$ to a machine epsilon precision at a negligible impact on the
 computational cost. This allow us to use very tight regularization parameters
 without having to tune tolerances in the line search.
 
-\subsection{Line Search Gradients}
+\subsection{Efficient Analytical Derivatives For Line Search}
 
-A method like \verb;rtsafe; requires the first and second derivatives of
-$\ell_p$. Defining $\ell(\alpha) = \ell(\mf{v}+\alpha\Delta\mf{v})$ we can
+\verb;rtsafe; requires the first and second derivatives of
+$\ell_p$, while the inexact method only requires first derivative to verify
+Armijo's stopping criteria. We show how to compute these gradients efficiently
+in $\mathcal{O}(n)$ operations.
+
+Defining $\ell(\alpha) = \ell_p(\mf{v}+\alpha\Delta\mf{v})$ we can
 compute first and second derivatives with respect to $\alpha$ using the gradient
 and Hessian
 \begin{eqnarray}
@@ -52,9 +198,8 @@ and Hessian
 
 These are expensive to compute derivatives for general non-linear functions and
 most line search variations in practice are approximations that avoid their
-computation altogether. Here we show that for the formulation presented in this
-work first and second derivatives can be computed efficiently given the
-structure of the problem.
+computation altogether. We show that first and second derivatives can be
+computed efficiently given the structure of the problem.
 
 Using the gradients from Section \ref{sec:gradients} we can write
 \begin{eqnarray}
@@ -68,8 +213,8 @@ $\Delta\mf{v}_c=\mf{J}\Delta\mf{v}$ and change of momentum $\Delta\mf{p} =
 	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{p}^T(\mf{v}(\alpha)-\mf{v}^*)\\
 	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}_c^T\bgamma(\alpha)
 \end{eqnarray}
-which only require dot products that can be computed in $\mathcal{O}(n)$ and
-$\mathcal{O}(n_k)$ respectively.
+which only require dot products that can be computed in $\mathcal{O}(n_v)$ and
+$\mathcal{O}(n_c)$ respectively.
 
 Using the same definitions we can write simple expressions for the second
 derivatives as well
@@ -80,13 +225,10 @@ derivatives as well
 \end{eqnarray}
 where notice that $\frac{d^2\ell_M}{d\alpha^2}$ is independent of $\alpha$ and
 can be precomputed before proceeding into the line search and
-$\frac{d^2\ell_R}{d\alpha^2}$ only involves $\mathcal{O}(n_k)$ operations given
+$\frac{d^2\ell_R}{d\alpha^2}$ only involves $\mathcal{O}(n_c)$ operations given
 the structure of $\nabla_{\mf{v}_c}\bgamma$, a block diagonal matrix.
 
-With analytical first and second derivatives, our line search simply reduces to
-finding the unique root of $d\ell/d\alpha$ using the \verb;rtsafe; algorithm.
-
-\subsection{Problem Sparsity}
+\section{Problem Sparsity}
 
 The sparsity patterns of the Hessian matrix in Eq. (\ref{eq:ell_hessian}) will
 be described through an example. We will describe in general the sparsity of a

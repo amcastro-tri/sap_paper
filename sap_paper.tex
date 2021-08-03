@@ -33,9 +33,14 @@
 % N.B. this MUST go before the \newtheorem below. Do not change the order.
 \usepackage{amsthm}
 % Theorems numbered on a per section basis.
-\newtheorem{theorem}{Theorem}[section]
+%\newtheorem{theorem}{Theorem}[section]
+%\newtheorem{corollary}{Corollary}[theorem]
+%\newtheorem{lemma}{Lemma}[section]
+
+% Theorems numbered as explained in the IEEEtran HOWTO guide.
+\newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}[theorem]
-\newtheorem{lemma}{Lemma}[section]
+\newtheorem{lemma}{Lemma}
 
 \newif\ifcompile
 %\compiletrue % uncomment out to compile
