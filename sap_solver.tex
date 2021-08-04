@@ -217,13 +217,15 @@ the structure of $\nabla_{\mf{v}_c}\bgamma$, a block diagonal matrix.
 The Hessian in Eq. (\ref{eq:ell_hessian}) inherits a block sparse structure from
 the specific contact configuration of the problem. We want to exploit this
 structure when solving Eq. (\ref{eq:Newton_iteration}) at each Newton iteration.
-To that end we use the supernodal Cholesky solver from \cite{bib:permenter2020}.
-\RedHighlight{Say a bit more about this technology. One to two lines is ok.}
+To that end we use a supernodal Cholesky factorization  \cite[\S
+9]{bib:davis2016survey}. Implementing this factorization requires construction
+of a \emph{junction tree}.  For this we apply the algorithm
+\cite{bib:smail2017junction}, using cliques of $\mf{J}\,\mf{J}^T$ as input. We
+use the implementation from the Conex solver \cite{bib:permenter2020}.
 
-We describe this block sparsity with an example. We describe our
-multibody systems as a collection of \text{tree structures}, or a
-\textit{forest}. Consider the system in Fig.
-(\ref{fig:sparsity_example}).
+The block sparsity of the Hessian is best described with an example. We organize
+our multibody systems as a collection of articulated \emph{tree structures}, or
+a \emph{forest}. Consider the system in Fig. (\ref{fig:sparsity_example}).
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/sparsity_example.png}
@@ -259,12 +261,13 @@ the mass matrix of the $t\text{-th}$ tree. For the example in Fig.
   ([yshift=1.5ex,xshift=-2ex]M_topleft) -- ([xshift=-4ex]M_bottomleft)
   node[near end,left] {\scriptsize $t$};}	
 \end{equation}
+\RedHighlight{Make this equation a Figure instead.}
 
 In general, we define as \textit{patches} as a collection of contact pairs
 between the same two trees. We label in red all contact patches in Fig.
-(\ref{fig:sparsity_example}). Each pair will correspond to a single cone
-$k\text{-th}$ constraint in our contact formulation. The set of constraint
-indexes $k$ that belong to patch $p$ is denoted with $\mathcal{I}_p$ of size
+(\ref{fig:sparsity_example}). Each $k\text{-th}$ pair will correspond to a
+single cone constraint in our formulation. The set of constraint indexes
+$k$ that belong to patch $p$ is denoted with $\mathcal{I}_p$ of size
 (cardinality) $|\mathcal{I}_p| = r_p$.
 
 Notice that our definition of \textit{patches} as used here to describe sparsity
@@ -282,8 +285,8 @@ also as $\mf{G} = \text{diag}(\mf{G}_p)$ if we group contact pairs by patches to
 define $\mf{G}_p=\text{diag}(\mf{G}_k), \,\forall k\in\mathcal{I}_p$.
 
 The contact Jacobian will in general be a sparse since the relative velocity at
-a contact pair $k$ will only involve the generalized velocities of the trees in
-contact. For the case in Fig. (\ref{fig:sparsity_example}) the Jacobian will
+a contact pair $k$ will only involve the generalized velocities of the two trees
+in contact. For the case in Fig. (\ref{fig:sparsity_example}) the Jacobian will
 look like\\\\
 \begin{equation}
 	\mf{J}=\quad
@@ -305,43 +308,35 @@ look like\\\\
   ([yshift=1.5ex,xshift=-3ex]J_topleft) -- ([xshift=-3ex]J_bottomleft)
   node[near end,left] {\scriptsize $p$};}	
 \end{equation}
+\RedHighlight{Make this equation a Figure instead.}\\
 where each non-zero block is the Jacobian $\mf{J}_{\rr{p}\cc{t}}$ of size
 $3r_p\times n_t$.
 
 We have now the elements to describe the sparsity of the product
-$\mf{J}^T\mf{G}\mf{J}$ in Eq. (\ref{eq:ell_hessian}). For the example in Fig.
-(\ref{fig:sparsity_example}) this is
-\begin{equation}
-	\mf{J}^T\mf{G}\mf{J}=\quad
-	\begin{bmatrix}
-		\tikzmark{JTGJ_topleft}
-		\JTGJ{3}{1}{1} + \JTGJ{4}{1}{1} & \mf{0} & \JTGJ{4}{1}{3} & \mf{0}
-		\tikzmark{JTGJ_topright}\\		
-		\mf{0} & \JTGJ{2}{2}{2} + \JTGJ{5}{2}{2} & \JTGJ{5}{2}{3} & \mf{0}\\
-		\JTGJ{4}{3}{1} & \JTGJ{5}{3}{2} & \JTGJ{4}{3}{3} + \JTGJ{5}{3}{3} & \mf{0}\\
-		\tikzmark{JTGJ_bottomleft}
-		\mf{0} & \mf{0} & \mf{0} & \JTGJ{1}{4}{4}\\
-	\end{bmatrix}
-	\label{eq:JTGJ_sparsity}
-% Draw lil arrows on top and to the left.
-\tikz[overlay,remember picture] {
-	\draw[->,thick,color=cyan]
-  ([yshift=3ex]JTGJ_topleft) -- ([yshift=3ex]JTGJ_topright) node[midway,above]
-  {\scriptsize $t$}; 
-  \draw[->,thick,color=cyan]
-  ([yshift=1.5ex,xshift=-2.5ex]JTGJ_topleft) -- ([xshift=-13ex]JTGJ_bottomleft)
-  node[near end,left] {\scriptsize $t$};}	
-\end{equation}
+$\mf{J}^T\mf{G}\mf{J}$. For the example in Fig.
+(\ref{fig:sparsity_example}) the block sparsity of $\mf{J}^T\mf{G}\mf{J}$ is
+illustrated in Fig. (\ref{fig:JTGJ_schematic}).
+\begin{figure*}[!h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/JTGJ_schematic.png}
+	\caption{\label{fig:JTGJ_schematic} 
+	Block sparsity of the $\mf{J}^T\mf{G}\mf{J}$ for the example illustrated in
+	Fig. (\ref{fig:sparsity_example}).}
+\end{figure*}
 
 Notice how the sparsity pattern of $\mf{J}^T\mf{G}\mf{J}$ exactly matches the
 graph from Fig. (\ref{fig:sparsity_example}). Moreover, given blocks $\mf{G}_p$
 are symmetric, so is the product $\mf{J}^T\mf{G}\mf{J}$.
 
 Finally the Hessian will have the sparsity structure of $\mf{A} +
-\mf{J}^T\mf{G}\mf{J}$. \RedHighlight{Frank: for now, for rigid body dynamics, we
-can assume $\mf{A}=\mf{M}$, the mass matrix. I'll see how to update the text to
-reflect that. At least I believe this is ok as a good start for us to talk about
-this.}
+\mf{J}^T\mf{G}\mf{J}$.
+
+Our implementation organizes the blocks of the Jacobian $\mf{J}$ as described in
+this section, i.e. we condense rows by patches and columns by trees, so that the
+supernodal Cholesky factorization can exploit this rich structure. By condensing
+into dense blocks, the supernodal solver can take full advantage of specific
+optimizations for dense algebra.
+
 
 
 \subsection{Termination Conditions}
