@@ -1,17 +1,5 @@
-\section{Solvers}
-
-We present two strategies to find the solution to our primal formulation, Eq.
-(\ref{eq:primal_regularized}). First, we present our novel SAP solver designed
-to work on the unconstrained formulation of Section
-\ref{sec:unconstrained_convex_formulation} in the following section. Next, in
-Section \ref{sec:geodesic_solver}, we present a custom implementation of the
-geodesic solver developed in \cite{bib:permenter2020} designed to exploit the
-structure of our contact problem.
-
-\RedHighlight{TODO: say that you present results comparing them both, using the
-same algebra and against Gurobi.}
-
 \section{Semi-Analytical Primal Solver}
+\label{sec:sap_solver}
 
 Our Semi-Analytical Primal Solver, or SAP for short, essentially is a Newton
 iteration used to find the minimum of the unconstrained formulation stated in
