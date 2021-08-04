@@ -5,7 +5,7 @@ The work in \cite{bib:todorov2014} shows that the dual in Eq.
 (\ref{eq:dual_regularized}) can be solved analytically if we know the velocities
 of the system. This is referred to as the \textit{inverse dynamics} solution.
 Moreover, given the separable structure of the constraints, the impulse
-$\bgamma_k$ at the $k\text{-th}$ contact point is solution to the following
+$\bgamma_k$ at the $k\text{-th}$ contact point is the solution to the following
 convex optimization problem
 \begin{eqnarray}
 	\bgamma_k(\vf{v}_{c,k})&=& P_{\mathcal{F}_k}(\vf{y}_k(\vf{v}_{c,k})) \nonumber\\
@@ -18,6 +18,27 @@ convex optimization problem
 where $\vf{R}_k\in\mathbb{R}^{3\times3}$ is the $k\text{-th}$ diagonal block of
 the regularization matrix $\mf{R}$. That is, $\bgamma_k$ is the projection onto
 the cone $\mathcal{F}_k$ using the norm defined by $\vf{R}_k$.
+\CyanHighlight{Xuchen: Stating the problem and the solution at the same time is
+a little cluncky. How about this:
+... the impulse $\bgamma_k$ at the $k\text{-th}$ contact point is the solution
+to the following convex optimization problem
+\begin{eqnarray*}
+	\bgamma_k(\vf{v}_{c,k})&=&\begin{aligned}
+		\argmin_{\bgamma\in\mathcal{F}_k} \quad &
+	\frac{1}{2}(\bgamma-\vf{y}_k)^T\vf{R}_k(\bgamma-\vf{y}_k) \end{aligned}\\
+	\vf{y}_k(\vf{v}_{c,k}) &=& -\vf{R}_k^{-1}(\vf{v}_{c,k}-\hat{\vf{v}}_k)    
+\end{eqnarray*}
+The solution $\bgamma_k(\vf{v}_{c,k})$ can be obtained by projecting
+$\vf{y}_k(\vf{v}_{c,k})$ onto the cone $\mathcal{F}_k$ using the norm defined
+by $\vf{R}_k$, i.e.
+\begin{align*}
+	\bgamma_k(\vf{v}_{c,k})= P_{\mathcal{F}_k}(\vf{y}_k(\vf{v}_{c,k}))
+\end{align*}}
+
+\CyanHighlight{Xuchen: This seems to me to be the perfect place to insert what you have in
+section \ref{sec:unconstrained_convex_formulation}. Otherwise, the reader is left
+without clue on why the primal formulation is introduced and why the analytic inverse is of
+particular interest.}
 
 Dropping subscript $k$ for simplicity, we solve Eq. (\ref{eq:y_projection})
 analytically in Appendix \ref{app:analytical_inverse_dynamics_derivations} for a

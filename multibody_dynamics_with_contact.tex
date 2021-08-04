@@ -35,7 +35,9 @@ forward in time and we write the balance of momentum as
 \end{eqnarray}
 where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
 $\mf{v}^*\in\mathbb{R}^{n_v}$ are the \textit{free motion} generalized
-velocities when there is no contact.
+velocities of the system if contact impulses are zero. In Section
+\ref{sec:discrete_formulation} we augment Eq. (\ref{eq:momentum_balance}) to
+implicitly include internal modeling elements such as springs and dampers.
 
 Denoting with $\gamma_{n,k} \in \mathbb{R}$ and with $\bgamma_{t,k} \in
 \mathbb{R}^2$ the normal and tangential components of the impulse
@@ -51,10 +53,11 @@ satisfied at each contact
 	dissipation. In other words, friction impulses oppose the sliding velocity
 	direction.
 \end{enumerate}
-where $\mu_k \in \mathbb{R}$ is the coefficient of friction for the $k\text{-th}$ contact.
-Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_k$ at point $k$ are
-constrained to belong to the friction cone
-$\mathcal{F}_k=\{\vf{x}\in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le \mu_k x_n\}$.
+where $\mu_k \in \mathbb{R}$ is the coefficient of friction for the
+$k\text{-th}$ contact. Condition \ref{it:cone_constraint} states that contact
+impulses $\bgamma_k$ at point $k$ are constrained to belong to the friction cone
+$\mathcal{F}_k=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
+\mu_k x_n\}$.
 
 While these constraints model the widely used model of Colulomb friction, the
 resulting formulation leads to a very difficult to solve, non-convex, Non-linear
@@ -85,6 +88,7 @@ solution to the following convex optimization problem
 	\bgamma,
 	\label{eq:dual_cost}
 \end{eqnarray}
+\CyanHighlight{Xuchen: $\mathbf{W} = \mathbf{J}\mathbf{M}^{-1}\mathbf{J}^T$}
 where $\mathbf{W} =
 \mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
 \emph{Delassus operator}, $\mathcal{F} := \mathcal{F}_1 \times F_2 \times \cdots
@@ -98,11 +102,17 @@ linearize the cone constraints but we work with the second order cone
 constraints directly. This approach is preferred given that the polyhedral
 approximation is known to introduce non-physical anisotropy
 \cite{bib:li2018implicit}.
+\CyanHighlight{Xuchen: Could you say more about the linearized friction cone?
+Is it necessary for Anitescu's formulation? Also, ``...constraints corresponds
+to optimality conditions'' sounds a little weird. It's the really the momentum
+quation *and* the constraints that leads to the optimization formulation, right?}
 
 Anitescu shows in \cite{bib:anitescu2006} that the optimality conditions for the
 problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
 (\ref{eq:momentum_balance}), the maximum dissipation principle and, the
 non-penetration condition
+\CyanHighlight{Xuchen: From the notation convention, this looks like a per
+contact point condition and thus should have the k subscript.}
 \begin{equation}
 	0 < \phi - dt \Vert {\bm v}_t \Vert \perp \gamma_n > 0
 	\label{eq:convex_approximation_complementarity_condition}
@@ -126,9 +136,9 @@ constraint} to obtain the following regularized form of Anitescu's formulation
 	\bgamma
 	\label{eq:dual_regularized}
 \end{eqnarray}
-where $\mathbf{R}$ is a diagonal positive definite matrix introduced to
-make $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
-\succeq 0$. This makes the problem strictly convex, with a unique solution.
+where $\mathbf{R}$ is a diagonal positive definite matrix introduced to make
+$\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W} \succeq
+0$. This makes the problem strictly convex, with a unique solution.
 \cite{bib:todorov2014} uses regularization as a means to introduce constraint
 stabilization with a set of global parameters to control the amount of numerical
 compliance introduced by the formulation. This is different from our approach
@@ -146,10 +156,10 @@ used), low accuracy and lack of robustness.
 
 Using Lagrangian duality, and building on Todorov's analysis, we convert Eq.
 (\ref{eq:dual_regularized}) into an unconstrained problem in velocities in
-Section \ref{sec:unconstrained_convex_formulation} and
-provide efficient algorithms and software for its solution in Sections
-\ref{sec:sap_solver} and \ref{sec:geodesic_solver}. Further, our methods warm
-start effectively when using the solution from previous time steps, a serious
-problem with the formulation in impulses. We demonstrate the accuracy,
-robustness and efficacy our methods with a variety of simulation problems in
-Section \ref{sec:test_cases}.
+Section \ref{sec:unconstrained_convex_formulation} and provide efficient
+algorithms and software for its solution in Sections \ref{sec:sap_solver} and
+\ref{sec:geodesic_solver}. Further, our methods warm start effectively when
+using the solution from previous time steps, a serious problem with the
+formulation in impulses. We demonstrate the accuracy, robustness and efficacy
+our methods with a variety of simulation problems in Section
+\ref{sec:test_cases}.

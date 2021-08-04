@@ -1,7 +1,22 @@
 \section{An Unconstrained Convex Formulation}
 \label{sec:unconstrained_convex_formulation}
+\CyanHighlight{Xuchen: The logic of this section can be better sorted out IMO.
+In particular, the formulation itself and the proof (and intuition) that it's
+equivalent to the constrained problem is a bit intertwined. Would it be better if
+you do things in the order?
+\begin{enumerate}
+    \item Introduce the formulation.
+    \item Comment on its similarity to the constrained problem (the same A term)
+    and how it's different from the constrained problem (the $\bsigma$ term is
+    replaced with the projection of $\mf{y}$ and now its unconstrained).
+    \item State Theorem 2 in this section.
+    \item Prove Theorem 2 (put the lemma here).
+\end{enumerate}
+I sense that you are trying to build more intuition into the process, but to me
+it makes things more complicated.}
 
 From Theorem \ref{th:primal_dual_equivalence} we know that $\bsigma = \bgamma$.
+\CyanHighlight{Xuchen: This is only true at the optimum, right?}
 Therefore we can use the analytical inverse dynamics from Section
 \ref{sec:analytical_inverse_dynamics} to eliminate $\bsigma$ from the primal
 formulation and obtain an unconstrained convex formulation in terms of
@@ -25,6 +40,13 @@ In order for the velocities solution of Eq. (\ref{eq:primal_unconstrained}) to
 be a solution of the original problem stated in Eq.
 (\ref{eq:primal_regularized}), they must also satisfy the conic constraint
 $\mf{g}\in\mathcal{F}^*$. We stablish this result in the following
+\CyanHighlight{Xuchen: Consider this alternative way to state the lemma that
+strips away unused information.
+\begin{lemma}
+    The conic constraint $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$ is satisfied if 
+    $\bsigma$ is given by $P_\mathcal{F}(\mf{y(\mf{v})})$.
+\end{lemma}
+}
 \begin{lemma}
     velocites solution to Eq. (\ref{eq:primal_unconstrained}) satisfy the conic
     constraint $\mf{g}\in\mathcal{F}^*$ when the impulses are given by
@@ -38,9 +60,28 @@ $\mf{g}\in\mathcal{F}^*$. We stablish this result in the following
     combination $\mf{v}_c - \hat{\mf{v}} + \mf{R}\bsigma$ must be in
     $\mathcal{F}^*$.
 \end{IEEEproof}
+\CyanHighlight{Xuchen: Neat proof! TIL Moreau's theorem. Here's how I would present
+the proof with a little more detail for people unfamiliar with this theorem. Feel free
+to ignore.
+\begin{IEEEproof}
+    Notice that
+    \begin{align*}
+        \mf{y}(\mf{v}) &= -\mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}) \\
+                       &= \bsigma - (\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}})) \\
+                       &= P_\mathcal{F}(\mf{y}(\mf{v})) - (\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}})).
+    \end{align*}
+    By Moreau's decomposition theorem, we have 
+    \begin{align*}
+        \mf{y}(\mf{v}) &= P_\mathcal{F}(\mf{y(\mf{v})}) + P_{\mathcal{F}^o}(\mf{y}(\mf{v}))
+    \end{align*}
+    Therefore $-(\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}})) = P_{\mathcal{F}^o}(\mf{y}(\mf{v})) \in \mathcal{F}^o$.
+    Hence $\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}) \in \mathcal{F}^*$ 
+    and so does $\mf{R}\bsigma + \mf{v}_c - \hat{\mf{v}}$.
+\end{IEEEproof}}
 
 Therefore we can state the following
 \begin{theorem}
+    \CyanHighlight{Xuchen: ``solution $\mf{v}$'' instead of ``$\mf{v}$ solution''?}
     Velocities $\mf{v}$ solution to Eq. (\ref{eq:primal_unconstrained}) and
     $\bsigma=P_\mathcal{F}(\mf{y})$ from the analytical solution in Eq.
     (\ref{eq:analytical_y_projection}) are solution to the original primal
@@ -55,7 +96,8 @@ Therefore we can state the following
     constraints by Lemma \ref{lemma:conic_constraints_are_satisfied_analytically}.
 \end{IEEEproof}
 
-Section \ref{sec:sap_solver} presents our novel SAP solver specifically designed
-to solve the unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}).
+Section \ref{sec:sap_solver} presents our novel SAP \CyanHighlight{Xuchen: This seems
+to be the first time the acronym is introduced. Needs a definition.} solver
+specifically designed to solve the unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}).
 
 
