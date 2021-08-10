@@ -88,9 +88,8 @@ solution to the following convex optimization problem
 	\bgamma,
 	\label{eq:dual_cost}
 \end{eqnarray}
-\CyanHighlight{Xuchen: $\mathbf{W} = \mathbf{J}\mathbf{M}^{-1}\mathbf{J}^T$}
 where $\mathbf{W} =
-\mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
+\mathbf{J}\mathbf{M}^{-1}\mathbf{J}^T\in\mathbb{R}^{3n_c\times 3n_c}$ is the
 \emph{Delassus operator}, $\mathcal{F} := \mathcal{F}_1 \times F_2 \times \cdots
 \times \mathcal{F}_{n_c}$ is a Cartesian product of friction cones, and ${\bm
 r}$ defines a linear cost  that encodes free motion velocities $\mf{v}^*$ and
@@ -102,29 +101,23 @@ linearize the cone constraints but we work with the second order cone
 constraints directly. This approach is preferred given that the polyhedral
 approximation is known to introduce non-physical anisotropy
 \cite{bib:li2018implicit}.
-\CyanHighlight{Xuchen: Could you say more about the linearized friction cone?
-Is it necessary for Anitescu's formulation? Also, ``...constraints corresponds
-to optimality conditions'' sounds a little weird. It's the really the momentum
-quation *and* the constraints that leads to the optimization formulation, right?}
 
 Anitescu shows in \cite{bib:anitescu2006} that the optimality conditions for the
 problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
 (\ref{eq:momentum_balance}), the maximum dissipation principle and, the
 non-penetration condition
-\CyanHighlight{Xuchen: From the notation convention, this looks like a per
-contact point condition and thus should have the k subscript.}
 \begin{equation}
-	0 < \phi - dt \Vert {\bm v}_t \Vert \perp \gamma_n > 0
+	0 < \phi_k - dt \Vert {\bm v}_{t,k} \Vert \perp \gamma_{n,k} > 0
 	\label{eq:convex_approximation_complementarity_condition}
 \end{equation}
-where $dt$ is the discrete time step and $\vf{v}_t$ is the tangential component
-of the contact velocity $\vf{v}_c = [\vf{v}_t\,v_n]$. Notice that Eq.
-(\ref{eq:convex_approximation_complementarity_condition}) is a modified
-non-penetration condition that introduces
-coupling with the sliding velocity, a result of the convex approximation. We
-provide a detailed discussion on the physical validity of this approximation in
-Section \ref{sec:physical_intuition}, along with guidelines for determining
-its applicability to robotic simulation.
+where $dt$ is the discrete time step and $\vf{v}_{t,k}$ is the tangential
+component of the contact velocity $\vf{v}_{c,k} = [\vf{v}_{t,k}\,v_{n,k}]$.
+Notice that Eq. (\ref{eq:convex_approximation_complementarity_condition}) is a
+modified non-penetration condition that introduces coupling with the sliding
+velocity, a result of the convex approximation. We provide a detailed discussion
+on the physical validity of this approximation in Section
+\ref{sec:physical_intuition}, along with guidelines for determining its
+applicability to robotic simulation.
 
 In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regularization to
 the formulation in Eq. (\ref{eq:dual_cost}). Though not strictly applicable to
