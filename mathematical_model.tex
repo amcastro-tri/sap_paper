@@ -10,21 +10,24 @@ discrete formulation is described by the update
 	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) + 
 	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) = \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
 	\label{eq:v_update}\\
-	&&\mf{q} = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+	&&\mf{q}(\mf{v}) = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}),
 	\label{eq:q_update}
 \end{eqnarray}
 where from now on \textit{nought} variables refer to quantities evaluated at the
-previous time step. $\mf{F}(\mf{q}, \mf{v})$ includes Coriolis and gyroscopic
-terms in multibody dynamics and modeling elements such as springs, dampers and
-even internal forces when modeling soft body dynamics \CyanHighlight{Xuchen: 
-Gravity and actuation? Perhaps also mention there are negative signs associated
+previous time step. $\mf{F}(\mf{q}, \mf{v})$ includes gravity, external forces
+and actuation, Coriolis and gyroscopic terms in multibody dynamics and modeling
+elements such as springs, dampers and even internal forces when modeling soft
+body dynamics \CyanHighlight{Xuchen: Gravity and actuation? Perhaps also mention
+there are negative signs associated
 with some of these terms because it's common to see Mdv = Fdt.}
 Mid-step quantities are defined in accordance to the standard
 $\theta\text{-method}$ method as
 \begin{eqnarray}
-	\mf{q}^{\theta} &=& \theta\mf{q} + (1-\theta)\mf{q}_0,\\
-	\mf{v}^{\theta} &=& \theta\mf{v} + (1-\theta)\mf{v}_0.
+	\mf{q}^{\theta}(\mf{v}) &=& \theta\mf{q}(\mf{v}) + (1-\theta)\mf{q}_0,\\
+	\mf{v}^{\theta}(\mf{v}) &=& \theta\mf{v} + (1-\theta)\mf{v}_0.
 \end{eqnarray}
+where $\mf{q}(\mf{v})$ is defined according to the update in Eq.
+(\ref{eq:q_update}).
 
 In this form, parameters $\theta$ allow us to obtain some of the most popular
 schemes for forward dynamics:
@@ -46,24 +49,16 @@ absence of constraint impulses
 	\label{eq:qstar_definition}
 \end{eqnarray}
 where $\mf{M}^* = \mf{M}(\mf{q}^{\theta_q}(\mf{v}^*))$.
-\CyanHighlight{Xuchen: In equation \eqref{eq:vstar_definition} and \eqref{eq:qstar_definition},
-it's not immediately clear what $\mf{v}^{\theta_v}(\mf{v}^*)$ and $\mf{v}^{\theta_{vq}}(\mf{v}^*)$
-are referring to. It may be more clear if when introducing the $\theta$-method we make the
-dependency explicit by saying
-\begin{eqnarray*}
-	\mf{v}^{\theta}(\mf{v}) &=& \theta\mf{v} + (1-\theta)\mf{v}_0.
-\end{eqnarray*}}
-For implicit schemes,
-we need an iterative method to solver for $\mf{v}^*$. Notice that, in the
-absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
-it is computed with the order of accuracy of the $\theta\text{-method}$. We also
-expect to recover the order of accuracy of the $\theta\text{-method}$ when
-constraints do not produce work.
-\CyanHighlight{Xuchen: Is there a reference for this?}
-This is the case of equality constraints and
-rolling friction for instance. That is, we'd expect very good energy
-conservation for a rolling wheel when using the second order, symplectic,
-midpoint rule, with $\theta=1/2$.
+
+For implicit schemes, we need an iterative method to solver for $\mf{v}^*$.
+Notice that, in the absence of constraint impulses, the next step velocity is
+$\mf{v}=\mf{v}^*$ and it is computed with the order of accuracy of the
+$\theta\text{-method}$. We also expect to recover the order of accuracy of the
+$\theta\text{-method}$ when constraints do not produce work.
+\RedHighlight{TODO: Refernce the rimless wheel example as a demonstration of
+this} This is the case of equality constraints and rolling friction for
+instance. That is, we'd expect very good energy conservation for a rolling wheel
+when using the second order, symplectic, midpoint rule, with $\theta=1/2$.
 
 For the second stage we linearize Eq. (\ref{eq:v_update})
 around $\mf{v}^*$ to obtain a linearized balance of momentum
