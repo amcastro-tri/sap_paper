@@ -2,22 +2,30 @@
 \label{sec:multibody_dynamics_with_contact}
 
 We use generalized coordinates to describe our multibody system. Therefore the
-state is fully described by the generalized positions
-$\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
-$\mf{v}\in\mathbb{R}^{n_v}$. We describe the $k\text{-th}$ contact between two
-bodies by the relative velocity $\vf{v}_{c,k}\in\mathbb{R}^3$ between these two
-bodies at this point, expressed in a contact frame $C_k$ for which we
-arbitrarily choose the $z\text{-axis}$ to coincide with the surface normal
-$\hat{\vf{n}}_k$ reported by the geometry engine. We form the vector
-$\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by stacking velocites
-$\vf{v}_{c,k}$ for all contacts together. Similarly, we denote with
-$\bgamma_k\in\mathbb{R}^3$ the contact impulse at a specific contact point and
-with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all contact impulses. In
-general, unless otherwise specified, we use bold italics for vectors in
+state is fully described by $\mf{q}\in\mathbb{R}^{n_q}$ and
+$\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
+generalized positions and velocities, respectively.
+
+Given a configuration $\mf{q}$ of the system, our geometry engine reports a
+discrete set of $n_c$ contacts between a pair of bodies. The $k\text{-th}$
+\emph{contact pair} is described by the location $\vf{p}_k$ of the contact
+point, a normal direction $\hat{\vf{n}}_k$ and the \emph{signed distance} or
+\emph{gap function} $\phi_k(\mf{q})\in\mathbb{R}$. The kinematics of each
+contact is further completed with the relative velocity
+$\vf{v}_{c,k}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_k$,
+expressed in a contact frame $C_k$ for which we arbitrarily choose the
+$z\text{-axis}$ to coincide with the surface normal $\hat{\vf{n}}_k$. 
+
+We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
+stacking velocities $\vf{v}_{c,k}$ of all contact pairs together. Similarly, we
+denote by $\bgamma_k\in\mathbb{R}^3$ the contact impulse at a specific contact
+point and with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all contact impulses.
+In general, unless otherwise specified, we use bold italics for vectors in
 $\mathbb{R}^3$ and non-italics bold for their stacked counterpart.
 
-The contact Jacobian $\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ relates
-generalized velocities to contact velocity by $\mf{v}_c=\mf{J}\,\mf{v}$.
+The generalized velocities $\mf{v}$ and contact velocities $\mf{v}_c$ satisfy
+the equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
+$\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.
 
 We use a discrete time stepping approach to advance the dynamics of the system
 forward in time and we write the balance of momentum as
@@ -29,25 +37,28 @@ where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
 $\mf{v}^*\in\mathbb{R}^{n_v}$ are the \textit{free motion} generalized
 velocities when there is no contact.
 
-Denoting with $\phi_k$ the \textit{gap function} or \textit{signed distance} at
-a contact point and with $\gamma_{n,k}$ and with $\bgamma_{t,k}$ the normal and
-tangential components of the impulse $\bgamma_k=[\bgamma_{t,k}\,\gamma_{n,k}]$
-at that point, the formulation is most often completed with the following set of
-standard constraints to be satisfied at each contact
+Denoting with $\gamma_{n,k} \in \mathbb{R}$ and with $\bgamma_{t,k} \in
+\mathbb{R}^2$ the normal and tangential components of the impulse
+$\bgamma_k=[\bgamma_{t,k}\,\gamma_{n,k}]$ in frame $C_k$, the formulation is
+most often completed with the following set of standard constraints to be
+satisfied at each contact
 \begin{enumerate}
 	\item non-penetration constraint $0\le\phi_k\perp\gamma_{n,k}\ge0$,
 	\item\label{it:cone_constraint} friction cone constraint
 	$\Vert\bgamma_{t,k}\Vert\le \mu_k\gamma_{n,k}$ and,
-	\item the principle of maximum dissipation.
+	\item the \emph{maximum dissipation principle}, which states that given the
+	normal impulse, the friction impulse maximizes the rate of energy
+	dissipation. In other words, friction impulses oppose the sliding velocity
+	direction.
 \end{enumerate}
-where $\mu_k$ is the coefficient of friction for the $k\text{-th}$ contact.
-Condition \ref{it:cone_constraint} states that contact impulses at point $k$ are
+where $\mu_k \in \mathbb{R}$ is the coefficient of friction for the $k\text{-th}$ contact.
+Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_k$ at point $k$ are
 constrained to belong to the friction cone
 $\mathcal{F}_k=\{\vf{x}\in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le \mu_k x_n\}$.
 
-While these constraints model the widely accepted model of Colulomb friction,
-the resulting formulation leads to a very difficult to solve, non-convex,
-Non-linear Complementarity Problem (NCP). 
+While these constraints model the widely used model of Colulomb friction, the
+resulting formulation leads to a very difficult to solve, non-convex, Non-linear
+Complementarity Problem (NCP). 
 
 \RedHighlight{Alejandro: say something how other author's impose the principle
 of maximum dissipation and more or less what it means.}
@@ -57,51 +68,58 @@ the existence of solutions for this formulation. Reference other people's work.}
 
 Plausible good references on this are
 \cite{bib:stewart1996implicit,bib:stewart2000implicit,bib:chakraborty2007implicit,bib:acary2018solving,bib:pang1999unified,bib:alart2018inconsistency}.
+\RedHighlight{Do not use \cite{bib:stewart2000implicit} since it essentially is
+the same paper as the one orginally written in \cite{bib:stewart1996implicit},
+unless they mention something new. Ditto with \cite{bib:pang1999unified}}
 
 \section{Convex Approximation of Contact Dynamics}
 \label{sec:previous_work}
 
-In pursuit of a formulation for which the existence of a solution is guaranteed
-and with the hope that such a formulation leads to more robust and efficient
-solvers, Anitescu introduces a \textit{convex approximation} of the contact
-problem in \cite{bib:anitescu2006}. We discuss physical implications and
-artifacts introduced by this approximation in Section
-\ref{sec:physical_intuition} as well as we provide specific guidelines to
-determine its applicability to simulation for robotics.
+To ensure existence of a solution and improve computational tractability,
+Anitescu introduces a \textit{convex approximation} of the contact
+problem \cite{bib:anitescu2006}. In this approximation the contact impulses are
+solution to the following convex optimization problem
+\begin{eqnarray}
+	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
+	\frac{1}{2}\bgamma^T\mathbf{W}\bgamma + {\bm r}^T
+	\bgamma,
+	\label{eq:dual_cost}
+\end{eqnarray}
+where $\mathbf{W} =
+\mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
+\emph{Delassus operator}, $\mathcal{F} := \mathcal{F}_1 \times F_2 \times \cdots
+\times \mathcal{F}_{n_c}$ is a Cartesian product of friction cones, and ${\bm
+r}$ defines a linear cost  that encodes free motion velocities $\mf{v}^*$ and
+stabilization terms used to impose non-penetration at the position level.
 
-This approximation is introduced as a
-modification to the complementarity constraint between the signed distance
-$\phi$ and normal impulse
-$\gamma_n$ as
+Further, \cite{bib:anitescu2006} uses a polyhedral approximation to linearize
+the friction cone constraint $\bgamma_k\in\mathcal{F}_k$. In this work we do not
+linearize the cone constraints but we work with the second order cone
+constraints directly. This approach is preferred given that the polyhedral
+approximation is known to introduce non-physical anisotropy
+\cite{bib:li2018implicit}.
+
+Anitescu shows in \cite{bib:anitescu2006} that the optimality conditions for the
+problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
+(\ref{eq:momentum_balance}), the maximum dissipation principle and, the
+non-penetration condition
 \begin{equation}
 	0 < \phi - dt \Vert {\bm v}_t \Vert \perp \gamma_n > 0
 	\label{eq:convex_approximation_complementarity_condition}
 \end{equation}
 where $dt$ is the discrete time step and $\vf{v}_t$ is the tangential component
-of the contact velocity $\vf{v}_c = [\vf{v}_t\,v_n]$. Together with a set of
-complementarity conditions to impose maximum dissipation on a linearized
-friction cone, Anitescu shows in \cite{bib:anitescu2006} that the new set of
-constraints corresponds to the optimality conditions of the following quadratic
-program with conic constraints as
-\begin{eqnarray}
-	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
-	\frac{1}{2}\bgamma^T\mathbf{W}\bgamma + {\bm r}^T
-	\bgamma
-	\label{eq:dual_cost}
-\end{eqnarray}
-where $\mathbf{W} =
-\mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
-Delassus operator, $\mathcal{F}=\prod_{k=1}^{n_c}\mathcal{F}_k$ is the feasible
-set of all contact impulses satisfying the friction cone constraints and, the
-linear cost ${\bm r}$ encodes the free motions $\mf{v}^*$ and stabilization
-terms to impose non-interpenetration at the positions level.
+of the contact velocity $\vf{v}_c = [\vf{v}_t\,v_n]$. Notice that Eq.
+(\ref{eq:convex_approximation_complementarity_condition}) is a modified
+non-penetration condition that introduces
+coupling with the sliding velocity, a result of the convex approximation. We
+provide a detailed discussion on the physical validity of this approximation in
+Section \ref{sec:physical_intuition}, along with guidelines for determining
+its applicability to robotic simulation.
 
 In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regularization to
 the formulation in Eq. (\ref{eq:dual_cost}). Though not strictly applicable to
-contact problems, Todorov uses the \textit{Gauss's principle of least
-constraint} to obtain this convex approximation of the contact problem. The
-regularized formulation reads
-
+contact problems, Todorov uses the \emph{Gauss's principle of least
+constraint} to obtain the following regularized form of Anitescu's formulation
 \begin{eqnarray}
 	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
 	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
@@ -110,18 +128,28 @@ regularized formulation reads
 \end{eqnarray}
 where $\mathbf{R}$ is a diagonal positive definite matrix introduced to
 make $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
-\succeq 0$. This makes the problem strictly convex, with a unique solution. 
+\succeq 0$. This makes the problem strictly convex, with a unique solution.
+\cite{bib:todorov2014} uses regularization as a means to introduce constraint
+stabilization with a set of global parameters to control the amount of numerical
+compliance introduced by the formulation. This is different from our approach
+described in Section \ref{sec:physical_intuition}, where we show how to use
+regularization to model physical compliance, with well defined physical
+parameters.
 
-One of the most remarkable results from \cite{bib:todorov2014} is that if we
- happen to know the velocities of the system, we can write analytical algebraic
- expressions for the impulses. Moreover, the separable structure of the
- constraints allows us to write the impulse $\bgamma_k$ at contact $k$ solely as
- a function of the relative contact velocity $\vf{v}_{c,k}$ at that point, i.e.
- $\bgamma_k = \bgamma_k(\vf{v}_{c,k})$, see details in Section
- \ref{sec:analytical_inverse_dynamics}.
+Given the lack of software at the time, both Anitescu in \cite{bib:anitescu2010}
+and Todorov in \cite{bib:todorov2014} use projected Gauss-Seidel (PGS) based
+solvers to demonstrate the efficacy of their formulations. Though very popular
+in the computer graphics community due to their straightforward implementation
+even in parallel architectures, PGS methods are known for their slow convergence
+rates (though not even proven to converge if a convex approximation is not
+used), low accuracy and lack of robustness.
 
-In this work we will show in Section \ref{sec:unconstrained_convex_formulation}
-how to exploit this \textit{analytical inverse dynamics} to write an
-unconstrained convex formulation that can be solved using Newton's method. The
-resulting strategy is accurate, robust and can be effectively warm-started from
-the previous time step solution.
+Using Lagrangian duality, and building on Todorov's analysis, we convert Eq.
+(\ref{eq:dual_regularized}) into an unconstrained problem in velocities in
+Section \ref{sec:unconstrained_convex_formulation} and
+provide efficient algorithms and software for its solution in Sections
+\ref{sec:sap_solver} and \ref{sec:geodesic_solver}. Further, our methods warm
+start effectively when using the solution from previous time steps, a serious
+problem with the formulation in impulses. We demonstrate the accuracy,
+robustness and efficacy our methods with a variety of simulation problems in
+Section \ref{sec:test_cases}.
