@@ -11,8 +11,8 @@ to the fact that contact forces for rigid body dynamics problems are most often
 underdetermined. Even if compliance is added in the normal direction, friction
 forces for the simplest problem configurations will be underdetermined.
 Regularization in Eq. (\ref{eq:dual_regularized}) helps to solve this problem in
-theory but it leads to very ill conditioned systems of equations in practice. 
-\CyanHighlight{Xuchen: Is there a reference?}
+theory but it cannot avoid the ill conditioning of $\mathbf{W}+\mathbf{R}$,
+\cite{bib:enzenhofer2019efficient}.
 
 We make the following observation for the convex approximation in Eq.
 (\ref{eq:dual_cost}): even if the set of contact forces is not unique (when no
@@ -81,12 +81,9 @@ Lagrangian in Eq. (\ref{eq:primal_lagrangian}) we obtain the dual
 	\bgamma
 \end{eqnarray}
 where, in contrast to previous work, our Delassus operator
-$\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
+$\mf{W}=\mf{J}\mf{A}^{-1}\mf{J}^T$ now also contains the contribution of internal
 force elements (through Eq. (\ref{eq:expression_for_A})) and
 $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
-\CyanHighlight{Xuchen: It should be $\mf{W}=\mf{J}\mf{A}^{-1}\mf{J}^T$.
-Also, the derivation here is not completely trivial. Perhaps we should include
-the detail in supplementary technical document/Appendix?}
 \end{IEEEproof}
 
 In Section \ref{sec:geodesic_solver}, we present a custom implementation of the
