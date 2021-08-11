@@ -1,9 +1,11 @@
 \section{Analytical Inverse Dynamics}
 \label{sec:analytical_inverse_dynamics}
 
-The work in \cite{bib:todorov2014} shows that the dual in Eq.
+The work in \cite{bib:todorov2014} shows that the dual QP 
 (\ref{eq:dual_regularized}) can be solved analytically if we know the velocities
-of the system. This is referred to as the \textit{inverse dynamics} solution.
+of the system. \RedHighlight{It is unclear what "system velocities" refer to. Are they the solution of the primal formulation?} 
+
+This is referred to as the \textit{inverse dynamics} solution.
 Moreover, given the separable structure of the constraints, the impulse
 $\bgamma_k$ at the $k\text{-th}$ contact point is solution to the following
 convex optimization problem
@@ -62,3 +64,11 @@ the radial component is defined as $y_r=\Vert\vf{y}_t\Vert$ and the tangent
 vector as $\hat{\vf{t}}=\vf{y}_t/y_r$. We also defined the
 coefficients $\tilde\mu=\mu\,(R_t/R_n)^{1/2}$ and $\hat\mu=\mu\,R_t/R_n$, result
 of the \textit{warping} introduced by the metric $\vf{R}$.
+
+
+\RedHighlight{In general, I am confused how this section relates to our primal
+formulation. It reads like background material. Should it be moved earlier into the paper?
+Perhaps it's purpose is to show the primal formulation has an unconstrained
+reformulation, given by ~\eqref{eq:y_projection}? If that's the case I would say that up front and retitle the section 
+to something like "An unconstrained reformulation." }
+

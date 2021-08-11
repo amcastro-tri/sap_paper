@@ -1,14 +1,42 @@
 
 \section{A Primal Formulation of Compliant Contact}
 
+% I took a stab at rewriting this intro to address some 
+% of the comments I had (see below). 
+
+% START REWRITE
+%In this section we give a quadratic program that augments the balance of momentum stated in Eq.
+%(\ref{eq:momentum_linearized}) so that contact impulses model Coulomb friction
+%and satisfy the principle of maximum dissipation when sliding. 
+%We call this QP our \emph{primal formulation}, as we will see that it's dual
+%is precisely the QP~(\ref{eq:dual_regularized}).
+
+
+%Recall that this QP~(\ref{eq:dual_regularized}) has cost matrix $W =J^T M^{-1} J^{-1} + R$
+%where $R$ is a regularization term. 
+%Our primal formulation will avoid construction of $J^T M^{-1} J^{-1}$, 
+%which improves practical robustness. In addition, it always has a unique solution, even for $R = 0$.
+%Finally, we note that for $R =0$, our formulation reduces to \cite{bib:mazhar2014}.
+%\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
+%describe a methodology to solve it in practice.
+
+% END REWRITE
+
+
+%START ORIGINAL
 In this section we augment the balance of momentum stated in Eq.
-(\ref{eq:momentum_linearized}) so that contact impulses model Colulomb friction
+(\ref{eq:momentum_linearized}) so that contact impulses model Colomb friction
 and satisfy the principle of maximum dissipation when sliding. 
 
+\RedHighlight{Haven't we already justified regularization when we introduced eq:dual_regularized?
+This seems repetitive.  I would focus only on how our formulation differs/compares with eq:dual_regularized.}
 An alternative is to use the convex approximation as stated in Eq.
+\RedHighlight{It is unclear why this is an alternative, e.g., how does the principle
+of max disp. appear in this equation?}
 (\ref{eq:dual_cost}). However, this formulation is severely ill conditioned due
 to the fact that contact forces for rigid body dynamics problems are most often
 underdetermined. Even if compliance is added in the normal direction, friction
+\RedHighlight{Unclear what you mean by compliance. Compliance is added to the primal constraints, right?}
 forces for the simplest problem configurations will be underdetermined.
 Regularization in Eq. (\ref{eq:dual_regularized}) helps to solve this problem in
 theory but it leads to very ill conditioned systems of equations in practice. 
@@ -17,6 +45,7 @@ We make the following observation for the convex approximation in Eq.
 (\ref{eq:dual_cost}); even if the set of contact forces is not unique (when no
 regularization is added), velocities are. This fact inspired the search
 for an equivalent formulation but in velocities instead of impulses. Such a
+\RedHighlight{The name "primal formulation" what make much sense unless you such duality first.}
 \textit{primal} formulation is presented in \cite{bib:mazhar2014} for rigid
 contact, though to the knowledge of the authors a practical solver based on this
 formulation has never been presented.
@@ -25,39 +54,37 @@ In this section we extend the formulation in \cite{bib:mazhar2014} to include
 the modeling of compliance and in Sections
 \ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
 describe a methodology to solve it in practice.
+% END ORIGINAL 
+
+
 
 We write our primal formulation of compliant contact by introducing a new
 decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
 \begin{equation}
 	\begin{aligned}
-	\min_{\mf{v},\bsigma} \quad & \ell_p(\mf{v},\bsigma) =
-	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
-	\frac{1}{2} \Vert\bsigma\Vert_{R}^2\\
+	\min_{\mf{v},\bsigma} \quad & \ell_p(\mf{v},\bsigma) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2\\
 	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}} + \mf{R}\bsigma) \in \mathcal{F}^*\\
 	\end{aligned}
 	\label{eq:primal_regularized}
 \end{equation}
-where $\Vert\mf{z}\Vert_X^2=\mf{z}^T\mf{X}\mf{z}$ with $\mf{X}\succ 0$
-and $\mathcal{F^*}=\prod_{k=1}^{n_k}\mathcal{F}^*_k$ is the dual of the convex
-set $\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
+where $\mathcal{F^*}= \mathcal{F}^*_1 \times \mathcal{F}^*_2 \times \cdots \times \mathcal{F}^*_{n_k}$ is the \emph{dual cone} of the convex
+cone $\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
 3n_c}$ and the vector of stabilization velocities $\hat{\mf{v}}$ encode the
-problem data needed to model compliant contact. We will establish a very clear
+problem data needed to model compliant contact. We will establish a clear
 physical meaning for these terms when we provide analytical expressions for the
-impulses in Section \ref{sec:analytical_inverse_dynamics}.
+impulses in Section \ref{sec:analytical_inverse_dynamics}. Finally,
+$\Vert\bsigma\Vert_R^2=\bsigma^T\mf{R}\bsigma$.
 
-\begin{theorem}	
+\begin{theorem}
 The dual of Eq. (\ref{eq:primal_regularized}) is given by Eq.
 (\ref{eq:dual_regularized}). The pair $\{\mf{v},\bsigma\}$ is primal optimal and
 $\bgamma$ is dual optimal. Moreover, $\bsigma = \bgamma$.
-\label{th:primal_dual_equivalence}
 \end{theorem}
 
-\begin{IEEEproof}
+\begin{proof}
 The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
 \begin{equation}
-	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) =
-	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
-	\frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
+	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
 	\label{eq:primal_lagrangian}
 \end{equation}
 with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
@@ -83,8 +110,18 @@ where, in contrast to previous work, our Delassus operator
 $\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
 force elements (through Eq. (\ref{eq:expression_for_A})) and
 $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
-\end{IEEEproof}
+\end{proof}
 
-In Section \ref{sec:geodesic_solver}, we present a custom implementation of the
-geodesic solver developed in \cite{bib:permenter2020} designed to exploit the
-structure of our primal formulation in Eq. (\ref{eq:primal_regularized}).
+We note that our formulation is an extension of~\cite{bib:mazhar2014} that
+incorporates  compliance through the term $R$. Sections
+\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} 
+describe a methodology to solve our formulation efficiently practice, whereas,
+to our knowledge, no efficient algorithm for~\cite{bib:mazhar2014} has been given. 
+
+
+
+% formulation in \cite{bib:mazhar2014} to include
+%the modeling of compliance and in Sections
+%\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
+
+
