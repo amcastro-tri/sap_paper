@@ -14,7 +14,7 @@ point, a normal direction $\hat{\vf{n}}_k$ and the \emph{signed distance} or
 contact is further completed with the relative velocity
 $\vf{v}_{c,k}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_k$,
 expressed in a contact frame $C_k$ for which we arbitrarily choose the
-$z\text{-axis}$ to coincide with the surface normal $\hat{\vf{n}}_k$. 
+$z\text{-axis}$ to coincide with the contact normal $\hat{\vf{n}}_k$.
 
 We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
 stacking velocities $\vf{v}_{c,k}$ of all contact pairs together. Similarly, we
@@ -144,15 +144,15 @@ and Todorov in \cite{bib:todorov2014} use projected Gauss-Seidel (PGS) based
 solvers to demonstrate the efficacy of their formulations. Though very popular
 in the computer graphics community due to their straightforward implementation
 even in parallel architectures, PGS methods are known for their slow convergence
-rates (though not even proven to converge if a convex approximation is not
-used), low accuracy and lack of robustness.
+rates (not even proven to converge if a convex approximation is not used), low
+accuracy and lack of robustness.
 
 Using Lagrangian duality, and building on Todorov's analysis, we convert Eq.
 (\ref{eq:dual_regularized}) into an unconstrained problem in velocities in
 Section \ref{sec:unconstrained_convex_formulation} and provide efficient
 algorithms and software for its solution in Sections \ref{sec:sap_solver} and
 \ref{sec:geodesic_solver}. Further, our methods warm start effectively when
-using the solution from previous time steps, a serious problem with the
+using the solution from previous time steps, which remains challenging for the
 formulation in impulses. We demonstrate the accuracy, robustness and efficacy
 our methods with a variety of simulation problems in Section
 \ref{sec:test_cases}.
