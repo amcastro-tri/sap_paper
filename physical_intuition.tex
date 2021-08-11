@@ -11,7 +11,6 @@ a user tunable Baumgarte-style stabilization.
 We want to model compliant contact with stiffness $k$ (with units of N/m) and
 dissipation $c = \tau k$ where $\tau$ (in seconds) is a \textit{dissipation time
 scale}. Once again, dropping subindex $k$ for simplicity, we define
-\CyanHighlight{Xuchen: $\hat{\vf{v}}_c$ is not defined and can only be inferred.}
 \begin{eqnarray}
 	\hat{\vf{v}}_c &=&
 	\begin{bmatrix}
@@ -81,14 +80,12 @@ stiffness $k$ and linear dissipation $c = \tau k$. That is
 
 In the sliding region we see however that the convex approximation introduces
 unphysical artifacts. Recall we are interested in the limit $R_t \ll R_n$ to
-better model stiction and therefore $\tilde\mu \rightarrow 0$.
-\CyanHighlight{Xuchen: nit, this is not quite true. $\tilde\mu$ is small but fixed.}
-This makes the
-factor $1+\tilde{\mu}^2$ close to one and we can ignore it in our analysis.
-While we'd like to recover $\gamma_n = -dt(k\phi + c v_n)$ as in stiction, we
-instead see that the slip velocity $\Vert\vf{v}_t\Vert$ unphysically couples
-into the normal forces as $\gamma_n=-dt(k(\phi-(dt+\tau)\mu\Vert\vf{v}_t\Vert) +
-cv_n)$. We can write this as
+better model stiction and therefore $\tilde\mu \approx 0$. This makes the factor
+$1+\tilde{\mu}^2$ close to one and we can ignore it in our analysis. While we'd
+like to recover $\gamma_n = -dt(k\phi + c v_n)$ as in stiction, we instead see
+that the slip velocity $\Vert\vf{v}_t\Vert$ unphysically couples into the normal
+forces as $\gamma_n=-dt(k(\phi-(dt+\tau)\mu\Vert\vf{v}_t\Vert) + cv_n)$. We can
+write this as
 \begin{equation}
   \gamma_n/dt=-(k\phi_\text{eff} + c v_n)
 \end{equation}

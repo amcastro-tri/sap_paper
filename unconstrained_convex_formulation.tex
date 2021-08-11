@@ -55,9 +55,9 @@ strips away unused information.
 \end{lemma}
 \begin{IEEEproof}
     The proof follows immediately from Moreau's decomposition theorem. That is,
-    with $\mf{v}_c - \hat{\mf{v}}\in\mathbb{R}^{3n_c}$ and $\bsigma$ the result
+    with $\mf{v}_c - \hat{\mf{v}}_c\in\mathbb{R}^{3n_c}$ and $\bsigma$ the result
     from the projection into $\mathcal{F}$ using the $\mf{R}$ norm, the linear
-    combination $\mf{v}_c - \hat{\mf{v}} + \mf{R}\bsigma$ must be in
+    combination $\mf{v}_c - \hat{\mf{v}}_c + \mf{R}\bsigma$ must be in
     $\mathcal{F}^*$.
 \end{IEEEproof}
 \CyanHighlight{Xuchen: Neat proof! TIL Moreau's theorem. Here's how I would present
@@ -66,17 +66,17 @@ to ignore.
 \begin{IEEEproof}
     Notice that
     \begin{align*}
-        \mf{y}(\mf{v}) &= -\mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}) \\
-                       &= \bsigma - (\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}})) \\
-                       &= P_\mathcal{F}(\mf{y}(\mf{v})) - (\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}})).
+        \mf{y}(\mf{v}) &= -\mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}_c) \\
+                       &= \bsigma - (\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}_c)) \\
+                       &= P_\mathcal{F}(\mf{y}(\mf{v})) - (\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}_c)).
     \end{align*}
     By Moreau's decomposition theorem, we have 
     \begin{align*}
         \mf{y}(\mf{v}) &= P_\mathcal{F}(\mf{y(\mf{v})}) + P_{\mathcal{F}^o}(\mf{y}(\mf{v}))
     \end{align*}
-    Therefore $-(\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}})) = P_{\mathcal{F}^o}(\mf{y}(\mf{v})) \in \mathcal{F}^o$.
-    Hence $\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}) \in \mathcal{F}^*$ 
-    and so does $\mf{R}\bsigma + \mf{v}_c - \hat{\mf{v}}$.
+    Therefore $-(\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}_c)) = P_{\mathcal{F}^o}(\mf{y}(\mf{v})) \in \mathcal{F}^o$.
+    Hence $\bsigma + \mf{R}^{-1}(\mf{v}_c - \hat{\mf{v}}_c) \in \mathcal{F}^*$ 
+    and so does $\mf{R}\bsigma + \mf{v}_c - \hat{\mf{v}}_c$.
 \end{IEEEproof}}
 
 Therefore we can state the following
