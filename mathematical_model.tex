@@ -1,7 +1,7 @@
 \section{Discrete Time Formulation}
-Our discrete-time model is based on the $\theta\text{-method}$ \RedHighlight{Add
-citation to this method} and incorporates the symplectic midpoint rule to attain
-second-order accuracy. It takes the following form, 
+Our discrete-time model is based on the $\theta\text{-method}$
+\GreenHighlight{Add citation to this method} and incorporates the symplectic
+midpoint rule to attain second-order accuracy. It takes the following form, 
 \begin{eqnarray}
 	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) +
 	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) =
@@ -77,18 +77,18 @@ with
 	\label{eq:dissipation_matrix}
 \end{eqnarray}
 where the only assumption in Eq. (\ref{eq:expression_for_A}) is that the map
-$\mf{N}(\mf{q})$ is the identity 
-\RedHighlight{Recommend never introducing N if it is always the identity} which is commonly the case for degrees of
-freedom used to model compliant elements. When $\mf{F}(\mf{q}, \mf{v})$ is
-linear the stiffness matrix $\mf{K}$ and the damping matrix $\mf{D}$ are
-constant and the two stage process described by Eqs. (\ref{eq:vstar_definition})
-to (\ref{eq:momentum_linearized}) is exact and solves the original problem
-stated by Eq. (\ref{eq:v_update}).
+$\mf{N}(\mf{q})$ is the identity \GreenHighlight{Recommend never introducing N
+if it is always the identity} which is commonly the case for degrees of freedom
+used to model compliant elements. When $\mf{F}(\mf{q}, \mf{v})$ is linear the
+stiffness matrix $\mf{K}$ and the damping matrix $\mf{D}$ are constant and the
+two stage process described by Eqs. (\ref{eq:vstar_definition}) to
+(\ref{eq:momentum_linearized}) is exact and solves the original problem stated
+by Eq. (\ref{eq:v_update}).
 
 
 A typical example of constant stiffness and damping is that of a spring-damper
 model at a joint. In this case these matrices only contribute positive diagonal
-elements to matrix $\mf{A}$, increasing the stability of the scheme.\RedHighlight{Unclear what "increase stability" means}
+elements to matrix $\mf{A}$.
 
 An example of complex stiffness and damping matrices is when using a Finite
 Element Model (FEM) of large soft body deformations. In this case $\mf{K}$ and
@@ -98,12 +98,12 @@ Our convex approximation of contact requires $\mf{A}\succ 0$. Therefore only
 compliant and dissipation elements that lead to positive definite matrices can
 be included in Eq. (\ref{eq:expression_for_A}). This is the case for joint
 spring-damper models and deformable models. It is not the case for Coriolis and
-gyroscopic terms. \RedHighlight{This a consequence of working in momentum-space, yes? In other words,
-a scheme based on Gauss's principle, that solves for accelerations instead of velocities, would always yield convex problem. Just asking for my own clarification...}
-These terms can still be treated implicitly in Eqs.
+gyroscopic terms. These terms can still be treated implicitly in Eqs.
 (\ref{eq:vstar_definition}) and (\ref{eq:qstar_definition}), but their
 derivative is assumed to be zero in Eq. (\ref{eq:dissipation_matrix}), an
-approximation only accurate to first order.
-\RedHighlight{What does "treated implicitly" mean? In what way is their derivative is zero in \ref{eq:dissipation_matrix}? When you introduced $F(q,v)$
-you said that it already includes gyroscopic and Corolis terms, but this discussion seems to about how to add them, as if they weren't already there...  }
+approximation only accurate to first order. \GreenHighlight{What does "treated
+implicitly" mean? In what way is their derivative is zero in
+\ref{eq:dissipation_matrix}? When you introduced $F(q,v)$ you said that it
+already includes gyroscopic and Corolis terms, but this discussion seems to
+about how to add them, as if they weren't already there...  }
 
