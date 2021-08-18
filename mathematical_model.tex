@@ -1,7 +1,7 @@
 \section{Discrete Time Formulation}
 Our discrete-time model is based on the $\theta\text{-method}$
 \GreenHighlight{Add citation to this method} and incorporates the symplectic
-midpoint rule to attain second-order accuracy. It takes the following form, 
+midpoint rule to attain second-order accuracy. It takes the following form 
 \begin{eqnarray}
 	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) +
 	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) =
@@ -16,7 +16,7 @@ dampers) and even internal forces for the modeling of soft-body deformation. The
 \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
 $\mf{v}^{\theta_{vq}}$ are defined in accordance with the standard
 $\theta\text{-method}$ using scalar parameters $\theta_q$ $\theta_v$ and
-$\theta_{vq}$:
+$\theta_{vq}$
 \begin{eqnarray*}
 	\mf{q}^{\theta_q} &=& \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\\
 	\mf{v}^{\theta_v} &=& \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\\
@@ -43,8 +43,8 @@ deformable objects and to projection methods used in fluid mechanics
 	\label{eq:qstar_definition}
 \end{eqnarray}
 where $\mf{M}^* = \mf{M}(\mf{q}^{\theta_q}(\mf{v}^*))$. The explicit and
-symplectic Euler schemes require to invert the mass matrix $\mf{M}^*$ to solve
-for $\mf{v}^*$. We can efficiently do this with the $\mathcal{O}(n)$
+symplectic Euler schemes require inversion of the mass matrix $\mf{M}^*$ to
+solve for $\mf{v}^*$. We can efficiently do this with the $\mathcal{O}(n)$
 \emph{Articulated Body Algorithm}
 \cite{bib:featherstone2008_rigid_body_dynamics_algorithms}. For non-linear
 implicit schemes such as the implicit Euler and the midpoint rule, we use an
@@ -55,7 +55,7 @@ absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
 it is computed with the order of accuracy of the $\theta\text{-method}$. We also
 expect to recover the order of accuracy of the $\theta\text{-method}$ when
 constraints do not produce work. For instance, for a rolling wheel the stiction
-constraint does not dissipate work since the slip velocity is zero even though
+constraint does not dissipate energy since the slip velocity is zero even though
 the friction force is non-zero, i.e. $\bgamma_t\cdot\mf{v}_t = 0$. Moreover, we
 will see in Section XXX that the symplectic midpoint rule conserves energy
 exactly during rolling.\RedHighlight{Alejandro: Add proper reference to the
