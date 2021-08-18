@@ -6,22 +6,6 @@ that augments the balance of momentum stated in Eq.
 We call this optimization problem our \emph{primal formulation}, as we will see
 that it's dual is precisely the formulation in Eq. (\ref{eq:dual_regularized}).
 
-While in practical problems contact forces are underdetermined, adding
-regularization guarantees a unique solution. Moreover we show in Section
-\ref{sec:physical_intuition} how this regularization can be used to introduce a
-physical model of compliant contact. In the limit to rigid contact, when
-regularization $\mf{R}$ is zero, our primal formulation reduces to that
-presented in \cite{bib:mazhar2014}.
-
-A drawback of introducing regularization is that the small values of
-regularization needed to accurately model stiff contact with Coulomb friction
-lead to ill conditioning of the Hessian. Therefore, even though the problem is
-well posed mathematically, off-the-shelf solvers we tried do not perform well in
-practice. In Sections \ref{sec:unconstrained_convex_formulation} and
-\ref{sec:sap_solver} we describe a methodology to solve our formulation that is
-robust, warm-starts effectively and performs well solving problems of practical
-interest.
-
 We write our primal formulation of compliant contact by introducing a new
 decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
 \begin{equation}
@@ -76,17 +60,18 @@ force elements (through Eq. (\ref{eq:expression_for_A})) and
 $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
 \end{proof}
 
-\RedHighlight{This seems repetitive if we also mention mazhar in the intro of this section}
-We note that our formulation is an extension of~\cite{bib:mazhar2014} that
-incorporates  compliance through the term $R$. Sections
-\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} 
-describe a methodology to solve our formulation efficiently practice, whereas,
-to our knowledge, no efficient algorithm for~\cite{bib:mazhar2014} has been given. 
+While in practical problems contact forces are underdetermined, adding
+regularization guarantees a unique solution. Moreover we show in Section
+\ref{sec:physical_intuition} how this regularization can be used to introduce a
+physical model of compliant contact. In the limit to rigid contact, when
+regularization $\mf{R}$ is zero, our primal formulation reduces to that
+presented in \cite{bib:mazhar2014}.
 
-
-
-% formulation in \cite{bib:mazhar2014} to include
-%the modeling of compliance and in Sections
-%\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
-
-
+A drawback of introducing regularization is that the small values of
+regularization needed to accurately model stiff contact with Coulomb friction
+lead to ill conditioning of the Hessian. Therefore, even though the problem is
+well posed mathematically, off-the-shelf solvers we tried do not perform well in
+practice. In Sections \ref{sec:unconstrained_convex_formulation} and
+\ref{sec:sap_solver} we describe a methodology to solve our formulation that is
+robust, warm-starts effectively and performs well solving problems of practical
+interest.
