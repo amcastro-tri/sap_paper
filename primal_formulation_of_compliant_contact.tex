@@ -1,63 +1,26 @@
 
 \section{A Primal Formulation of Compliant Contact}
+In this section we give a quadratic program with second order cone constraints
+that augments the balance of momentum stated in Eq.
+(\ref{eq:momentum_linearized}) to model compliant contact with Coulomb friction.
+We call this optimization problem our \emph{primal formulation}, as we will see
+that it's dual is precisely the formulation in Eq. (\ref{eq:dual_regularized}).
 
-% I took a stab at rewriting this intro to address some 
-% of the comments I had (see below). 
+While in practical problems contact forces are underdetermined, adding
+regularization guarantees a unique solution. Moreover we show in Section
+\ref{sec:physical_intuition} how this regularization can be used to introduce a
+physical model of compliant contact. In the limit to rigid contact, when
+regularization $\mf{R}$ is zero, our primal formulation reduces to that
+presented in \cite{bib:mazhar2014}.
 
-% START REWRITE
-%In this section we give a quadratic program that augments the balance of momentum stated in Eq.
-%(\ref{eq:momentum_linearized}) so that contact impulses model Coulomb friction
-%and satisfy the principle of maximum dissipation when sliding. 
-%We call this QP our \emph{primal formulation}, as we will see that it's dual
-%is precisely the QP~(\ref{eq:dual_regularized}).
-
-
-%Recall that this QP~(\ref{eq:dual_regularized}) has cost matrix $W =J^T M^{-1} J^{-1} + R$
-%where $R$ is a regularization term. 
-%Our primal formulation will avoid construction of $J^T M^{-1} J^{-1}$, 
-%which improves practical robustness. In addition, it always has a unique solution, even for $R = 0$.
-%Finally, we note that for $R =0$, our formulation reduces to \cite{bib:mazhar2014}.
-%\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
-%describe a methodology to solve it in practice.
-
-% END REWRITE
-
-
-%START ORIGINAL
-In this section we augment the balance of momentum stated in Eq.
-(\ref{eq:momentum_linearized}) so that contact impulses model Colomb friction
-and satisfy the principle of maximum dissipation when sliding. 
-
-\RedHighlight{Havent we already justified regularization when we introduced
-\ref{eq:dual_regularized}?
-This seems repetitive.  I would focus only on how our formulation differs-compares with \ref{eq:dual_regularized}.}
-An alternative is to use the convex approximation as stated in Eq.
-\RedHighlight{It is unclear why this is an alternative, e.g., how does the principle
-of max disp. appear in this equation?}
-(\ref{eq:dual_cost}). However, this formulation is severely ill conditioned due
-to the fact that contact forces for rigid body dynamics problems are most often
-underdetermined. Even if compliance is added in the normal direction, friction
-\RedHighlight{Unclear what you mean by compliance. Compliance is added to the primal constraints, right?}
-forces for the simplest problem configurations will be underdetermined.
-Regularization in Eq. (\ref{eq:dual_regularized}) helps to solve this problem in
-theory but it leads to very ill conditioned systems of equations in practice. 
-
-We make the following observation for the convex approximation in Eq.
-(\ref{eq:dual_cost}); even if the set of contact forces is not unique (when no
-regularization is added), velocities are. This fact inspired the search
-for an equivalent formulation but in velocities instead of impulses. Such a
-\RedHighlight{The name "primal formulation" what make much sense unless you such duality first.}
-\textit{primal} formulation is presented in \cite{bib:mazhar2014} for rigid
-contact, though to the knowledge of the authors a practical solver based on this
-formulation has never been presented.
-
-In this section we extend the formulation in \cite{bib:mazhar2014} to include
-the modeling of compliance and in Sections
-\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
-describe a methodology to solve it in practice.
-% END ORIGINAL 
-
-
+A drawback of introducing regularization is that the small values of
+regularization needed to accurately model stiff contact with Coulomb friction
+lead to ill conditioning of the Hessian. Therefore, even though the problem is
+well posed mathematically, off-the-shelf solvers we tried do not perform well in
+practice. In Sections \ref{sec:unconstrained_convex_formulation} and
+\ref{sec:sap_solver} we describe a methodology to solve our formulation that is
+robust, warm-starts effectively and performs well solving problems of practical
+interest.
 
 We write our primal formulation of compliant contact by introducing a new
 decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
