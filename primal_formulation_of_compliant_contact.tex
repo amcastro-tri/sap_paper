@@ -10,18 +10,20 @@ We write our primal formulation of compliant contact by introducing a new
 decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
 \begin{equation}
 	\begin{aligned}
-	\min_{\mf{v},\bsigma} \quad & \ell_p(\mf{v},\bsigma) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2\\
+	\min_{\mf{v},\bsigma} \quad & \ell_p(\mf{v},\bsigma) = 
+	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2\\
 	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}} + \mf{R}\bsigma) \in \mathcal{F}^*\\
 	\end{aligned}
 	\label{eq:primal_regularized}
 \end{equation}
-where $\mathcal{F^*}= \mathcal{F}^*_1 \times \mathcal{F}^*_2 \times \cdots \times \mathcal{F}^*_{n_k}$ is the \emph{dual cone} of the convex
-cone $\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
+where $\mathcal{F^*}= \mathcal{F}^*_1 \times \mathcal{F}^*_2 \times \cdots
+\times \mathcal{F}^*_{n_k}$ is the \emph{dual cone} of the convex cone
+$\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
 3n_c}$ and the vector of stabilization velocities $\hat{\mf{v}}$ encode the
 problem data needed to model compliant contact. We will establish a clear
 physical meaning for these terms when we provide analytical expressions for the
 impulses in Section \ref{sec:analytical_inverse_dynamics}. Finally,
-$\Vert\bsigma\Vert_R^2=\bsigma^T\mf{R}\bsigma$.
+$\Vert\mf{z}\Vert_X^2=\mf{z}^T\mf{X}\mf{z}$ for $\mf{X}\succ 0$.
 
 \begin{theorem}
 The dual of Eq. (\ref{eq:primal_regularized}) is given by Eq.
@@ -32,7 +34,8 @@ $\bgamma$ is dual optimal. Moreover, $\bsigma = \bgamma$.
 \begin{proof}
 The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
 \begin{equation}
-	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = \frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
+	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = 
+	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
 	\label{eq:primal_lagrangian}
 \end{equation}
 with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
