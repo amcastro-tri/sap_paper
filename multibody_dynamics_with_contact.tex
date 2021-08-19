@@ -36,7 +36,11 @@ forward in time and we write the balance of momentum as
 \end{eqnarray}
 where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
 $\mf{v}^*\in\mathbb{R}^{n_v}$ are the \textit{free motion} generalized
-velocities when there is no contact.
+velocities when there is no contact. As written, Eq. (\ref{eq:momentum_balance})
+assumes an explicit treatment of positions. That is, positions are \emph{frozen}
+to their value at the beginning of the step. In Section
+\ref{sec:discrete_time_formulation} we show how deal with positions implicitly
+and extend our method to support second order integration.
 
 Denoting with $\gamma_{n,k} \in \mathbb{R}$ and with $\bgamma_{t,k} \in
 \mathbb{R}^2$ the normal and tangential components of the impulse

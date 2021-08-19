@@ -1,7 +1,11 @@
 \section{Discrete Time Formulation}
+\label{sec:discrete_time_formulation}
+
 Our discrete-time model is based on the $\theta\text{-method}$
 \GreenHighlight{Add citation to this method} and incorporates the symplectic
-midpoint rule to attain second-order accuracy. It takes the following form 
+midpoint rule to attain second-order accuracy. We remark that combining the
+$\theta\text{-method}$ with the convex approximation of contact is novel to our
+work. We write discrete update in the following form
 \begin{eqnarray}
 	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) +
 	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) =
@@ -9,14 +13,14 @@ midpoint rule to attain second-order accuracy. It takes the following form
 	&&\mf{q} = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
 	\label{eq:q_update}
 \end{eqnarray}
-where $(\mf{q}_0, \mf{v}_0)$ denote variables from the previous time-step. The
-term $\mf{F}(\mf{q}, \mf{v})$ can include Coriolis and gyroscopic forces arising
-in multibody dynamics, forces from modeling elements (such as springs and
-dampers) and even internal forces for the modeling of soft-body deformation. The
-\emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
-$\mf{v}^{\theta_{vq}}$ are defined in accordance with the standard
-$\theta\text{-method}$ using scalar parameters $\theta_q$ $\theta_v$ and
-$\theta_{vq}$
+where $dt$ is the discrete fixed time step and $(\mf{q}_0, \mf{v}_0)$ denote
+variables from the previous time-step. The term $\mf{F}(\mf{q}, \mf{v})$ can
+include Coriolis and gyroscopic forces arising in multibody dynamics, forces
+from modeling elements (such as springs and dampers) and even internal forces
+for the modeling of soft-body deformation. The \emph{mid-step quantities}
+$\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and $\mf{v}^{\theta_{vq}}$ are
+defined in accordance with the standard $\theta\text{-method}$ using scalar
+parameters $\theta_q$ $\theta_v$ and $\theta_{vq}$
 \begin{eqnarray*}
 	\mf{q}^{\theta_q} &=& \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\\
 	\mf{v}^{\theta_v} &=& \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\\
