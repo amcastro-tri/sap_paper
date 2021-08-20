@@ -11,29 +11,39 @@ friction cone that leads to an LCP formulation, our approach does not
 approximate the friction cone but introduces the convex approximation of contact
 from \cite{bib:anitescu2006} \RedHighlight{TODO: Introduce definition of LCP in
 the introduction}. We remark that combining the $\theta\text{-method}$ with the
-convex approximation of contact is novel to our work. We write discrete update
-in the following form
+convex approximation of contact is novel to our work. We write our discrete
+update in the following form
 \begin{eqnarray}
-	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) =
-	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) +
+	\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0)  &=& \nonumber\\
+	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) &+&
+	dt\,\mf{G}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) +
 	\mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma}, \label{eq:v_update}\\
-	&&\mf{q} = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+	\mf{q} &=& \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
 	\label{eq:q_update}
 \end{eqnarray}
 where $dt$ is the discrete fixed time step and $(\mf{q}_0, \mf{v}_0)$ denote
-variables from the previous time-step. The term $\mf{F}(\mf{q}, \mf{v})$ can
-include Coriolis and gyroscopic forces arising in multibody dynamics, forces
-from modeling elements (such as springs and dampers) and even internal forces
-for the modeling of soft-body deformation. The \emph{mid-step quantities}
-$\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and $\mf{v}^{\theta_{vq}}$ are
-defined in accordance with the standard $\theta\text{-method}$ using scalar
-parameters $\theta_q$ $\theta_v$ and $\theta_{vq}$
+variables from the previous time-step. The \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
+$\mf{v}^{\theta_{vq}}$ are defined in accordance with the standard
+$\theta\text{-method}$ using scalar parameters $\theta_q$ $\theta_v$ and
+$\theta_{vq}$
 \begin{eqnarray*}
 	\mf{q}^{\theta_q} &=& \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\\
 	\mf{v}^{\theta_v} &=& \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\\
 	\mf{v}^{\theta_{vq}} &=& \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0.
 \end{eqnarray*}
-This form generalizes some of the most popular schemes for forward dynamics:
+
+In particular, with Eq. (\ref{eq:q_update}) the mid-step configuration $\mf{q}^{\theta_q}$ can be written as
+\begin{equation}
+	\mf{q}^{\theta_q} = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}
+\end{equation}
+
+We split forces into two contributions so that $\partial \mf{F}/\partial\mf{q}$ and $\partial \mf{F}/\partial\mf{v}$ are positive definite matrices while the same is generally not true for the gradients of $\mf{G}$. Therefore in $\mf{F}(\mf{q}, \mf{v})$ we will include modeling elements such as spring and dampers and even internal forces
+for the modeling of soft-body deformation. $\mf{G}(\mf{q}, \mf{v})$ will include
+all other contributions that cannot guarantee positive definiteness of the
+gradients such as Coriolis and gyroscopic forces arising in multibody dynamics.
+
+The discrete update in Eqs. (\ref{eq:q_update})-(\ref{eq:v_update}) generalizes
+some of the most popular schemes for forward dynamics:
 \begin{itemize}
 	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
 	\item Symplectic Euler with $\theta_{q} = 0$ and $\theta_v = \theta_{vq}=1$,
@@ -45,36 +55,70 @@ This form generalizes some of the most popular schemes for forward dynamics:
 Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
 deformable objects and to projection methods used in fluid mechanics
 \cite{bib::bell1991efficient}, we solve Eqs. (\ref{eq:v_update}) and
-(\ref{eq:q_update}) in two stages. In the first stage we solve for the
+(\ref{eq:q_update}) in two stages. We first define the momentum quantity
+\RedHighlight{TODO: Figure out how to properly split this multiline equation}
+\begin{eqnarray}
+	\mf{m}(\mf{v}) &=&
+	\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) - \nonumber\\
+	&&dt\,\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))-\nonumber\\
+	&&dt\,\mf{G}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))
+	\label{eq:m_definition}
+\end{eqnarray}
+
+In the first stage we solve for the
 \textit{free motion} velocities $\mf{v}^*$ in the absence of constraint impulses
 \begin{eqnarray}
-	&&\mf{M}^*(\mf{v}^*-\mf{v}_0) = 
-	dt\,\mf{F}(\mf{q}^{\theta_q}(\mf{v}^*), \mf{v}^{\theta_v}(\mf{v}^*)),
+	\mf{m}(\mf{v}^*) &=& \mf{0},
 	\label{eq:vstar_definition}\\
-	&&\mf{q}^{\theta_q}(\mf{v}^*) = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}^*),
+	\mf{q}^{\theta_q}(\mf{v}^*) &=& \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}^*),
 	\label{eq:qstar_definition}
 \end{eqnarray}
-where $\mf{M}^* = \mf{M}(\mf{q}^{\theta_q}(\mf{v}^*))$. The explicit and
-symplectic Euler schemes require inversion of the mass matrix $\mf{M}^*$ to
-solve for $\mf{v}^*$. We can efficiently do this with the $\mathcal{O}(n)$
+
+For the implicit Euler scheme and the midpoint rule, Eqs.
+(\ref{eq:vstar_definition})-(\ref{eq:qstar_definition}) are implicit in
+$\mf{v}^*$ and we solve them using Newton's method. The explicit and symplectic
+Euler schemes require inversion of the mass matrix $\mf{M}$, which can be
+accomplished efficiently using the $\mathcal{O}(n)$
 \emph{Articulated Body Algorithm}
-\cite{bib:featherstone2008_rigid_body_dynamics_algorithms}. For non-linear
-implicit schemes such as the implicit Euler and the midpoint rule, we use an
-iterative method to solve for $\mf{v}^*$.
+\cite{bib:featherstone2008_rigid_body_dynamics_algorithms}.
 
-Notice that, in the
-absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
-it is computed with the order of accuracy of the $\theta\text{-method}$. We also
-expect to recover the order of accuracy of the $\theta\text{-method}$ when
-constraints do not produce work. For instance, for a rolling wheel the stiction
-constraint does not dissipate energy since the slip velocity is zero even though
-the friction force is non-zero, i.e. $\bgamma_t\cdot\mf{v}_t = 0$. Moreover, we
-will see in Section XXX that the symplectic midpoint rule conserves energy
-exactly during rolling.\RedHighlight{Alejandro: Add proper reference to the
-billiard balls example in the numerical examples section.}
+For the second stage we linearize $\mf{m}(\mf{v})$ around $\mf{v} = \mf{v}^*$ 
+\begin{eqnarray}
+	\mf{m}(\mf{v}) = \mf{m}(\mf{v}^*) +
+	\frac{\partial\mf{m}}{\partial\mf{v}}\Bigr|_{\mf{v}^*}(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
+\end{eqnarray}
+and take the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_definition})
+and write it as
+\begin{eqnarray}
+	\frac{\partial\mf{m}}{\partial\mf{v}}\Bigr|_{\mf{v}^*} = 
+	\mf{M}^* + \mf{E}^* -
+	dt\frac{\partial\mf{F}}{\partial\mf{v}}^* -
+	dt\frac{\partial\mf{G}}{\partial\mf{v}}^*
+\end{eqnarray}
+where the superscript $^*$ denotes quantities evaluated at $\mf{v}^*$ and matrix $\mf{E}$ contains the gradients of $\mf{M}$, with elements
+\begin{eqnarray}
+	E_{ij} &= &
+	(v_k-v_{0,k}) 
+	\frac{\partial M_{ik}(\mf{q}^{\theta_q})}{\partial v_j}\nonumber\\
+	&=&dt\,(v_k-v_{0,k}) 
+	\frac{\partial M_{ik}(\mf{q}^{\theta_q})}{\partial
+	q_m}\frac{\partial\dot{q}_m}{\partial v_j}
+\end{eqnarray}
 
-For the second stage we linearize Eq. (\ref{eq:v_update})
-at $\mf{v} = \mf{v}^*$ to obtain a linearized balance of momentum
+We expand the gradients of $\mf{F}(\mf{v})=\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))$ as
+\begin{eqnarray}
+	\frac{\partial\mf{F}(\mf{v})}{\partial\mf{v}} =
+	-dt\,\theta_q\theta_{qv}\mf{K}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})-\theta_v\mf{D}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})
+\end{eqnarray}
+with 
+\begin{eqnarray}
+	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{q}}\mf{N}(\mf{q}),\\
+	\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{v}}.
+	\label{eq:dissipation_matrix}
+\end{eqnarray}
+
+We now replace our expansion of $\mf(\mf{v})$ to 
+obtain an approximation of Eq. (\ref{eq:v_update})
 \begin{eqnarray}
 	\mf{A}(\mf{v}-\mf{v}^*)= \mf{J}^T\mf{\gamma}
 	\label{eq:momentum_linearized}
@@ -98,6 +142,8 @@ two stage process described by Eqs. (\ref{eq:vstar_definition}) to
 by Eq. (\ref{eq:v_update}).
 
 
+
+
 A typical example of constant stiffness and damping is that of a spring-damper
 model at a joint. In this case these matrices only contribute positive diagonal
 elements to matrix $\mf{A}$.
@@ -105,6 +151,21 @@ elements to matrix $\mf{A}$.
 An example of complex stiffness and damping matrices is when using a Finite
 Element Model (FEM) of large soft body deformations. In this case $\mf{K}$ and
 $\mf{D}$ are large sparse, positive definite, matrices.
+
+Notice that, in the
+absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
+it is computed with the order of accuracy of the $\theta\text{-method}$. 
+
+
+
+We also
+expect to recover the order of accuracy of the $\theta\text{-method}$ when
+constraints do not produce work. For instance, for a rolling wheel the stiction
+constraint does not dissipate energy since the slip velocity is zero even though
+the friction force is non-zero, i.e. $\bgamma_t\cdot\mf{v}_t = 0$. Moreover, we
+will see in Section XXX that the symplectic midpoint rule conserves energy
+exactly during rolling.\RedHighlight{Alejandro: Add proper reference to the
+billiard balls example in the numerical examples section.}
 
 Our convex approximation of contact requires $\mf{A}\succ 0$. Therefore only
 compliant and dissipation elements that lead to positive definite matrices can

@@ -6,6 +6,18 @@ state is fully described by $\mf{q}\in\mathbb{R}^{n_q}$ and
 $\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
 generalized positions and velocities, respectively.
 
+Time derivatives of the generalized positions are described by the kinematic map
+\begin{equation}
+	\dot{\mf{q}} = \mf{N}(\mf{q})\mf{v}
+	\label{eq:kinematic_map}
+\end{equation}
+where $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$ is a block diagonal matrix.
+For robotic systems comprised of revolute and prismatic joints, the blocks of
+$\mf{N}(\mf{q})$ correspond to the identity map, i.e ones in the diagonal. For
+cases including ball joints or free floating bodies and mobilize bases, where
+either quaternions or Euler angles are used, $\mf{N}(\mf{q})$ will contain non
+identity blocks in general function of the configuration $\mf{q}$. 
+
 Given a configuration $\mf{q}$ of the system, our geometry engine reports a
 discrete set of $n_c$ contacts between a pair of bodies. The $k\text{-th}$
 \emph{contact pair} is described by the location $\vf{p}_k$ of the contact
