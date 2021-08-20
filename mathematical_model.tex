@@ -1,4 +1,5 @@
 \section{Discrete Time Formulation}
+\label{sec:discrete_formulation}
 
 We introduce a variant of the $\theta\text{-method}$ to implicitly include force
 elements such as springs and dampers and even internal forces as those arising
@@ -6,21 +7,24 @@ when modeling soft body deformations. Moreover, our variant includes the
 symplectic midpoint rule, allowing to attain second order accuracy. Our
 discrete formulation is described by the update
 \begin{eqnarray}
-	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) + 
-	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) = \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
+	&&\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0) =
+	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) + \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
 	\label{eq:v_update}\\
-	&&\mf{q} = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+	&&\mf{q}(\mf{v}) = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}),
 	\label{eq:q_update}
 \end{eqnarray}
 where from now on \textit{nought} variables refer to quantities evaluated at the
-previous time step. $\mf{F}(\mf{q}, \mf{v})$ includes Coriolis and gyroscopic
-terms in multibody dynamics and modeling elements such as springs, dampers and
-even internal forces when modeling soft body dynamics. Mid-step quantities are
-defined in accordance to the standard $\theta\text{-method}$ method as
+previous time step. $\mf{F}(\mf{q}, \mf{v})$ includes gravity, external forces
+and actuation, Coriolis and gyroscopic terms in multibody dynamics and modeling
+elements such as springs, dampers and even internal forces when modeling soft
+body dynamics. Mid-step quantities are defined in accordance to the standard
+$\theta\text{-method}$ method as
 \begin{eqnarray}
-	\mf{q}^{\theta} &=& \theta\mf{q} + (1-\theta)\mf{q}_0,\\
-	\mf{v}^{\theta} &=& \theta\mf{v} + (1-\theta)\mf{v}_0.
+	\mf{q}^{\theta}(\mf{v}) &=& \theta\mf{q}(\mf{v}) + (1-\theta)\mf{q}_0,\\
+	\mf{v}^{\theta}(\mf{v}) &=& \theta\mf{v} + (1-\theta)\mf{v}_0.
 \end{eqnarray}
+where $\mf{q}(\mf{v})$ is defined according to the update in Eq.
+(\ref{eq:q_update}).
 
 In this form, parameters $\theta$ allow us to obtain some of the most popular
 schemes for forward dynamics:
@@ -36,20 +40,22 @@ We solve Eqs. (\ref{eq:v_update}) and (\ref{eq:q_update}) in two stages. In the
 first stage we solve for the \textit{free motion} velocities $\mf{v}^*$ in the
 absence of constraint impulses 
 \begin{eqnarray}
-	&&\mf{M}^*(\mf{v}^*-\mf{v}_0) + dt\,\mf{F}(\mf{q}^{\theta_q}(\mf{v}^*), \mf{v}^{\theta_v}(\mf{v}^*)) = \mf{0},
+	&&\mf{M}^*(\mf{v}^*-\mf{v}_0) = dt\,\mf{F}(\mf{q}^{\theta_q}(\mf{v}^*), \mf{v}^{\theta_v}(\mf{v}^*)),
 	\label{eq:vstar_definition}\\
 	&&\mf{q}^{\theta_q}(\mf{v}^*) = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}^*),
 	\label{eq:qstar_definition}
 \end{eqnarray}
-where $\mf{M}^* = \mf{M}(\mf{q}^{\theta_q}(\mf{v}^*))$. For implicit schemes,
-we need an iterative method to solver for $\mf{v}^*$. Notice that, in the
-absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
-it is computed with the order of accuracy of the $\theta\text{-method}$. We also
-expect to recover the order of accuracy of the $\theta\text{-method}$ when
-constraints do not produce work. This is the case of equality constraints and
-rolling friction for instance. That is, we'd expect very good energy
-conservation for a rolling wheel when using the second order, symplectic,
-midpoint rule, with $\theta=1/2$.
+where $\mf{M}^* = \mf{M}(\mf{q}^{\theta_q}(\mf{v}^*))$.
+
+For implicit schemes, we need an iterative method to solver for $\mf{v}^*$.
+Notice that, in the absence of constraint impulses, the next step velocity is
+$\mf{v}=\mf{v}^*$ and it is computed with the order of accuracy of the
+$\theta\text{-method}$. We also expect to recover the order of accuracy of the
+$\theta\text{-method}$ when constraints do not produce work.
+\RedHighlight{TODO: Refernce the rimless wheel example as a demonstration of
+this} This is the case of equality constraints and rolling friction for
+instance. That is, we'd expect very good energy conservation for a rolling wheel
+when using the second order, symplectic, midpoint rule, with $\theta=1/2$.
 
 For the second stage we linearize Eq. (\ref{eq:v_update})
 around $\mf{v}^*$ to obtain a linearized balance of momentum
@@ -61,19 +67,17 @@ with
 \begin{eqnarray}
 	\mf{A}&=&\mf{M}+\theta_q\theta_{qv} dt^2\,\mf{K}+\theta_v dt\,\mf{D},
 	\label{eq:expression_for_A}\\
-	\mf{K}&=&\frac{\partial \mf{F}}{\partial \mf{q}}\Bigr|_{(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})},\\
-	\mf{D}&=&\frac{\partial \mf{F}}{\partial \mf{v}}\Bigr|_{(\mf{q}^{\theta_q},
+	\mf{K}&=&-\frac{\partial \mf{F}}{\partial \mf{q}}\Bigr|_{(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})},\\
+	\mf{D}&=&-\frac{\partial \mf{F}}{\partial \mf{v}}\Bigr|_{(\mf{q}^{\theta_q},
 	\mf{v}^{\theta_v})}.
 	\label{eq:dissipation_matrix}
 \end{eqnarray}
 where the only assumption in Eq. (\ref{eq:expression_for_A}) is that the map
-$\mf{N}(\mf{q})$ is the identity, which is commonly the case for degrees of
-freedom used to model compliant elements. When $\mf{F}(\mf{q}, \mf{v})$ is
-linear the stiffness matrix $\mf{K}$ and the damping matrix $\mf{D}$ are
-constant and the two stage process described by Eqs. (\ref{eq:vstar_definition})
-to (\ref{eq:momentum_linearized}) is exact and solves the original problem
-stated by Eq. (\ref{eq:v_update}).
-
+$\mf{N}(\mf{q})$ is the identity but only for degrees of freedom used to model
+compliant elements. When $\mf{F}(\mf{q}, \mf{v})$ is linear the stiffness matrix
+$\mf{K}$ and the damping matrix $\mf{D}$ are constant and the two stage process
+described by Eqs. (\ref{eq:vstar_definition}) to (\ref{eq:momentum_linearized})
+is exact and solves the original problem stated by Eq. (\ref{eq:v_update}).
 
 A typical example of constant stiffness and damping is that of a spring-damper
 model at a joint. In this case these matrices only contribute positive diagonal
