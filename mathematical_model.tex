@@ -71,13 +71,10 @@ Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
 deformable objects and to projection methods used in fluid mechanics
 \cite{bib::bell1991efficient}, we solve Eqs. (\ref{eq:v_update}) and
 (\ref{eq:q_update}) in two stages; first we solve for the \emph{free motion
-velocities} the system would have in the absence of contact in
-\ref{sec:free_motion_velocities} and second, we update these free motion
-velocities so that they satisfy conservation of momentum along with contact
-constraints in \ref{sec:contact_constrained_velocities}.
+velocities} the system would have in the absence of contact and second, we
+update these free motion velocities so that they satisfy conservation of
+momentum along with contact constraints.
 
-\subsection{Free Motion Velocities}
-\label{sec:free_motion_velocities}
 We first define the momentum quantity
 \begin{multline}
 	\mf{m}(\mf{v}) =
@@ -91,16 +88,14 @@ In the first stage we solve for the
 \textit{free motion} velocities $\mf{v}^*$ in the absence of constraint impulses
 \begin{eqnarray}
 	\mf{m}(\mf{v}^*) &=& \mf{0},
-	\label{eq:vstar_definition}\\
-	\mf{q}^{\theta_q}(\mf{v}^*) &=& \mf{q}_0 + dt\theta_q\dot{\mf{q}}^{\theta_{vq}}(\mf{v}^*),
-	\label{eq:qstar_definition}
+	\label{eq:vstar_definition}
 \end{eqnarray}
 
-For the implicit Euler scheme and the midpoint rule, Eqs.
-(\ref{eq:vstar_definition})-(\ref{eq:qstar_definition}) are implicit in
-$\mf{v}^*$ and we solve them using Newton's method. The explicit and symplectic
-Euler schemes require inversion of the mass matrix $\mf{M}$, which can be
-accomplished efficiently using the $\mathcal{O}(n)$
+For the implicit Euler scheme and the midpoint rule, Eq.
+(\ref{eq:vstar_definition}) is implicit in $\mf{v}^*$ and we solve them using
+Newton's method. The explicit and symplectic Euler schemes require inversion of
+the mass matrix $\mf{M}$, which can be accomplished efficiently using the
+$\mathcal{O}(n)$
 \emph{Articulated Body Algorithm}
 \cite{bib:featherstone2008_rigid_body_dynamics_algorithms}.
 
@@ -114,19 +109,29 @@ with
 	\mf{A}&=&\mf{M}+dt^2\,\theta_q\theta_{qv}\mf{K}+dt\,\theta_v\mf{D},
 	\label{eq:expression_for_A}\\
 	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial
-	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},\\
-		\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q},
-		\mf{v})}{\partial \mf{v}},
-		\label{eq:dissipation_matrix}
+	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},
+	\label{eq:stiffness_matrix}\\
+	\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial
+	\mf{v}},
+	\label{eq:dissipation_matrix}
 \end{eqnarray}
-where $\mf{A} \succ 0$ is an approximation to the gradient of $\mf{m}(\mf{v})$. Equation (\ref{eq:momentum_linearized}) is a first order approximation of Eq. (\ref{eq:v_update}) as stated in the following
+where $\mf{K}$ and $\mf{D}$ are the stiffness and damping matrices of the
+system, respectively. As an example, consider modeling spring-dampers at the
+joint level. In this case $\mf{K}$ and $\mf{D}$ are constant and diagonal. A
+more complex example arises when using a Finite Element Model (FEM) of soft body
+deformations. In this case $\mf{K}$ and $\mf{D}$ are large sparse, positive
+definite, matrices.
+
+Equation (\ref{eq:momentum_linearized}) is a first order approximation of Eq.
+(\ref{eq:v_update}) as stated in the following
 \begin{theorem}	
 	In the absence of impacts Eq. (\ref{eq:momentum_linearized}) is a first
 	order approximation of Eq. (\ref{eq:v_update}). That is
 	\begin{eqnarray}
 		\mf{m}(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}(dt^2) =
-		\mf{J}^T\mf{\bgamma}
+		\mf{J}^T\mf{\bgamma}.
 	\end{eqnarray}
+Moreover, $\mf{A} \succ 0$.
 \end{theorem}
 
 \begin{IEEEproof}
@@ -162,24 +167,17 @@ We proceed similarly to expand the gradient of $\mf{F}(\mf{v})=\mf{F}(\mf{q}^{\t
 	\nabla\mf{F} =
 	-dt\,\theta_q\theta_{vq}\mf{K}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})-\theta_v\mf{D}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})
 \end{eqnarray}
-with 
-\begin{eqnarray}
-	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},\\
-	\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{v}},
-	\label{eq:dissipation_matrix}
-\end{eqnarray}
-the stiffness and damping matrix respectively.
+with $\mf{K}$ and $\mf{D}$ the stiffness and damping matrices defined by Eqs.
+(\ref{eq:stiffness_matrix})-(\ref{eq:dissipation_matrix}).
 
 We can now write the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_taylor_expansion}) as
 \begin{eqnarray}
 	\nabla\mf{m}^* = \mf{A} + \mf{E}^* - dt\nabla\mf{G}
 \end{eqnarray}
-with 
+where we defined
 \begin{eqnarray}
 	\mf{A}=\mf{M}+ dt^2\theta_q\theta_{qv}\mf{K}+dt\theta_v\mf{D},
 \end{eqnarray}
-a positive definite matrix since we assumed the gradients of $\mf{F}$ to be
-positive definite.
 
 With these definitions the Taylor expansion in Eq. (\ref{eq:m_taylor_expansion})
 becomes
@@ -194,80 +192,38 @@ $dt\nabla\mf{G}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(dt^2)$. Then the Taylor expansion
 \begin{eqnarray}
 	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(dt^3) + \mathcal{O}_G(dt^2) = \mf{J}^T\mf{\bgamma}
 \end{eqnarray}
-is a first order approximation of the original momentum balance in Eq. (\ref{eq:v_update}).
+is a first order approximation of the original momentum balance in Eq.
+(\ref{eq:v_update}).
+
+Finally, notice that $\mf{A}$ is a linear combination of positive definite
+matrices with positive scalars in the linear combination, and therefore
+$\mf{A}\succ 0$.
 
 \end{IEEEproof}
 
-\subsection{Contact Resolution}
-\label{sec:contact_constrained_velocities}
+We summarize our discrete time stepping strategy as follows
+\begin{enumerate}
+	\item Solve for the \emph{free motion} velocities $\mf{v}^*$, from Eq.
+	(\ref{eq:vstar_definition}).
+	\item Compute the SPD approximation of the gradient $\mf{A}$, as defined in
+	Eq. (\ref{eq:expression_for_A}).
+	\item\label{it:solve_for_contact} Solve for the constraint impulses $\bgamma$ that satisfy the
+	linearized momentum Eq. (\ref{eq:momentum_linearized}) and the contact
+	constraints. 
+	\item Update the positions according to Eq. (\ref{eq:q_update}).
+\end{enumerate}
 
-Once free motion velocities $\mf{v}^*$ are solved from Eq.
-(\ref{eq:vstar_definition}), the second stage consists in solving for the
-impulses $\bgamma$ that satisfy the linearized momentum in Eq.
-(\ref{eq:momentum_linearized}) subject to contact constraints.
-
-We now replace our expansion of $\mf(\mf{v})$ to 
-obtain an approximation of Eq. (\ref{eq:v_update})
-\begin{eqnarray}
-	\mf{A}(\mf{v}-\mf{v}^*)= \mf{J}^T\mf{\gamma}
-	\label{eq:momentum_linearized}
-\end{eqnarray}
-with
-\begin{eqnarray}
-	\mf{A}&=&\mf{M}+\theta_q\theta_{qv} dt^2\,\mf{K}+\theta_v dt\,\mf{D},
-	\label{eq:expression_for_A}\\
-	\mf{K}&=&-\frac{\partial \mf{F}}{\partial \mf{q}}\Bigr|_{(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})},\\
-	\mf{D}&=&-\frac{\partial \mf{F}}{\partial \mf{v}}\Bigr|_{(\mf{q}^{\theta_q},
-	\mf{v}^{\theta_v})}.
-	\label{eq:dissipation_matrix}
-\end{eqnarray}
-where the only assumption in Eq. (\ref{eq:expression_for_A}) is that the map
-$\mf{N}(\mf{q})$ is the identity \GreenHighlight{Recommend never introducing N
-if it is always the identity} which is commonly the case for degrees of freedom
-used to model compliant elements. When $\mf{F}(\mf{q}, \mf{v})$ is linear the
-stiffness matrix $\mf{K}$ and the damping matrix $\mf{D}$ are constant and the
-two stage process described by Eqs. (\ref{eq:vstar_definition}) to
-(\ref{eq:momentum_linearized}) is exact and solves the original problem stated
-by Eq. (\ref{eq:v_update}).
+Impulses in item \ref{it:solve_for_contact} are the solution to our convex
+approximation of compliant contact described in the next section. Section
+\ref{sec:sap_solver} presents the SAP solver to solve it in practice.
 
 
-
-
-A typical example of constant stiffness and damping is that of a spring-damper
-model at a joint. In this case these matrices only contribute positive diagonal
-elements to matrix $\mf{A}$.
-
-An example of complex stiffness and damping matrices is when using a Finite
-Element Model (FEM) of large soft body deformations. In this case $\mf{K}$ and
-$\mf{D}$ are large sparse, positive definite, matrices.
-
-
-
-Notice that, in the
-absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
-it is computed with the order of accuracy of the $\theta\text{-method}$. 
-
-
-
-We also
-expect to recover the order of accuracy of the $\theta\text{-method}$ when
-constraints do not produce work. For instance, for a rolling wheel the stiction
-constraint does not dissipate energy since the slip velocity is zero even though
-the friction force is non-zero, i.e. $\bgamma_t\cdot\mf{v}_t = 0$. Moreover, we
-will see in Section XXX that the symplectic midpoint rule conserves energy
-exactly during rolling.\RedHighlight{Alejandro: Add proper reference to the
-billiard balls example in the numerical examples section.}
-
-Our convex approximation of contact requires $\mf{A}\succ 0$. Therefore only
-compliant and dissipation elements that lead to positive definite matrices can
-be included in Eq. (\ref{eq:expression_for_A}). This is the case for joint
-spring-damper models and deformable models. It is not the case for Coriolis and
-gyroscopic terms. These terms can still be treated implicitly in Eqs.
-(\ref{eq:vstar_definition}) and (\ref{eq:qstar_definition}), but their
-derivative is assumed to be zero in Eq. (\ref{eq:dissipation_matrix}), an
-approximation only accurate to first order. \GreenHighlight{What does "treated
-implicitly" mean? In what way is their derivative is zero in
-\ref{eq:dissipation_matrix}? When you introduced $F(q,v)$ you said that it
-already includes gyroscopic and Corolis terms, but this discussion seems to
-about how to add them, as if they weren't already there...  }
-
+Notice that, in the absence of constraint impulses, the next step velocity is
+$\mf{v}=\mf{v}^*$ and it is computed with the order of accuracy of the
+$\theta\text{-method}$. We also expect to recover the properties of the
+$\theta\text{-method}$ when contact constraints are not active. This is the case
+of rolling friction for which the contact constraints behave as a bi-lateral
+constraints to impose zero slip velocity. We demonstrate this in Section XXX
+with an example simulation of billiard balls.  \RedHighlight{Alejandro: Add
+proper reference to the billiard balls example in the numerical examples
+section.}
