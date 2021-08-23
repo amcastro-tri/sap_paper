@@ -97,7 +97,33 @@ accomplished efficiently using the $\mathcal{O}(n)$
 \emph{Articulated Body Algorithm}
 \cite{bib:featherstone2008_rigid_body_dynamics_algorithms}.
 
-For the second stage we linearize $\mf{m}(\mf{v})$ around $\mf{v} = \mf{v}^*$ 
+For the second stage we linearize $\mf{m}(\mf{v})$ around $\mf{v} = \mf{v}^*$ to write an approximation of Eq. (\ref{eq:v_update}) as
+\begin{eqnarray}
+	\mf{A}(\mf{v}-\mf{v}^*)= \mf{J}^T\mf{\gamma}
+	\label{eq:momentum_linearized}
+\end{eqnarray}
+with
+\begin{eqnarray}
+	\mf{A}&=&\mf{M}+dt^2\,\theta_q\theta_{qv}\mf{K}+dt\,\theta_v\mf{D},
+	\label{eq:expression_for_A}\\
+	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial
+	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},\\
+		\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q},
+		\mf{v})}{\partial \mf{v}},
+		\label{eq:dissipation_matrix}
+\end{eqnarray}
+where $\mf{A} \succ 0$ is an approximation to the gradient of $\mf{m}(\mf{v})$. Equation (\ref{eq:momentum_linearized}) is a first order approximation of Eq. (\ref{eq:v_update}) as stated in the following
+\begin{theorem}	
+	In the absence of impacts Eq. (\ref{eq:momentum_linearized}) is a first
+	order approximation of Eq. (\ref{eq:v_update}). That is
+	\begin{eqnarray}
+		\mf{m}(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}(dt^2) =
+		\mf{J}^T\mf{\bgamma}
+	\end{eqnarray}
+\end{theorem}
+Refer to Appendix \ref{app:order_of_accuracy} for a detailed proof.
+
+
 \begin{eqnarray}
 	\mf{m}(\mf{v}) = \mf{m}^* +
 	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
