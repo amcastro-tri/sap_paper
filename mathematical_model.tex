@@ -20,11 +20,12 @@ $t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. We define
 \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
 $\mf{v}^{\theta_{vq}}$ in accordance with the standard $\theta\text{-method}$
 using scalar parameters $\theta_q$ $\theta_v$ and $\theta_{vq}$
-\begin{eqnarray*}
-	\mf{q}^{\theta_q} &=& \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\\
-	\mf{v}^{\theta_v} &=& \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\\
+\begin{eqnarray}
+	\mf{q}^{\theta_q} &=& \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
+	\mf{v}^{\theta_v} &=& \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
 	\mf{v}^{\theta_{vq}} &=& \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0.
-\end{eqnarray*}
+	\label{eq:theta_method}
+\end{eqnarray}
 
 Using the above definitions, we write our discrete update in the following form
 \begin{eqnarray}
@@ -42,19 +43,19 @@ we allow for the evaluation of $\mf{N}$ at $t^{\theta_{q}}$ and velocities
 at $t^{\theta_{vq}}$. This will allow us to write fully implicit as well as
 semi-implicit symplectic schemes within the same framework. For the common case
 when $\mf{N}$ is the identity matrix, $\dot{\mf{q}}$ is evaluated at
-$t^{\theta_{vq}}$, justifying the notation.
-
-In particular, with Eq. (\ref{eq:q_update}) the mid-step configuration $\mf{q}^{\theta_q}$ can be written as
+$t^{\theta_{vq}}$, justifying the notation. Note that using Eq.
+(\ref{eq:q_update}) the mid-step configuration $\mf{q}^{\theta_q}$ can be
+written as
 \begin{equation}
-	\mf{q}^{\theta_q} = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}
+	\mf{q}^{\theta_q}(\mf{v}) = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v})
+	\label{eq:position_update}
 \end{equation}
-
 
 
 We split forces into two contributions so that $\partial \mf{F}/\partial\mf{q}$ and $\partial \mf{F}/\partial\mf{v}$ are positive definite matrices while the same is generally not true for the gradients of $\mf{G}$. Therefore in $\mf{F}(\mf{q}, \mf{v})$ we will include modeling elements such as spring and dampers and even internal forces
 for the modeling of soft-body deformation. $\mf{G}(\mf{q}, \mf{v})$ will include
 all other contributions that cannot guarantee positive definiteness of the
-gradients such as Coriolis and gyroscopic forces arising in multibody dynamics.
+gradients such as Coriolis and gyroscopic forces arising in multibody dynamics with generalized coordinates.
 
 The discrete update in Eqs. (\ref{eq:q_update})-(\ref{eq:v_update}) generalizes
 some of the most popular schemes for forward dynamics:
@@ -84,7 +85,7 @@ In the first stage we solve for the
 \begin{eqnarray}
 	\mf{m}(\mf{v}^*) &=& \mf{0},
 	\label{eq:vstar_definition}\\
-	\mf{q}^{\theta_q}(\mf{v}^*) &=& \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}^*),
+	\mf{q}^{\theta_q}(\mf{v}^*) &=& \mf{q}_0 + dt\theta_q\dot{\mf{q}}^{\theta_{vq}}(\mf{v}^*),
 	\label{eq:qstar_definition}
 \end{eqnarray}
 
@@ -98,18 +99,46 @@ accomplished efficiently using the $\mathcal{O}(n)$
 
 For the second stage we linearize $\mf{m}(\mf{v})$ around $\mf{v} = \mf{v}^*$ 
 \begin{eqnarray}
-	\mf{m}(\mf{v}) = \mf{m}(\mf{v}^*) +
-	\frac{\partial\mf{m}}{\partial\mf{v}}\Bigr|_{\mf{v}^*}(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
+	\mf{m}(\mf{v}) = \mf{m}^* +
+	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
 \end{eqnarray}
-and take the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_definition})
+where the superscript $^*$ denotes quantities evaluated at $\mf{v}^*$ and
+$\nabla$ denotes the gradient with respect to $\mf{v}$.
+
+We evaluate first the gradient of the mass matrix term in Eq.
+(\ref{eq:m_definition}) using the chain rule through Eq.
+(\ref{eq:position_update})
+\begin{eqnarray}
+	\nabla[\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0)]\Bigr|_{\mf{v}^*}
+	= \mf{M}(\mf{q}^{\theta_{q}}(\mf{v}^*)) + \mf{E}^*
+\end{eqnarray}
+with
+\begin{eqnarray}
+	\mf{E}^* =
+	dt\theta_q\frac{\partial[\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}^*-\mf{v}_0)]}{\partial\mf{q}}
+	\label{eq:E_definition}
+\end{eqnarray}
+
+Equation (\ref{eq:E_definition}) involves cumbersome derivatives of the mass matrix with respect to configurations. However, we can still see that $\mf{E}^*=\mathcal{O}(dt\Vert\mf{v}^*-\mf{v}_0\Vert)$ where we are using the big O notation to describe its limiting behavior as $dt\rightarrow 0$.
+
+
+using the chain rule
+through the position update in Eq. (\ref{eq:position_update}) and the velocity
+update in Eq. (\ref{eq:theta_method}), i.e.
+\begin{eqnarray}
+	\nabla\mf{m} &=& \frac{\partial\mf{m}}{\partial\mf{q}}\frac{\partial\mf{q}}{\partial\mf{v}} + \frac{\partial\mf{m}}{\partial\mf{v}}\nonumber\\
+	&=& dt\theta_q\frac{\partial\mf{m}}{\partial\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}} + \frac{\partial\mf{m}}{\partial\mf{v}}
+\end{eqnarray}
+
+We take the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_definition})
 and write it as
 \begin{eqnarray}
-	\frac{\partial\mf{m}}{\partial\mf{v}}\Bigr|_{\mf{v}^*} = 
+	\nabla\mf{m}^* = 
 	\mf{M}^* + \mf{E}^* -
 	dt\frac{\partial\mf{F}}{\partial\mf{v}}^* -
 	dt\frac{\partial\mf{G}}{\partial\mf{v}}^*
 \end{eqnarray}
-where the superscript $^*$ denotes quantities evaluated at $\mf{v}^*$ and matrix $\mf{E}$ contains the gradients of $\mf{M}$, with elements
+where matrix $\mf{E}$ contains the gradients of $\mf{M}$, with elements
 \begin{eqnarray}
 	E_{ij} &= &
 	(v_k-v_{0,k}) 
