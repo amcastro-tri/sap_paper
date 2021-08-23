@@ -57,7 +57,7 @@ for the modeling of soft-body deformation. $\mf{G}(\mf{q}, \mf{v})$ will include
 all other contributions that cannot guarantee positive definiteness of the
 gradients such as Coriolis and gyroscopic forces arising in multibody dynamics with generalized coordinates.
 
-The discrete update in Eqs. (\ref{eq:q_update})-(\ref{eq:v_update}) generalizes
+The discrete update in Eqs. (\ref{eq:v_update})-(\ref{eq:q_update}) generalizes
 some of the most popular schemes for forward dynamics:
 \begin{itemize}
 	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
@@ -70,15 +70,22 @@ some of the most popular schemes for forward dynamics:
 Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
 deformable objects and to projection methods used in fluid mechanics
 \cite{bib::bell1991efficient}, we solve Eqs. (\ref{eq:v_update}) and
-(\ref{eq:q_update}) in two stages. We first define the momentum quantity
-\RedHighlight{TODO: Figure out how to properly split this multiline equation}
-\begin{eqnarray}
-	\mf{m}(\mf{v}) &=&
-	\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) - \nonumber\\
-	&&dt\,\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))-\nonumber\\
-	&&dt\,\mf{G}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))
+(\ref{eq:q_update}) in two stages; first we solve for the \emph{free motion
+velocities} the system would have in the absence of contact in
+\ref{sec:free_motion_velocities} and second, we update these free motion
+velocities so that they satisfy conservation of momentum along with contact
+constraints in \ref{sec:contact_constrained_velocities}.
+
+\subsection{Free Motion Velocities}
+\label{sec:free_motion_velocities}
+We first define the momentum quantity
+\begin{multline}
+	\mf{m}(\mf{v}) =
+	\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) -\\
+	dt\,\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))-
+	dt\,\mf{G}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))
 	\label{eq:m_definition}
-\end{eqnarray}
+\end{multline}
 
 In the first stage we solve for the
 \textit{free motion} velocities $\mf{v}^*$ in the absence of constraint impulses
@@ -121,15 +128,17 @@ where $\mf{A} \succ 0$ is an approximation to the gradient of $\mf{m}(\mf{v})$. 
 		\mf{J}^T\mf{\bgamma}
 	\end{eqnarray}
 \end{theorem}
-Refer to Appendix \ref{app:order_of_accuracy} for a detailed proof.
 
-
+\begin{IEEEproof}
+The Taylor expansion of $\mf{m}(\mf{v})$ at $\mf{v}=\mf{v}^*$ reads
 \begin{eqnarray}
-	\mf{m}(\mf{v}) = \mf{m}^* +
-	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
+	\mf{m}(\mf{v}) &=& \mf{m}^* +
+	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)\nonumber\\
+	&=&\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
 	\label{eq:m_taylor_expansion}
 \end{eqnarray}
-where the superscript $^*$ denotes quantities evaluated at $\mf{v}^*$ and
+where the superscript $^*$ denotes quantities evaluated at $\mf{v}^*$ and we use
+the fact that by definition $\mf{m}^*=\mf{m}(\mf{v}^*)=\mf{0}$. The operator
 $\nabla$ denotes the gradient with respect to $\mf{v}$.
 
 We evaluate first the gradient of the mass matrix term in Eq.
@@ -137,12 +146,12 @@ We evaluate first the gradient of the mass matrix term in Eq.
 (\ref{eq:position_update})
 \begin{eqnarray}
 	\nabla[\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0)]\Bigr|_{\mf{v}^*}
-	= \mf{M}(\mf{q}^{\theta_{q}}(\mf{v}^*)) + \mf{E}^*
+	= \mf{M}(\mf{q}^{\theta_{q}}(\mf{v}^*)) + \mf{E}^*,
 \end{eqnarray}
-with
+where we defined
 \begin{eqnarray}
 	\mf{E}^* =
-	dt\theta_q\frac{\partial[\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}^*-\mf{v}_0)]}{\partial\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}
+	dt\theta_q\frac{\partial[\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}^*-\mf{v}_0)]}{\partial\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}.
 	\label{eq:E_definition}
 \end{eqnarray}
 
@@ -156,9 +165,10 @@ We proceed similarly to expand the gradient of $\mf{F}(\mf{v})=\mf{F}(\mf{q}^{\t
 with 
 \begin{eqnarray}
 	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},\\
-	\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{v}}.
+	\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{v}},
 	\label{eq:dissipation_matrix}
 \end{eqnarray}
+the stiffness and damping matrix respectively.
 
 We can now write the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_taylor_expansion}) as
 \begin{eqnarray}
@@ -168,19 +178,33 @@ with
 \begin{eqnarray}
 	\mf{A}=\mf{M}+ dt^2\theta_q\theta_{qv}\mf{K}+dt\theta_v\mf{D},
 \end{eqnarray}
-a positive definite matrix.
+a positive definite matrix since we assumed the gradients of $\mf{F}$ to be
+positive definite.
 
-Then the Taylor expansion in Eq. (\ref{eq:m_taylor_expansion}) becomes
-\begin{eqnarray}
-	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) =\nonumber\\
-	\mf{A}(\mf{v}-\mf{v}^*) + \mf{E}^*(\mf{v}-\mf{v}^*) - dt\nabla\mf{G}(\mf{v}-\mf{v}^*).
-\end{eqnarray}
+With these definitions the Taylor expansion in Eq. (\ref{eq:m_taylor_expansion})
+becomes
+\begin{multline}
+	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) =\\
+	\mf{A}(\mf{v}-\mf{v}^*) + \mf{E}^*(\mf{v}-\mf{v}^*) - dt\,\nabla\mf{G}\,(\mf{v}-\mf{v}^*).
+\end{multline}
 
-In the absence of impacts $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(dt)$, therefore $\mf{E}^*(\mf{v}-\mf{v}^*)=\mathcal{O}_E(dt^3)$ and $dt\nabla\mf{G}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(dt^2)$. Then the Taylor expansion
+In the absence of impacts $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(dt)$. Therefore
+$\mf{E}^*(\mf{v}-\mf{v}^*)=\mathcal{O}_E(dt^3)$ and
+$dt\nabla\mf{G}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(dt^2)$. Then the Taylor expansion
 \begin{eqnarray}
-	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_E(dt^3) + \mathcal{O}_G(dt^2) = \mf{J}^T\mf{\bgamma}
+	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(dt^3) + \mathcal{O}_G(dt^2) = \mf{J}^T\mf{\bgamma}
 \end{eqnarray}
 is a first order approximation of the original momentum balance in Eq. (\ref{eq:v_update}).
+
+\end{IEEEproof}
+
+\subsection{Contact Resolution}
+\label{sec:contact_constrained_velocities}
+
+Once free motion velocities $\mf{v}^*$ are solved from Eq.
+(\ref{eq:vstar_definition}), the second stage consists in solving for the
+impulses $\bgamma$ that satisfy the linearized momentum in Eq.
+(\ref{eq:momentum_linearized}) subject to contact constraints.
 
 We now replace our expansion of $\mf(\mf{v})$ to 
 obtain an approximation of Eq. (\ref{eq:v_update})
@@ -216,6 +240,8 @@ elements to matrix $\mf{A}$.
 An example of complex stiffness and damping matrices is when using a Finite
 Element Model (FEM) of large soft body deformations. In this case $\mf{K}$ and
 $\mf{D}$ are large sparse, positive definite, matrices.
+
+
 
 Notice that, in the
 absence of constraint impulses, the next step velocity is $\mf{v}=\mf{v}^*$ and
