@@ -11,31 +11,45 @@ friction cone that leads to an LCP formulation, our approach does not
 approximate the friction cone but introduces the convex approximation of contact
 from \cite{bib:anitescu2006} \RedHighlight{TODO: Introduce definition of LCP in
 the introduction}. We remark that combining the $\theta\text{-method}$ with the
-convex approximation of contact is novel to our work. We write our discrete
-update in the following form
-\begin{eqnarray}
-	\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0)  &=& \nonumber\\
-	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) &+&
-	dt\,\mf{G}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) +
-	\mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma}, \label{eq:v_update}\\
-	\mf{q} &=& \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
-	\label{eq:q_update}
-\end{eqnarray}
-where $dt$ is the discrete fixed time step and $(\mf{q}_0, \mf{v}_0)$ denote
-variables from the previous time-step. The \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
-$\mf{v}^{\theta_{vq}}$ are defined in accordance with the standard
-$\theta\text{-method}$ using scalar parameters $\theta_q$ $\theta_v$ and
-$\theta_{vq}$
+convex approximation of contact is novel to our work. 
+
+Time is discretized into intervals of fixed size $dt$ and we seek to advance the
+state of the system from time $t^n$ to the next step at $t^{n+1} = t^n + dt$. In
+the $\theta\text{-method}$ variables are evaluated at intermediate time steps
+$t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. We define
+\emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
+$\mf{v}^{\theta_{vq}}$ in accordance with the standard $\theta\text{-method}$
+using scalar parameters $\theta_q$ $\theta_v$ and $\theta_{vq}$
 \begin{eqnarray*}
 	\mf{q}^{\theta_q} &=& \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\\
 	\mf{v}^{\theta_v} &=& \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\\
 	\mf{v}^{\theta_{vq}} &=& \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0.
 \end{eqnarray*}
 
+Using the above definitions, we write our discrete update in the following form
+\begin{eqnarray}
+	\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}-\mf{v}_0)  &=& \nonumber\\
+	dt\,\mf{F}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) &+&
+	dt\,\mf{G}(\mf{q}^{\theta_{q}}, \mf{v}^{\theta_v}) +
+	\mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma}, \label{eq:v_update}\\
+	\mf{q} = \mf{q}_0 + dt \dot{\mf{q}}^{\theta_{vq}} &=& \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+	\label{eq:q_update}
+\end{eqnarray}
+where to simplify notation $(\mf{q}_0, \mf{v}_0)$ denotes the state at $t^n$ and
+$(\mf{q}, \mf{v})$ the state at $t^{n+1}$. $\mf{N}(\mf{q})$ is the kinematic map
+defined in Eq. (\ref{eq:kinematic_map}). Notice that in the update for $\mf{q}$
+we allow for the evaluation of $\mf{N}$ at $t^{\theta_{q}}$ and velocities
+at $t^{\theta_{vq}}$. This will allow us to write fully implicit as well as
+semi-implicit symplectic schemes within the same framework. For the common case
+when $\mf{N}$ is the identity matrix, $\dot{\mf{q}}$ is evaluated at
+$t^{\theta_{vq}}$, justifying the notation.
+
 In particular, with Eq. (\ref{eq:q_update}) the mid-step configuration $\mf{q}^{\theta_q}$ can be written as
 \begin{equation}
 	\mf{q}^{\theta_q} = \mf{q}_0 + dt\theta_q\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}
 \end{equation}
+
+
 
 We split forces into two contributions so that $\partial \mf{F}/\partial\mf{q}$ and $\partial \mf{F}/\partial\mf{v}$ are positive definite matrices while the same is generally not true for the gradients of $\mf{G}$. Therefore in $\mf{F}(\mf{q}, \mf{v})$ we will include modeling elements such as spring and dampers and even internal forces
 for the modeling of soft-body deformation. $\mf{G}(\mf{q}, \mf{v})$ will include
