@@ -101,6 +101,7 @@ For the second stage we linearize $\mf{m}(\mf{v})$ around $\mf{v} = \mf{v}^*$
 \begin{eqnarray}
 	\mf{m}(\mf{v}) = \mf{m}^* +
 	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2)
+	\label{eq:m_taylor_expansion}
 \end{eqnarray}
 where the superscript $^*$ denotes quantities evaluated at $\mf{v}^*$ and
 $\nabla$ denotes the gradient with respect to $\mf{v}$.
@@ -115,50 +116,45 @@ We evaluate first the gradient of the mass matrix term in Eq.
 with
 \begin{eqnarray}
 	\mf{E}^* =
-	dt\theta_q\frac{\partial[\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}^*-\mf{v}_0)]}{\partial\mf{q}}
+	dt\theta_q\frac{\partial[\mf{M}(\mf{q}^{\theta_{q}})(\mf{v}^*-\mf{v}_0)]}{\partial\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}
 	\label{eq:E_definition}
 \end{eqnarray}
 
-Equation (\ref{eq:E_definition}) involves cumbersome derivatives of the mass matrix with respect to configurations. However, we can still see that $\mf{E}^*=\mathcal{O}(dt\Vert\mf{v}^*-\mf{v}_0\Vert)$ where we are using the big O notation to describe its limiting behavior as $dt\rightarrow 0$.
+Equation (\ref{eq:E_definition}) involves cumbersome derivatives of the mass matrix with respect to configurations. However, we can still see that $\mf{E}^*=\mathcal{O}(dt\Vert\mf{v}^*-\mf{v}_0\Vert)$ where we are using the big O notation to describe its limiting behavior as $dt\rightarrow 0$. Since the free motion dynamics that defines $\mf{v}^*$ is continuous, we know that $\Vert\mf{v}^*-\mf{v}_0\Vert = \mathcal{O}(dt)$ and therefore $\mf{E}^* = \mathcal{O}(dt^2)$.
 
-
-using the chain rule
-through the position update in Eq. (\ref{eq:position_update}) and the velocity
-update in Eq. (\ref{eq:theta_method}), i.e.
+We proceed similarly to expand the gradient of $\mf{F}(\mf{v})=\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))$ as
 \begin{eqnarray}
-	\nabla\mf{m} &=& \frac{\partial\mf{m}}{\partial\mf{q}}\frac{\partial\mf{q}}{\partial\mf{v}} + \frac{\partial\mf{m}}{\partial\mf{v}}\nonumber\\
-	&=& dt\theta_q\frac{\partial\mf{m}}{\partial\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}} + \frac{\partial\mf{m}}{\partial\mf{v}}
-\end{eqnarray}
-
-We take the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_definition})
-and write it as
-\begin{eqnarray}
-	\nabla\mf{m}^* = 
-	\mf{M}^* + \mf{E}^* -
-	dt\frac{\partial\mf{F}}{\partial\mf{v}}^* -
-	dt\frac{\partial\mf{G}}{\partial\mf{v}}^*
-\end{eqnarray}
-where matrix $\mf{E}$ contains the gradients of $\mf{M}$, with elements
-\begin{eqnarray}
-	E_{ij} &= &
-	(v_k-v_{0,k}) 
-	\frac{\partial M_{ik}(\mf{q}^{\theta_q})}{\partial v_j}\nonumber\\
-	&=&dt\,(v_k-v_{0,k}) 
-	\frac{\partial M_{ik}(\mf{q}^{\theta_q})}{\partial
-	q_m}\frac{\partial\dot{q}_m}{\partial v_j}
-\end{eqnarray}
-
-We expand the gradients of $\mf{F}(\mf{v})=\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))$ as
-\begin{eqnarray}
-	\frac{\partial\mf{F}(\mf{v})}{\partial\mf{v}} =
-	-dt\,\theta_q\theta_{qv}\mf{K}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})-\theta_v\mf{D}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})
+	\nabla\mf{F} =
+	-dt\,\theta_q\theta_{vq}\mf{K}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})-\theta_v\mf{D}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v})
 \end{eqnarray}
 with 
 \begin{eqnarray}
-	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{q}}\mf{N}(\mf{q}),\\
+	\mf{K}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},\\
 	\mf{D}(\mf{q}, \mf{v})&=&-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial \mf{v}}.
 	\label{eq:dissipation_matrix}
 \end{eqnarray}
+
+We can now write the gradient of $\mf{m}(\mf{v})$ in Eq. (\ref{eq:m_taylor_expansion}) as
+\begin{eqnarray}
+	\nabla\mf{m}^* = \mf{A} + \mf{E}^* - dt\nabla\mf{G}
+\end{eqnarray}
+with 
+\begin{eqnarray}
+	\mf{A}=\mf{M}+ dt^2\theta_q\theta_{qv}\mf{K}+dt\theta_v\mf{D},
+\end{eqnarray}
+a positive definite matrix.
+
+Then the Taylor expansion in Eq. (\ref{eq:m_taylor_expansion}) becomes
+\begin{eqnarray}
+	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) =\nonumber\\
+	\mf{A}(\mf{v}-\mf{v}^*) + \mf{E}^*(\mf{v}-\mf{v}^*) - dt\nabla\mf{G}(\mf{v}-\mf{v}^*).
+\end{eqnarray}
+
+In the absence of impacts $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(dt)$, therefore $\mf{E}^*(\mf{v}-\mf{v}^*)=\mathcal{O}_E(dt^3)$ and $dt\nabla\mf{G}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(dt^2)$. Then the Taylor expansion
+\begin{eqnarray}
+	\nabla\mf{m}^*(\mf{v}-\mf{v}^*) + \mathcal{O}_E(dt^3) + \mathcal{O}_G(dt^2) = \mf{J}^T\mf{\bgamma}
+\end{eqnarray}
+is a first order approximation of the original momentum balance in Eq. (\ref{eq:v_update}).
 
 We now replace our expansion of $\mf(\mf{v})$ to 
 obtain an approximation of Eq. (\ref{eq:v_update})
