@@ -1,7 +1,22 @@
 \section{An Unconstrained Convex Formulation}
 \label{sec:unconstrained_convex_formulation}
+\CyanHighlight{Xuchen: The logic of this section can be better sorted out IMO.
+In particular, the formulation itself and the proof (and intuition) that it's
+equivalent to the constrained problem is a bit intertwined. Would it be better if
+you do things in the order?
+\begin{enumerate}
+    \item Introduce the formulation.
+    \item Comment on its similarity to the constrained problem (the same A term)
+    and how it's different from the constrained problem (the $\bsigma$ term is
+    replaced with the projection of $\mf{y}$ and now its unconstrained).
+    \item State Theorem 2 in this section.
+    \item Prove Theorem 2 (put the lemma here).
+\end{enumerate}
+I sense that you are trying to build more intuition into the process, but to me
+it makes things more complicated.}
 
 From Theorem \ref{th:primal_dual_equivalence} we know that $\bsigma = \bgamma$.
+\CyanHighlight{Xuchen: This is only true at the optimum, right?}
 Therefore we can use the analytical inverse dynamics from Section
 \ref{sec:analytical_inverse_dynamics} to eliminate $\bsigma$ from the primal
 formulation and obtain an unconstrained convex formulation in terms of
@@ -25,6 +40,13 @@ In order for the velocities solution of Eq. (\ref{eq:primal_unconstrained}) to
 be a solution of the original problem stated in Eq.
 (\ref{eq:primal_regularized}), they must also satisfy the conic constraint
 $\mf{g}\in\mathcal{F}^*$. We stablish this result in the following
+\CyanHighlight{Xuchen: Consider this alternative way to state the lemma that
+strips away unused information.
+\begin{lemma}
+    The conic constraint $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$ is satisfied if 
+    $\bsigma$ is given by $P_\mathcal{F}(\mf{y(\mf{v})})$.
+\end{lemma}
+}
 \begin{lemma}
     velocites solution to Eq. (\ref{eq:primal_unconstrained}) satisfy the conic
     constraint $\mf{g}\in\mathcal{F}^*$ when the impulses are given by
@@ -33,9 +55,9 @@ $\mf{g}\in\mathcal{F}^*$. We stablish this result in the following
 \end{lemma}
 \begin{IEEEproof}
     The proof follows immediately from Moreau's decomposition theorem. That is,
-    with $\mf{v}_c - \hat{\mf{v}}\in\mathbb{R}^{3n_c}$ and $\bsigma$ the result
+    with $\mf{v}_c - \hat{\mf{v}}_c\in\mathbb{R}^{3n_c}$ and $\bsigma$ the result
     from the projection into $\mathcal{F}$ using the $\mf{R}$ norm, the linear
-    combination $\mf{v}_c - \hat{\mf{v}} + \mf{R}\bsigma$ must be in
+    combination $\mf{v}_c - \hat{\mf{v}}_c + \mf{R}\bsigma$ must be in
     $\mathcal{F}^*$.
 \end{IEEEproof}
 
@@ -55,7 +77,8 @@ Therefore we can state the following
     constraints by Lemma \ref{lemma:conic_constraints_are_satisfied_analytically}.
 \end{IEEEproof}
 
-Section \ref{sec:sap_solver} presents our novel SAP solver specifically designed
-to solve the unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}).
+Section \ref{sec:sap_solver} presents our novel SAP \CyanHighlight{TODO: make
+sure SAP is defined before} solver specifically designed to solve the
+unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}).
 
 

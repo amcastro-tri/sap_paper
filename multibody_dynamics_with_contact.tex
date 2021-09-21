@@ -28,7 +28,7 @@ point, a normal direction $\hat{\vf{n}}_k$ and the \emph{signed distance} or
 contact is further completed with the relative velocity
 $\vf{v}_{c,k}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_k$,
 expressed in a contact frame $C_k$ for which we arbitrarily choose the
-$z\text{-axis}$ to coincide with the surface normal $\hat{\vf{n}}_k$. 
+$z\text{-axis}$ to coincide with the contact normal $\hat{\vf{n}}_k$.
 
 We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
 stacking velocities $\vf{v}_{c,k}$ of all contact pairs together. Similarly, we
@@ -64,9 +64,9 @@ $\vf{\tau}\in\mathbb{R}^{n_v}$ models external forces such as gravity and
 gyroscopic terms arising in multibody dynamics; we use the mean value
 $\bar{\vf{\tau}}$ of ${\vf{\tau}}$ in the interval $(t^n,t^{n+1})$.
 
-While specific details are not
-important at this point, we present a comprehensive discussion of our discrete
-time-stepping scheme in Section \ref{sec:discrete_time_formulation}.
+While specific details are not important at this point, we present a
+comprehensive discussion of our discrete time-stepping scheme in Section
+\ref{sec:discrete_time_formulation}.
 
 Denoting with $\gamma_{n,k} \in \mathbb{R}$ and with $\bgamma_{t,k} \in
 \mathbb{R}^2$ the normal and tangential components of the impulse
@@ -82,10 +82,11 @@ satisfied at each contact
 	dissipation. In other words, friction impulses oppose the sliding velocity
 	direction.
 \end{enumerate}
-where $\mu_k \in \mathbb{R}$ is the coefficient of friction for the $k\text{-th}$ contact.
-Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_k$ at point $k$ are
-constrained to belong to the friction cone
-$\mathcal{F}_k=\{\vf{x}\in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le \mu_k x_n\}$.
+where $\mu_k \in \mathbb{R}$ is the coefficient of friction for the
+$k\text{-th}$ contact. Condition \ref{it:cone_constraint} states that contact
+impulses $\bgamma_k$ at point $k$ are constrained to belong to the friction cone
+$\mathcal{F}_k=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
+\mu_k x_n\}$.
 
 While these constraints model the widely used model of Colulomb friction, the
 resulting formulation leads to a very difficult to solve, non-convex, Non-linear
@@ -117,7 +118,7 @@ solution to the following convex optimization problem
 	\label{eq:dual_cost}
 \end{eqnarray}
 where $\mathbf{W} =
-\mathbf{J}^T\mathbf{M}^{-1}\mathbf{J}\in\mathbb{R}^{3n_c\times 3n_c}$ is the
+\mathbf{J}\mathbf{M}^{-1}\mathbf{J}^T\in\mathbb{R}^{3n_c\times 3n_c}$ is the
 \emph{Delassus operator}, $\mathcal{F} := \mathcal{F}_1 \times F_2 \times \cdots
 \times \mathcal{F}_{n_c}$ is a Cartesian product of friction cones, and ${\bm
 r}$ defines a linear cost  that encodes external force contributions and
@@ -137,11 +138,11 @@ problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
 (\ref{eq:momentum_balance}), the maximum dissipation principle and, the
 non-penetration condition
 \begin{equation}
-	0 < \phi - dt \Vert {\bm v}_t \Vert \perp \gamma_n > 0
+	0 < \phi_k - dt \Vert {\bm v}_{t,k} \Vert \perp \gamma_{n,k} > 0
 	\label{eq:convex_approximation_complementarity_condition}
 \end{equation}
-where $\vf{v}_t$ is the tangential component of the contact velocity $\vf{v}_c =
-[\vf{v}_t\,v_n]$. Notice that Eq.
+where $\vf{v}_{t,k}$ is the tangential component of the contact velocity
+$\vf{v}_{c,k} = [\vf{v}_{t,k}\,v_{n,k}]$. Notice that Eq.
 (\ref{eq:convex_approximation_complementarity_condition}) is a modified
 non-penetration condition that introduces coupling with the sliding velocity, a
 result of the convex approximation. We provide a detailed discussion on the
@@ -158,9 +159,9 @@ constraint} to obtain the following regularized form of Anitescu's formulation
 	\bgamma
 	\label{eq:dual_regularized}
 \end{eqnarray}
-where $\mathbf{R}$ is a diagonal positive definite matrix introduced to
-make $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W}
-\succeq 0$. This makes the problem strictly convex, with a unique solution.
+where $\mathbf{R}$ is a diagonal positive definite matrix introduced to make
+$\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W} \succeq
+0$. This makes the problem strictly convex, with a unique solution.
 \cite{bib:todorov2014} uses regularization as a means to introduce constraint
 stabilization with a set of global parameters to control the amount of numerical
 compliance introduced by the formulation. This is different from our approach
@@ -173,15 +174,15 @@ and Todorov in \cite{bib:todorov2014} use projected Gauss-Seidel (PGS) based
 solvers to demonstrate the efficacy of their formulations. Though very popular
 in the computer graphics community due to their straightforward implementation
 even in parallel architectures, PGS methods are known for their slow convergence
-rates (though not even proven to converge if a convex approximation is not
-used), low accuracy and lack of robustness.
+rates (not even proven to converge if a convex approximation is not used), low
+accuracy and lack of robustness.
 
 Using Lagrangian duality, and building on Todorov's analysis, we convert Eq.
 (\ref{eq:dual_regularized}) into an unconstrained problem in velocities in
-Section \ref{sec:unconstrained_convex_formulation} and
-provide efficient algorithms and software for its solution in Sections
-\ref{sec:sap_solver} and \ref{sec:geodesic_solver}. Further, our methods warm
-start effectively when using the solution from previous time steps, a serious
-problem with the formulation in impulses. We demonstrate the accuracy,
-robustness and efficacy our methods with a variety of simulation problems in
-Section \ref{sec:test_cases}.
+Section \ref{sec:unconstrained_convex_formulation} and provide efficient
+algorithms and software for its solution in Sections \ref{sec:sap_solver} and
+\ref{sec:geodesic_solver}. Further, our methods warm start effectively when
+using the solution from previous time steps, which remains challenging for the
+formulation in impulses. We demonstrate the accuracy, robustness and efficacy
+our methods with a variety of simulation problems in Section
+\ref{sec:test_cases}.

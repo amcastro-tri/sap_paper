@@ -12,10 +12,11 @@ to the fact that contact forces for rigid body dynamics problems are most often
 underdetermined. Even if compliance is added in the normal direction, friction
 forces for the simplest problem configurations will be underdetermined.
 Regularization in Eq. (\ref{eq:dual_regularized}) helps to solve this problem in
-theory but it leads to very ill conditioned systems of equations in practice. 
+theory but it cannot avoid the ill conditioning of $\mathbf{W}+\mathbf{R}$,
+\cite{bib:enzenhofer2019efficient}.
 
 We make the following observation for the convex approximation in Eq.
-(\ref{eq:dual_cost}); even if the set of contact forces is not unique (when no
+(\ref{eq:dual_cost}): even if the set of contact forces is not unique (when no
 regularization is added), velocities are. This fact inspired the search
 for an equivalent formulation but in velocities instead of impulses. Such a
 \textit{primal} formulation is presented in \cite{bib:mazhar2014} for rigid
@@ -34,14 +35,14 @@ decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
 	\min_{\mf{v},\bsigma} \quad & \ell_p(\mf{v},\bsigma) =
 	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
 	\frac{1}{2} \Vert\bsigma\Vert_{R}^2\\
-	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}} + \mf{R}\bsigma) \in \mathcal{F}^*\\
+	\textrm{s.t.} \quad & \mf{g} = (\mf{J}\mf{v}-\hat{\mf{v}}_c + \mf{R}\bsigma) \in \mathcal{F}^*\\
 	\end{aligned}
 	\label{eq:primal_regularized}
 \end{equation}
 where $\Vert\mf{z}\Vert_X^2=\mf{z}^T\mf{X}\mf{z}$ with $\mf{X}\succ 0$
 and $\mathcal{F^*}=\prod_{k=1}^{n_k}\mathcal{F}^*_k$ is the dual of the convex
 set $\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
-3n_c}$ and the vector of stabilization velocities $\hat{\mf{v}}$ encode the
+3n_c}$ and the vector of stabilization velocities $\hat{\mf{v}}_c$ encode the
 problem data needed to model compliant contact. We will establish a very clear
 physical meaning for these terms when we provide analytical expressions for the
 impulses in Section \ref{sec:analytical_inverse_dynamics}.
@@ -81,9 +82,9 @@ Lagrangian in Eq. (\ref{eq:primal_lagrangian}) we obtain the dual
 	\bgamma
 \end{eqnarray}
 where, in contrast to previous work, our Delassus operator
-$\mf{W}=\mf{J}\mf{A}\mf{J}^T$ now also contains the contribution of internal
+$\mf{W}=\mf{J}\mf{A}^{-1}\mf{J}^T$ now also contains the contribution of internal
 force elements (through Eq. (\ref{eq:expression_for_A})) and
-$\mf{r}=\mf{v}_c^*-\hat{\mf{v}}$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
+$\mf{r}=\mf{v}_c^*-\hat{\mf{v}}_c$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
 \end{IEEEproof}
 
 In Section \ref{sec:geodesic_solver}, we present a custom implementation of the

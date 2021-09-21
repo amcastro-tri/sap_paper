@@ -48,7 +48,7 @@ $\mf{p}^{\theta_c}=\mf{p}_0+dt\mf{v}_c^{\theta_c}$ in Eq.
 We can then define the regularization matrix $\mf{R}=\text{diag}(\{R_i\})$ and
 fit the compliant laws within the framework developed in \cite{bib:todorov2014}
 \begin{eqnarray}
-	\mf{y} &=& -\vf{R}^{-1}(\mf{v}_c-\hat{\mf{v}}) \label{eq:y_definition}\\
+	\mf{y} &=& -\vf{R}^{-1}(\mf{v}_c-\hat{\mf{v}}_c) \label{eq:y_definition}\\
 	\bgamma &=& P_\mathcal{C}(\mf{y})
 	\label{eq:projection_definition}
 \end{eqnarray}
@@ -67,7 +67,7 @@ violation untilt $\mf{y}$ comes out of $\mathcal{C}$ and then Eq.
 
 Before jumping into the details provided in Section
 \ref{app:analytical_inverse_dynamics_derivations} here we'll summarize how, with
-the proper definition of the velocity bias $\hat{\mf{v}}$, convex set
+the proper definition of the velocity bias $\hat{\mf{v}}_c$, convex set
 $\mathcal{C}$ and regularization $\mf{R}$, we can model a variety of physical
 effects such as
 \begin{itemize}
