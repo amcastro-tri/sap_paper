@@ -2,31 +2,15 @@
 \section{A Primal Formulation of Compliant Contact}
 \label{sec:primal_formulation}
 
-In this section we augment the balance of momentum stated in Eq.
-(\ref{eq:momentum_linearized}) so that contact impulses model Colulomb friction
-and satisfy the principle of maximum dissipation when sliding. 
-
-An alternative is to use the convex approximation as stated in Eq.
-(\ref{eq:dual_cost}). However, this formulation is severely ill conditioned due
-to the fact that contact forces for rigid body dynamics problems are most often
-underdetermined. Even if compliance is added in the normal direction, friction
-forces for the simplest problem configurations will be underdetermined.
-Regularization in Eq. (\ref{eq:dual_regularized}) helps to solve this problem in
-theory but it cannot avoid the ill conditioning of $\mathbf{W}+\mathbf{R}$,
-\cite{bib:enzenhofer2019efficient}.
-
-We make the following observation for the convex approximation in Eq.
-(\ref{eq:dual_cost}): even if the set of contact forces is not unique (when no
-regularization is added), velocities are. This fact inspired the search
-for an equivalent formulation but in velocities instead of impulses. Such a
-\textit{primal} formulation is presented in \cite{bib:mazhar2014} for rigid
-contact, though to the knowledge of the authors a practical solver based on this
-formulation has never been presented.
-
-In this section we extend the formulation in \cite{bib:mazhar2014} to include
-the modeling of compliance and in Sections
-\ref{sec:unconstrained_convex_formulation} and \ref{sec:solver_details} we
-describe a methodology to solve it in practice.
+In this section we give a convex program that augments the balance of momentum
+stated in Eq. (\ref{eq:momentum_linearized}) so that contact impulses model
+Coulomb friction and satisfy the principle of maximum dissipation when sliding.
+We call this convex program our \emph{primal formulation}, as we will see that
+it's dual is precisely the formulation stated in Eq.
+(\ref{eq:dual_regularized}). We will see in Section
+\ref{sec:unconstrained_convex_formulation} that the reason to introduce this
+primal formulation is so that we can eliminate constraints analytically to write
+an unconstrained convex formulation of the same problem.
 
 We write our primal formulation of compliant contact by introducing a new
 decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
@@ -39,27 +23,28 @@ decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ as
 	\end{aligned}
 	\label{eq:primal_regularized}
 \end{equation}
-where $\Vert\mf{z}\Vert_X^2=\mf{z}^T\mf{X}\mf{z}$ with $\mf{X}\succ 0$
-and $\mathcal{F^*}=\prod_{k=1}^{n_k}\mathcal{F}^*_k$ is the dual of the convex
-set $\mathcal{F}$. The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times
-3n_c}$ and the vector of stabilization velocities $\hat{\mf{v}}_c$ encode the
-problem data needed to model compliant contact. We will establish a very clear
-physical meaning for these terms when we provide analytical expressions for the
-impulses in Section \ref{sec:analytical_inverse_dynamics}.
+where $\Vert\mf{z}\Vert_X^2=\mf{z}^T\mf{X}\mf{z}$ with $\mf{X}\succ 0$ and
+$\mathcal{F^*}= \mathcal{F}^*_1 \times \mathcal{F}^*_2 \times \cdots \times
+\mathcal{F}^*_{n_c}$ is the \emph{dual cone} of the convex cone $\mathcal{F}$.
+The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times 3n_c}$ and the
+vector of stabilization velocities $\hat{\mf{v}}_c$ encodes the problem data
+needed to model compliant contact. We will establish a very clear physical
+meaning for these terms when we provide analytical expressions for the impulses
+in Section \ref{sec:analytical_inverse_dynamics}. In the limit to rigid contact
+when regularization $\mf{R}$ is zero, our primal formulation reduces to that
+presented in \cite{bib:mazhar2014}.
 
-\begin{theorem}	
+\begin{theorem}
 The dual of Eq. (\ref{eq:primal_regularized}) is given by Eq.
 (\ref{eq:dual_regularized}). The pair $\{\mf{v},\bsigma\}$ is primal optimal and
 $\bgamma$ is dual optimal. Moreover, $\bsigma = \bgamma$.
-\label{th:primal_dual_equivalence}
 \end{theorem}
 
 \begin{IEEEproof}
 The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
 \begin{equation}
-	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) =
-	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
-	\frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
+	\mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = 
+	\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
 	\label{eq:primal_lagrangian}
 \end{equation}
 with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
@@ -67,7 +52,7 @@ $\vf{g}\in \mathcal{F}^*$. We obtain the dual of Eq.
 (\ref{eq:primal_regularized}) by minimizing the Lagrangian jointly in the
 variables $\mf{v}$ and $\bsigma$ and replacing the result back to obtain the
 dual cost $\ell_d(\vf{\gamma})$. Minimizing jointly in the variables $\mf{v}$
-and $\bsigma$ leads to the conditions
+and $\bsigma$ leads to the optimality conditions
 \begin{eqnarray}
 	\mf{A}(\mf{v}-\mf{v}^*) &=& \mf{J}^T\vf{\gamma}\\
 	\vf{\sigma} &=& \vf{\gamma}
@@ -87,6 +72,21 @@ force elements (through Eq. (\ref{eq:expression_for_A})) and
 $\mf{r}=\mf{v}_c^*-\hat{\mf{v}}_c$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
 \end{IEEEproof}
 
-In Section \ref{sec:geodesic_solver}, we present a custom implementation of the
-geodesic solver developed in \cite{bib:permenter2020} designed to exploit the
-structure of our primal formulation in Eq. (\ref{eq:primal_regularized}).
+Todorov \cite{bib:todorov2014} shows that impulses solution to the dual
+formulation, Eq. (\ref{eq:dual_regularized}), can be constructed analytically
+from the optimal velocities of the primal-formulation, Eq.
+(\ref{eq:primal_regularized}). This is referred to as the \textit{inverse
+dynamics} solution. Moreover, given the separable structure of the constraints,
+the impulse $\bgamma_i$ at the $i\text{-th}$ contact point is the solution to
+the following convex optimization problem
+\begin{eqnarray}
+	\bgamma_i(\vf{v}_{c,i})&=& P_{\mathcal{F}_i}(\vf{y}_i(\vf{v}_{c,i})) \nonumber\\
+	&=&\begin{aligned}
+		\argmin_{\bgamma\in\mathcal{F}_i} \quad &
+	\frac{1}{2}(\bgamma-\vf{y}_i)^T\vf{R}_i(\bgamma-\vf{y}_i) \end{aligned}
+    \label{eq:y_projection}\\
+	\vf{y}_i(\vf{v}_{c,i}) &=& -\vf{R}_i^{-1}(\vf{v}_{c,i}-\hat{\vf{v}}_i)    
+\end{eqnarray}
+where $\vf{R}_i\in\mathbb{R}^{3\times3}$ is the $k\text{-th}$ diagonal block of
+the regularization matrix $\mf{R}$. In other words, $\bgamma_i$ is the projection $P_{\mathcal{F}_i}$ of $\vf{y}_i(\vf{v}_{c,i})$ onto
+the friction cone $\mathcal{F}_i$ using the norm defined by $\vf{R}_i$. We give explicit algebraic expressions along with a clear physical interpretation of this analytical solution in Section \ref{sec:physical_intuition}.
