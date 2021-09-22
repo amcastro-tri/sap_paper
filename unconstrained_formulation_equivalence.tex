@@ -1,0 +1,38 @@
+Before proving this theorem, we need the following result.
+\begin{lemma}
+    The conic constraint $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$ is satisfied
+    if $\bsigma$ is given by $P_\mathcal{F}(\mf{y(\mf{v})})$.
+    \label{lemma:conic_constraints_are_satisfied_analytically}
+\end{lemma}
+\begin{IEEEproof}
+    The proof follows immediately from Moreau's decomposition theorem. That is,
+    with $\mf{v}_c - \hat{\mf{v}}_c\in\mathbb{R}^{3n_c}$ and $\bsigma$ the
+    result from the projection into $\mathcal{F}$ using the $\mf{R}$ norm, the
+    linear combination $\mf{v}_c - \hat{\mf{v}}_c + \mf{R}\bsigma$ must be in
+    $\mathcal{F}^*$.
+\end{IEEEproof}
+\vspace{0.5cm}
+\begin{IEEEproof}[Proof of Theorem \ref{th:unconstrained_formulation_equivalance}]
+    The proof consists on showing that the pair $\{\mf{v},\bsigma\}$, with
+    velocities $\mf{v}$ solution to the unconstrained formulation and
+    $\bsigma=P_\mathcal{F}(\mf{y}(\mf{v}))$, satisfies the optimality conditions
+    of the primal formulation.
+    
+    The optimality condition for the unconstrained formulation is
+    $\nabla\ell_p(\mf{v})=\mf{0}$. It is shown in Appendix
+    \ref{app:gradients_derivation} that
+    \begin{equation}
+        \nabla\ell_p(\mf{v})=\mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
+    \end{equation}
+    with impulses given by $\bgamma(\mf{v})=P_\mathcal{F}(\mf{y}(\mf{v}))$.
+    Therefore, $\nabla\ell_p(\mf{v})=\mf{0}$ implies the first optimality
+    condition in Eq. (\ref{eq:primal_optimality_conditions}).
+    
+    Since the theorem uses the same analytical expression to construct
+    $\bsigma$, then the second optimality condition $\bsigma=\bgamma$ in Eq.
+    (\ref{eq:primal_optimality_conditions}) follows immediately.
+
+    Finally, by Lemma \ref{lemma:conic_constraints_are_satisfied_analytically},
+    velocities $\mf{v}$ and the analytical impulses satisfy the cone constraint
+    $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$.
+\end{IEEEproof}

@@ -1,84 +1,34 @@
 \section{An Unconstrained Convex Formulation}
 \label{sec:unconstrained_convex_formulation}
-\CyanHighlight{Xuchen: The logic of this section can be better sorted out IMO.
-In particular, the formulation itself and the proof (and intuition) that it's
-equivalent to the constrained problem is a bit intertwined. Would it be better if
-you do things in the order?
-\begin{enumerate}
-    \item Introduce the formulation.
-    \item Comment on its similarity to the constrained problem (the same A term)
-    and how it's different from the constrained problem (the $\bsigma$ term is
-    replaced with the projection of $\mf{y}$ and now its unconstrained).
-    \item State Theorem 2 in this section.
-    \item Prove Theorem 2 (put the lemma here).
-\end{enumerate}
-I sense that you are trying to build more intuition into the process, but to me
-it makes things more complicated.}
 
-From Theorem \ref{th:primal_dual_equivalence} we know that $\bsigma = \bgamma$.
-\CyanHighlight{Xuchen: This is only true at the optimum, right?}
-Therefore we can use the analytical inverse dynamics from Section
-\ref{sec:analytical_inverse_dynamics} to eliminate $\bsigma$ from the primal
-formulation and obtain an unconstrained convex formulation in terms of
-generalized velocities $\mf{v}$ only.
-
-We then substitute $\bsigma=\bgamma=P_\mathcal{F}(\mf{y})$ from Eq.
-\ref{eq:analytical_y_projection} into Eq. (\ref{eq:primal_regularized}) to
-obtain our unconstrained convex formulation in velocities only
+We use the analytical inverse dynamics to write an unconstrained convex
+formulation in terms of velocities only
 \begin{eqnarray}
-	\min_{\mf{v}} \ell_p(\mf{v}) =
-	\frac{1}{2}(\mf{v}-\mf{v}^*)^T\mf{A}(\mf{v}-\mf{v}^*) +
-	\ell_R(\mf{v})
+	\min_{\mf{v}} \ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
+	\frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2
 	\label{eq:primal_unconstrained}
 \end{eqnarray}
-with the regularizer
-\begin{equation}
-	\ell_R(\mf{v}) = \frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2
-\end{equation}
+where, as with other quantities, we form $\mf{y}$ by stacking together each
+$\mf{y}_i$ for all contact pairs together. Given the separable structure of the
+constraints, projection $P_{\mathcal{F}}(\mf{y})$ onto $\mathcal{F} :=
+\mathcal{F}_1 \times F_2 \times \cdots \times \mathcal{F}_{n_c}$ in the norm
+defined by $\mf{R}$ is formed by stacking together the individual projections
+$P_{\mathcal{F}_i}(\vf{y}_i)$ from Eq. (\ref{eq:y_projection}).
 
-In order for the velocities solution of Eq. (\ref{eq:primal_unconstrained}) to
-be a solution of the original problem stated in Eq.
-(\ref{eq:primal_regularized}), they must also satisfy the conic constraint
-$\mf{g}\in\mathcal{F}^*$. We stablish this result in the following
-\CyanHighlight{Xuchen: Consider this alternative way to state the lemma that
-strips away unused information.
-\begin{lemma}
-    The conic constraint $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$ is satisfied if 
-    $\bsigma$ is given by $P_\mathcal{F}(\mf{y(\mf{v})})$.
-\end{lemma}
-}
-\begin{lemma}
-    velocites solution to Eq. (\ref{eq:primal_unconstrained}) satisfy the conic
-    constraint $\mf{g}\in\mathcal{F}^*$ when the impulses are given by
-    $\bsigma=\bgamma=P_\mathcal{F}(\mf{y})$.
-    \label{lemma:conic_constraints_are_satisfied_analytically}
-\end{lemma}
-\begin{IEEEproof}
-    The proof follows immediately from Moreau's decomposition theorem. That is,
-    with $\mf{v}_c - \hat{\mf{v}}_c\in\mathbb{R}^{3n_c}$ and $\bsigma$ the result
-    from the projection into $\mathcal{F}$ using the $\mf{R}$ norm, the linear
-    combination $\mf{v}_c - \hat{\mf{v}}_c + \mf{R}\bsigma$ must be in
-    $\mathcal{F}^*$.
-\end{IEEEproof}
-
-Therefore we can state the following
+The unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}) includes
+the same cost in velocities as the primal formulation from Eq.
+(\ref{eq:primal_regularized}). However, the conic constraint $\mf{g}\in
+\mathcal{F}^*$ in Eq. (\ref{eq:primal_regularized}) has been replaced by a cost
+term on the analytical inverse dynamics. We state the main result of this
+section in the following result, proved in Appendix \ref{app:unconstrained_formulation_equivalance}.
 \begin{theorem}
-    Velocities $\mf{v}$ solution to Eq. (\ref{eq:primal_unconstrained}) and
-    $\bsigma=P_\mathcal{F}(\mf{y})$ from the analytical solution in Eq.
-    (\ref{eq:analytical_y_projection}) are solution to the original primal
-    formulation stated in Eq. (\ref{eq:primal_regularized}).
+    The pair $\{\mf{v},\bsigma\}$, with velocities $\mf{v}$ solution to the
+    unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}) and
+    $\bsigma=P_\mathcal{F}(\mf{y}(\mf{v}))$, is primal optimal of the primal
+    formulation in Eq. (\ref{eq:primal_regularized}).
+    \label{th:unconstrained_formulation_equivalance}
 \end{theorem}
-\begin{IEEEproof}
-    Theorem \ref{th:primal_dual_equivalence} states that $\bsigma=\bgamma$.
-    Given known primal-optimal velocities, $\bgamma$ is given by the same
-    analytical inverse dynamics used in the unconstrained formulation in Eq.
-    (\ref{eq:primal_unconstrained}).
-    In addition, these velocities and the analytical impulses satisfy the cone
-    constraints by Lemma \ref{lemma:conic_constraints_are_satisfied_analytically}.
-\end{IEEEproof}
 
 Section \ref{sec:sap_solver} presents our novel SAP \CyanHighlight{TODO: make
 sure SAP is defined before} solver specifically designed to solve the
 unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}).
-
-
