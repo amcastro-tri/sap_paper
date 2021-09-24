@@ -1,0 +1,14 @@
+We present a convex formulation of compliant contact along with with a robust
+iterative method to solve it in practice. Our formulation eliminates contact
+constraints analytically to write an unconstrained convex formulation of
+frictional contact on velocities only, with guaranteed unique solution. Written in velocities only, we show our method warms-starts effectively using velocities computed at the previous time step, enabling the simulation of complex multibody systems with frictional contact at interactive rates. 
+
+Our time stepping approach is based on the $\theta\text{-method}$, which includes the second order midpoint rule. Our method linearizes the discrete $\theta\text{-method}$, introduces a positive definite approximation of its gradients, and solves a single quadratic program with second order cone constraints per time step.
+
+We demonstrate with our numerical simulations that when using the midpoint rule
+our approach conserves energy very well (\RedHighlight{use another term}) for
+systems with rolling contact.
+
+We show our method can solve to tight tolerances enabling the simulation of challenging robotics tasks, such peg-in-hole task with dexterous hands.
+
+
