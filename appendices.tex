@@ -1,6 +1,6 @@
-\section{Theorems Proofs}
+\section{Proof of Proposition \ref{prop:gradient_of_m_approximation}}
+\label{app:gradient_of_m_approximation}
 
-\begin{IEEEproof}[Proof of Proposition \ref{prop:gradient_of_m_approximation}]
 The Taylor expansion of $\mf{m}(\mf{v})$ at $\mf{v}=\mf{v}^*$ reads
 \begin{align}
 	\mf{m}(\mf{v}) &= \mf{m}^* + \frac{\partial \mf{m}}{\partial \mf{v}} (\mf{v}-\mf{v}^*) +
@@ -69,7 +69,8 @@ becomes
 	&- dt\frac{\partial\mf{G}}{\partial\mf{v}}(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2).
 \end{align*}
 
-In the absence of impacts, $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(dt)$, and thus
+Since contact is compliant, forces are finite within the finite interval $\delta
+t$ and therefore $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(dt)$. Thus
 \begin{align*}
 	\mf{E}(\mf{v}-\mf{v}^*)=\mathcal{O}_E(dt^3), \\
     dt\frac{\partial \mf{G}}{\partial \mf{v}}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(dt^2), \\ 
@@ -85,8 +86,7 @@ order.
 
 Finally, notice that $\mf{A}$ is a linear combination of positive definite
 matrices with non-negative scalars in the linear combination, and therefore
-$\mf{A}\succ 0$.	
-\end{IEEEproof}
+$\mf{A}\succ 0$.\hfill\IEEEQED
 
 \section{Analytical Inverse Dynamics Derivations}
 \label{app:analytical_inverse_dynamics_derivations}

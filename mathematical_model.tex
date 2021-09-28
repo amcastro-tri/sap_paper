@@ -73,7 +73,7 @@ our framework to generalize to some of the most popular schemes for forward
 dynamics:
 \begin{itemize}
 	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
-	\item Symplectic Euler with $\theta_{q} = 0$ and $\theta_v = \theta_{vq}=1$,
+	\item Symplectic Euler with $\theta_{q} = \theta_v = 0$ and $\theta_{vq}=1$,
 	\item Implicit Euler with $\theta_{q} = \theta_v = \theta_{vq}= 1$, and
 	\item Symplectic midpoint rule, which is second order, with $\theta_{q} =
 	\theta_v = \theta_{vq}= 1/2$,
@@ -135,24 +135,21 @@ of the original momentum balance in Eq. (\ref{eq:v_update}),
 	\mf{A}(\mf{v}-\mf{v}^*) = \mf{J}^T\mf{\bgamma}.
 	\label{eq:momentum_linearized}
 \end{align}
-Furthermore, in the absence of impact, which we characterize by $\mf{v} -
-\mf{v}^* = \mathcal{O}(dt)$, the approximation in Eq.
-(\ref{eq:momentum_linearized}) and the original discrete momentum update in Eq.
-(\ref{eq:v_update}) agree to second order as shown by the following result.
+Furthermore, the approximation in Eq. (\ref{eq:momentum_linearized}) and the
+original discrete momentum update in Eq. (\ref{eq:v_update}) agree to second
+order as shown by the following result, proved in Appendix
+\ref{app:gradient_of_m_approximation}.
 \begin{prop}	
-In the absence of impact, $\mf{A}$ is a first order approximation to the
-Jacobian of $\mf{m}$, i.e.,
+Matrix $\mf{A}$ is a first order approximation to the Jacobian of $\mf{m}$,
+i.e.,
 \begin{align}
 	\left. \frac{\partial \mf{m}}{\partial \mf{v}} \right|_{\mf{v}=\mf{v}^*} = \mf{A} + \mathcal{O}(dt).
 \end{align}
 Therefore, Eq. (\ref{eq:momentum_linearized}) is a second order approximation of
-the discrete balance of momentum in Eq. (\ref{eq:v_update}). \RedHighlight{TODO:
-consider replacing this sentence with $\mf{m}(\mf{v})$ and
-$\mf{A}(\mf{v}-\mf{v}^*)$ agree to second order as suggested by Frank.}
-Moreover, $\mf{A} \succ 0$.
+the discrete balance of momentum in Eq. (\ref{eq:v_update}). Moreover, $\mf{A}
+\succ 0$.
 \label{prop:gradient_of_m_approximation}
 \end{prop}
-\RedHighlight{Consider discussing the case where impact exists.}
 
 We summarize our discrete time stepping strategy as follows
 \begin{enumerate}
@@ -178,9 +175,10 @@ time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
 they are computed with the order of accuracy of the $\theta\text{-method}$.
 Furthermore, we also expect to recover the properties of the
 $\theta\text{-method}$ when contact constraints are not active. As an example,
-for bodies in contact that are under rolling friction but not sliding friction,
+for bodies in contact that are under rolling friction,
 the contact constraints behave as bi-lateral constraints that impose zero slip
-velocity. In this case, our method conserves energy when it is used with the
-symplectic mid-point rule. We demonstrate this in Section XXX with an example
-simulation of billiard balls.  \RedHighlight{Alejandro: Add proper reference to
-the billiard balls example in the numerical examples section.}
+velocity. In this case, our two stage method using the midpoint rule to compute
+$\mf{v}^*$ exhibits considerably less numerical dissipation than other methods.
+We demonstrate this in Section \ref{sec:spring_cylinder} with an example of a
+mechanical system with rolling friction.
+
