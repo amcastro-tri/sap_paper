@@ -340,5 +340,44 @@ optimizations for dense algebra.
 
 
 
-\subsection{Termination Conditions}
-\RedHighlight{Write this section}
+\subsection{Stopping Criteria}
+
+To assess convergence, we monitor the optimality condition for the unconstrained
+problem in Eq. (\ref{eq:primal_unconstrained}) by evaluating the norm of the
+momentum balance in Eq. (\ref{eq:primal_gradient})
+\begin{equation}
+	\nabla\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma.
+\end{equation}
+
+Notice that the components of $\nabla\ell_p$ have units of generalized momentum
+$\mf{p}=\mf{M}\mf{v}$. Depending on the choice of generalized coordinates, the
+generalized momentum components will have different units. In order to weigh all
+components equally, we define the diagonal matrix
+$\mf{D} = \text{diag}(\mf{M})^{-1/2}$ and perform the following change of variables
+\begin{align}
+	\tilde{\nabla}\ell_p &= \mf{D}\nabla\ell_p, \nonumber\\
+	\tilde{\mf{p}} &= \mf{D}\mf{p}, \nonumber \\
+	\tilde{\mf{j}}_c &= \mf{D}\mf{j}_c,
+	\label{eq:scaled_momentum_quantities}
+\end{align}
+where we defined the generalized contact impulse $\mf{j}_c=\mf{J}^T\bgamma$.
+With this scaling, all the new \emph{tilde} variables have the same units,
+$\text{J}^{1/2}$. Using these definitions, we write our stopping criteria as
+\begin{equation}
+	\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a + \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert).
+	\label{eq:stopping_criteria}
+\end{equation}
+where $\varepsilon_r$ is a dimensionless relative tolerance that we usually set
+in the range $10^{-6}$ to $10^{-3}$. For all of our simulations in this paper, we
+use $\varepsilon_r = 10^{-5}$. The absolute tolerance $\varepsilon_a$ is used to
+detect rare cases where the solution leads to no contact and no motion, typically
+due to externally applied forces. We always set this tolerance to a small number,
+$\varepsilon_a=10^{-16}$.
+
+\subsection{Implementation Details}
+\RedHighlight{TODO: write.}
+\begin{itemize}
+	\item Implemented in Drake.
+	\item Using supernodal algebra from Frank
+	\item Using C++ and Eigen's library to get the most out of AVX and the like (let Frank say more here.)
+\end{itemize}

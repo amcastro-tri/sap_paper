@@ -1,316 +1,233 @@
-
 \section{Test Cases}
 \label{sec:test_cases}
 
-For these cases, unless otherwise specified, we use a regularization given by
-$\alpha=1.0$. 
+We evaluate the robustness, accuracy, and performance of our method in a number
+of simulation tests. All simulations are carried out in a system with 24 2.2
+GHz Intel Xeon cores (E5-2650 v4) and 128 GB of RAM, running Linux. For all
+solvers below however, all tests are run in a single thread.
+
+For all of our simulations, unless otherwise specified, our model uses
+$\beta=1.0$ and $\sigma=10^{-3}$ for the regularization parameters in Eq. (\ref{eq:normal_regularization}) and Eq. (\ref{eq:slip_time_scale}), respectively.
+
+For SAP, tolerances for the stopping criteria are set to
+$\varepsilon_a=10^{-16}$ and $\varepsilon_r=10^{-5}$. While the other solvers we use below use different stopping criteria, we use the same performance and accuracy metrics for all of them in order to perform a fair comparison.
+
+\subsection{Performance Comparisons Against Other Solvers}
+We evaluate commercial software Gurobi and Mosek to solve our convex
+formulation of contact. Both solvers can solve a large variety of optimization
+problems and are considered the industry standard. However, Mosek is not robust
+for these problems and does not always find a solution. Therefore, we only present
+comparison results with Gurobi.
+
+As an open source option, we evaluate the Geodesic interior-point methods (IPM)
+from \cite{bib:permenter2020}. Geodesic IPMs, in contrast with primal-dual
+IPMs, do not apply Newton's method to the central-path conditions directly.
+Instead, they use geodesic curves that satisfy the complementarity slackness
+condition. This method has proven to warm start effectively when applied to
+Model Predictive Control Problems \cite{bib:permenter2020} and therefore we are
+interested in evaluating its performance for solving our convex formulation of
+contact. Moreover, we use the Geodesic IPM solver's supernodal algebra described
+in Section \ref{sec:problem_sparsity} in our implementation of SAP. Using the
+same algebra for SAP and Geodesic IPM allows us to perform a fair comparison between
+the two solvers; performance differences can be attributed to the properties
+inherent to the optimization method instead of the differences in the linear
+algebra operations.
 
 \subsection{Spring-Cylinder}
 \label{sec:spring_cylinder}
 \input{spring_cylinder.tex}
 
-\subsection{Conveyor Belt}
-\label{sec:conveyor_belt}
-
-In this case a box of mass $m=1~\text{kg}$ that is only allowed to move in the
-vertical direction is placed on top of a conveyor belt moving horizontally in
-the $-x$ direction with a specified velocity $u_0=-0.1~\text{m}/\text{s}$, Fig.
-\ref{fig:conveyor_belt}. The coefficient of friction is $\mu=0.5$.
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.4\columnwidth]{figures/conveyor_belt/conveyor_belt.png}
-	\caption{\label{fig:conveyor_belt} 
-	Schematic of the conveyor belt case highlighting the \textit{gliding
-	artifact} during sliding.}
-\end{figure}
-
-Given the regularization used in this formulation, a given amount of compliance
-given by $R_n$ is expected and therefore the box will initially undergo a
-vertical motion until the \textit{compliant} normal force balances the weight of
-the box. We will see however that due to the convex regularization the vertical
-motion is not only given by the normal compliance but also by the sliding
-velocity at contact.
-
-We run this simulation using time steps in a geometric sequence with a common
-ration $\sqrt{10}$. Starting with the smallest value of $dt = 10^{-4}~\text{s}$
-to the larger value of $dt = 10^{-2}~\text{s}$.
-
-\subsubsection{Steady state solution}
-In the steady state the normal impulse $\gamma_n$ will balance the weight of box
-$P=m\,g$, i.e. $\gamma_n=dt\,m\,g$. Also the normal velocity will be zero and
-therefore we can find out the steady state value of the signed distance $\phi$,
-or similarly the value of the stabilization velocity $b=\phi/dt$, from the
-analytical inverse dynamics Eq. \ref{eq:inverse_dynamics_velocity} as
-\begin{eqnarray}
-	b=\frac{\phi}{dt}=\mu\Vert\vf{v}_t\Vert-(1+\tilde\mu^2)R_n\gamma_n
-\end{eqnarray}
-
-For this problem we have that $\mf{J}_c=[0, 0, 1]^T$ and $\mf{M}=m$ and thus the
-Delassus operator is
-\begin{equation}
-	\mf{W} = \begin{bmatrix}
-		0 & 0 & 0\\
-		0 & 0 & 0\\
-		0 & 0 & 1/m\\
-		\end{bmatrix}
-\end{equation}
-and therefore $g_i=(3m)^{-1}$.
-
-Using the fact that $R_n=\varepsilon_n\,g_i = \frac{\alpha^2}{4\pi^2}g_i$, and
-that $\gamma_n=dt\,m\,g$ we can write the final expression for $b$ as
-\begin{eqnarray}
-	b=\frac{\phi}{dt}=\mu\Vert\vf{v}_t\Vert-(1+\tilde\mu^2)\frac{\alpha^2}{12\pi^2}g\,dt
-	\label{eq:conveyor_belt_analytic}
-\end{eqnarray}
-
-In our regularization, $\alpha$ controls the amount of \textit{compliance}. In
-the limit $\alpha\rightarrow 0$ we approach the rigid limit. Equation
-\ref{eq:conveyor_belt_analytic} shows us that in this limit the signed distance
-approaches the \textit{positive} value $\phi = dt\mu\Vert\vf{v}_t\Vert$. This is
-consistent with previous work using Anitescu's formulation which does not
-introduce regularization, see \cite{bib:anitescu2006, bib:mazhar2014}.
-
-\subsubsection{Initial conditions}
-If we replace values for $\alpha=1.0$, $g=10~\text{m}/\text{s}^2$ and a range of
-time steps, we find out that the effect of normal compliance is much smaller
-than the rigid limit value $\phi = dt\mu\Vert\vf{v}_t\Vert$ and thus $\phi$ in
-this problem is positive for relevant parameter values. This means that if we
-use an initial condition of $\phi=0$ (rigid contact), the formulation will
-generate a very large impulse in order to violently push the box away from the
-moving belt. Therefore we prefer to initialize the vertical position of the box
-such that $\phi = dt\mu|u_0|$ to avoid this impulsive behavior.
-
-\subsubsection{Simulation results}
-
-Starting with the box at $z=dt\mu|u_0|$ and $\dot{z}=0$ we simulate forward the
-dynamics of the box for $0.15$ seconds, long enough to reach a steady state at
-which the normal compliance result from regularization balances the weight of
-the box.
-
-Figure \ref{fig:phi_over_h_Rt_comparison} plots the value of $b=\phi/dt$ for a
-range of time steps and two different values of $\sigma_t$ ($R_t=\sigma_tR_n$).
-As predicted by Eq. (\ref{eq:conveyor_belt_analytic}), in the limit
-$dt\rightarrow 0$ we have that
-$b=\phi/dt=\mu\Vert\vf{v}_t\Vert=0.05~\text{m}/\text{s}$. As the time step
-increases, the effect of the numerical compliance introduced for regularization
-becomes more evident and this value drops as the box sinks deeper into the
-moving belt. The value of $R_t$ has a weaker though noticeable effect given the
-term $(1+\tilde\mu^2)$ in Eq. (\ref{eq:conveyor_belt_analytic}).
-%
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{figures/conveyor_belt/phi_over_h_Rt_comparison.png}
-	\caption{\label{fig:phi_over_h_Rt_comparison} 
-	Steady state value of the \textit{stabilization velocity} $b=\phi/dt$ as a
-	function of the time step $dt$. As the time step approaches zero the scheme
-	approximates to the \textit{rigid} solution at which
-	$\phi/dt\rightarrow\mu\Vert\vf{v}_t\Vert$. The slope of this line is
-	consistent with the analytical solution in Eq.
-	(\ref{eq:conveyor_belt_analytic}) due to the numerical compliance introduced
-	by the regularization terms. The slope increases with larger values of $R_t$
-	as predicted by Eq. (\ref{eq:conveyor_belt_analytic}).}
-\end{figure}
-
-The dynamics of the initial transient is shown in Fig.
-\ref{fig:normal_velocity}, which plots velocity a s function of time. It is
-interesting to note that when both time and velocity are normalized by the step
-size, solution results using different step sizes collapse into a single curve.
-From Fig. \ref{fig:normal_velocity} we see that the initial transient lasts for
-about four time steps, regardless of the step size. We also observe that the
-normal velocity values are larger for larger time steps. This is consistent with
-the results in Fig. \ref{fig:phi_over_h_Rt_comparison} since larger time steps
-lead to larger compliance and larger values of $\phi$. 
-
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{figures/conveyor_belt/normal_velocity.png}
-	\caption{\label{fig:normal_velocity} 
-	Normal velocity as a function of time. Simulation results using different
-	time steps collapse into a single curve when both velocity and time are
-	normalized using the time step.}
-\end{figure}
-
-\subsection{Sliding box}
-\label{sec:sliding_box}
-
-In this case a box of mass $m=1~\text{kg}$ with given an initial horizontal
-velocity $v=[1.0, 0.0, 0.0]~\text{m}/\text{s}$ slides on the ground with
-friction coefficient $\mu=0.5$ until it stops, see Fig. \ref{fig:sliding_box}.
-The case is run with two time steps, $dt=10^{-2}~\text{s}$ and
-$dt=10^{-3}~\text{s}$.
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.3\columnwidth]{figures/sliding_box/sliding_box.png}
-	\caption{\label{fig:sliding_box} 
-	Schematic of the sliding box case highlighting the \textit{gliding artifact}
-	during sliding.}
-\end{figure}
-
-\subsubsection{Inconsistent initial conditions}
-The naive initial condition for this case is to set the box to be in imminent
-contact with the ground, i.e. $z = 0$. We would think that the box would
-slightly sink into the ground due to the numerical compliance introduced by
-regularization, as we learned from Section \ref{sec:conveyor_belt}. However we
-quickly find out from the Fig. (\ref{fig:sliding_box}) that this is not the
-case. Nevertheless we do find that this is a consistent results previously
-reported in \cite{bib:mazhar2014}. However the cause of this apparent artifact
-of the formulation is not investigated further in \cite{bib:mazhar2014}.
-
-The answer to why we obtain this solution becomes evident when looking at the
-forces in Fig. (\ref{fig:sliding_box}). We find out that there is an initial
-large impulse at the very first time step and forces go to zero immediately
-after. The reason, is that this very large impulse pushed the box upwards into a
-short free flight trajectory. This explains the vertical velocity profile in
-Fig. (\ref{fig:sliding_box}) with the vertical velocity decreasing only due to
-the acceleration of gravity. The question now is, why is it that in the very
-first time step we obtain this very large impulse? the situation doesn't seem to
-improve when reducing the time step. The answer lies in the previous case in
-Section \ref{sec:conveyor_belt}. We learned that when a contact is sliding, the
-contact distance will be slightly positive and approximately given by $z\approx
-dt\mu\Vert\vf{v}_t\Vert$. Therefore, when we initialize the problem with $z=0$,
-this effectively sets the problem with a constraint violation given by $z\approx
-dt\mu\Vert\vf{v}_t\Vert$ and the solver must violently push the box out of this
-configuration. This initial transient is so violent that sets the box on free
-flight for almost $0.1$ seconds.
-
-\subsubsection{Consistent initial conditions}
-The solution is then to initialize the box with $z= dt\mu\Vert\vf{v}_t\Vert$.
-The reader might argue that in general this is not possible. However, keep in
-mind that this kind of problems is impulsive and not quite physical. The reason
-is that in this problem the box is already in motion at $t=0$ while in the real
-world we'd need to accelerate the box to that velocity in a finite time, giving
-the formulation enough time to settle to a proper value of $z$ consistent with
-the contact constraints. For the sake of understanding this effect however, we
-set now the initial height of the box to $z= dt\mu\Vert\vf{v}_t\Vert$.
-
-The new solution is shown in Fig. (\ref{fig:sliding_box_phi0}). Even though
-there is a small transient at the beginning of the simulation due to the
-numerical compliance introduced by the regularization, the solution is
-significantly smoother and better approximates the real problem we want to
-solve; the normal force $f_n=10~\text{N}$ quickly settles to balance the weight,
-the horizontal forces settles to the sliding force $f_t=-\mu\,f_n=5~\text{N}$
-and the horizontal velocity decelerates at constant rate to a full stop.
-
-\subsubsection{Convex relaxation artifacts}
-
-We essentially observe three different artifacts in Fig.
-(\ref{fig:sliding_box_phi0}). The first one is the initial transient lasting
-about $~4$ time steps. This is related to the numerical compliance introduced by
-the regularization. As we learned from Fig. (\ref{fig:phi_over_h_Rt_comparison})
-compliance leads to a signed distance value that is slightly smaller than
-$dt\mu\Vert\vf{v}_t\Vert$. 
-
-The second artifact is the small negative vertical velocity as the box is
-sliding. This requires more analysis but we can explain it. As we learned, the
-box will glide at a distance from the ground approximately equal to $z\approx
-dt\mu\Vert\vf{v}_t\Vert$. However the box is decelerating at a constant rate due
-to the Coulomb friction force, i.e. $\dot{v}_t\approx -\mu g$. Therefore we can
-estimate the normal velocity as $v_n=\dot{z}\approx dt\mu \dot{v}_t=dt\mu^2g$.
-This leads to the estimation $v_n\approx 2.5\times 10^{-2}~\text{m}/\text{s}$
-when $dt=10^{-2}~\text{s}$ and $v_n\approx 2.5\times 10^{-3}~\text{m}/\text{s}$
-when $dt=10^{-3}~\text{s}$, which is in perfect agreement with the results shown
-in Fig. (\ref{fig:sliding_box_phi0}).
-
-The final and third artifact is the small peak in the normal force, which is not
-present in the true physical solution. Interestingly, this peak seems to have a
-magnitude independent of the time step. A deeper analysis will also explain
-this. When the box finally transitions to stiction, velocity drops to zero, as
-we see in the figure. As we already saw, there is a non-zero normal velocity
-$v_n$ as the box slides and this velocity goes to zero when the box enters into
-stiction. Therefore there is a finite velocity change of magnitude $v_n$, an
-impact, that leads to an impulse $\Delta\gamma_n\approx m\,v_n\approx
-dt\mu^2m\,g$. The change in the normal force is then $\Delta
-f_n=\Delta\gamma_n/dt\approx \mu^2m\,g \approx 2.5~\text{N}$, independent of the
-time step. The peak in Fig. (\ref{fig:sliding_box_phi0}) is slightly below 2 N,
-consistent with our estimation since careful inspection of the results show us
-that velocity does not go to zero in a single step but rather it takes about two
-steps and therefore the impulsive response has a wider support and smaller
-magnitude.
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.45\columnwidth]{figures/sliding_box/forces_h1em2.png}
-    \includegraphics[width=0.45\columnwidth]{figures/sliding_box/velocities_h1em2.png}\\
-    \includegraphics[width=0.45\columnwidth]{figures/sliding_box/forces_h1em3.png}
-    \includegraphics[width=0.45\columnwidth]{figures/sliding_box/velocities_h1em3.png}\\
-	\caption{\label{fig:sliding_box} 
-	Horizontal $u$ and vertical $v$ velocities (left) and contact forces (right)
-	as a function of time. Osccillations during sliding are a consequence of the
-	convex relaxation which introduces a dependence of the normal forces on the
-	sliding velocity.}
-\end{figure}
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=0.45\columnwidth]{figures/sliding_box/forces_h1em2_phi0.png}
-    \includegraphics[width=0.45\columnwidth]{figures/sliding_box/velocities_h1em2_phi0.png}\\
-    \includegraphics[width=0.45\columnwidth]{figures/sliding_box/forces_h1em3_phi0.png}
-    \includegraphics[width=0.45\columnwidth]{figures/sliding_box/velocities_h1em3_phi0.png}\\
-	\caption{\label{fig:sliding_box_phi0} 
-	Horizontal $u$ and vertical $v$ velocities (left) and contact forces (right)
-	as a function of time. Osccillations during sliding are a consequence of the
-	convex relaxation which introduces a dependence of the normal forces on the
-	sliding velocity.}
-\end{figure}
-
 \subsection{Clutter}
 \label{sec:clutter}
 
-The purpose of this case is to evaluate the scalability of this method with
-problem size. The setup consists of an open container of
-$80~\text{cm}\times80~\text{cm}$ and $40~\text{cm}$ of height. Objects are
-dropped into this container from four different piles of five objects each, as
-shown in the upper left corner of Fig. \ref{fig:clutter}. Each pile consists of
-an arbitrary assortment of spheres of radii $5~\text{cm}$ and boxes with sides
-$10~\text{cm}$ in length. To emulate multi-contact, boxes are augmented with an
-array of $3\times 3$ points on each face, shown as red spheres in Fig.
-\ref{fig:clutter}.
+The purpose of this case is to evaluate robustness, convergence properties, and
+scalability of our SAP solver when compared against other existing methods.
 
-Figure \ref{fig:clutter} shows snapshots of the solution computed with
-$dt=10^{-2}~\text{s}$. The number of contacts increases over time as the objects
-settle in a clutter within the container, as shown in Fig.
-\ref{fig:clutter_iterations}. Notice these are the number of contact constraints
-per time step. The number of active contacts will be smaller.
+The setup consists of an open container with a square base of size
+$80~\text{cm}\times80~\text{cm}$ and $80~\text{cm}$ in height. Bodies are
+dropped into this container in four different columns with the same number of
+bodies each (see Fig. \ref{fig:clutter_snapshots}). Each column consists of an
+arbitrary assortment of spheres of radius $5~\text{cm}$ and boxes with sides of
+$10~\text{cm}$ in length. All bodies have density $1000\text{
+kg}/\text{m}^3$ and therefore each sphere has a mass of approximately
+$0.524\text{ kg}$ and each box has a mass of $1.0\text{ kg}$. We set a very high
+contact stiffness of $k=10^{12}\text{ N}/\text{m}$ so that the model is in the
+\emph{near-rigid} regime. The dissipation time scale is set to equal the time
+step and the friction coefficient of all surfaces is $\mu=1.0$.
+\begin{figure}[t]
+    \centering
+    %trim={<left> <lower> <right> <upper>}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_w_walls_t0.png}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_no_walls_t0.png}\\
+    \vspace{0.1cm}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_w_walls_t2_zoom.png}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_no_walls_t2_zoom.png}
+    \caption{Initial conditions (top) and an intermediate configuration after $2$ seconds of
+    simulated time (bottom) for the clutter setup with (left) and without
+    (right) walls. Many of the spheres in the configuration with no walls
+	roll outside the frame in the intermediate configuration.}
+    \label{fig:clutter_snapshots}
+\end{figure}
 
-Figure \ref{fig:clutter_cost_budget} shows the computational cost per Newton
-iteratoin as a function of the number of contacts and the percentile
-contribution of assembling the system of equations (Hessian and residual),
-solving it with Cholesky factorization and line search. It is remarkable that
-even when we perform an exact line search, to machine precision, its cost is at
-most $8\%$ for small number of contacts and it drops below $5\%$ for larger
-problems. The cost of assembly dominates, followed by the Cholesky solve. This
-is expected since our prototype uses dense matrices and sparsity is not
-exploited in any way. Matrix assembly could be improved significantly if
-Featherstone's $\mathcal{O}(n)$ operations are used to build the Hessian.
+We first run our simulations with 10 bodies per column for a total of 40 bodies.
+We simulate 10 seconds using time steps of size $\delta t = 10\text{ ms}$.
+Number of solver iterations and wall-clock time per time step are reported in
+Fig. \ref{fig:clutter_w_walls_nb40} for the three solvers. We observe that SAP
+needs to perform a larger number of iterations during the very energetic initial
+transient. As the system reaches a steady state, however, SAP warm starts very
+effectively, performing only about $3$ iterations per time step. Even though
+SAP necessities a larger number of iterations to converge than Geodesic IPM during this initial transient, the wall-clock time per time step is very
+similar. This tells us that SAP's cost per iteration is lower than that of
+Geodesic IPM, even when they both use the same supernodal algebra. Unlike SAP and Geodesic IPM that benefit from warm start, we see that Gurobi performs
+about $9$ iterations per time step in both the initial transient and the steady state.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[height=0.44\columnwidth]{figures/pile_of_objects/clutter_t0.png}
-	\includegraphics[height=0.44\columnwidth]{figures/pile_of_objects/clutter_t0p5.png}\\
-	\includegraphics[height=0.4\columnwidth]{figures/pile_of_objects/clutter_t1p0.png}
-	\includegraphics[height=0.4\columnwidth]{figures/pile_of_objects/clutter_t5p0.png}\\
-	\caption{\label{fig:clutter} 
-	Snapshots of the solution computed with time step $dt=10^{-2}~\text{s}$.
-	From left to right, top to bottom, $t=0, 0.5, 1.0, 5.0\text{ s}$. }
+    %trim={<left> <lower> <right> <upper>}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/iterations_nb40.png}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/wall_clock_nb40.png}    
+	\caption{\label{fig:clutter_w_walls_nb40} 
+	Iterations and wall-clock time per time step for SAP, Geodesic IPM, and
+	Gurobi for the clutter case with 40 bodies and with walls. Most of the
+	energy is lost during the first $\sim300$ time steps as the objects pile up
+	at the bottom of the box.}
 \end{figure}
 
+\subsubsection{Scalability}
+
+We evaluate the performance of SAP with different problem sizes by varying the
+number of objects in the clutter with all other parameters held constant. We
+study scalability of the test case both with and without walls (see
+Fig. \ref{fig:clutter_snapshots}) as the variation in the setup leads to very
+different sequences of contact configuration. The size of the problems can be
+appreciated in Fig. \ref{fig:clutter_num_contats} showing the number of contact
+constraints at the end of the simulation when objects are in steady state
+against the number of objects. We observe a larger number of contacts for the
+configuration without walls since in this configuration many of the boxes spread
+over the ground and lay flat on one of their faces, leading to a multi-contact
+configuration (see Fig. \ref{fig:clutter_snapshots} for instance). Notice that
+each body contributes 6 DOFs and each contact constraint contributes 3 unknowns.
+Therefore, in the case with 200 bodies, the problem involves 1200 DOFs and about
+2700 contact unknowns for a total of about 3000 unknowns.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.45\columnwidth]{figures/pile_of_objects/number_of_contacts.png}
-	\includegraphics[width=0.45\columnwidth]{figures/pile_of_objects/newton_iterations.png}\\
-	\caption{\label{fig:clutter_iterations} 
-	Number of contacts and Newton iterations vs. time. }
+	\includegraphics[width=0.6\columnwidth]{figures/clutter/number_of_contacts.png}
+	\caption{\label{fig:clutter_num_contats} 
+	Total number of contacts with objects in steady state at the end of the
+	simulation for setup with and without walls.}
 \end{figure}
 
+We measure the total time spent by each solver and define the \emph{speedup}
+against Gurobi. Figure \ref{fig:clutter_speedup} shows the speedup for both
+SAP and Geodesic IPM in the configuration with and without walls.
+The setup with walls is particularly difficult given that objects are
+constrained to pile up, leading to a configuration in which almost all objects
+are coupled with every other object by frictional contact
+(see Fig. \ref{fig:clutter_snapshots}). That is, the motion of an object at the
+bottom of the pile can lead to motion of another object far on top of the pile.
+In contrast, the simulation with no walls leads to \emph{islands} of objects
+that do not interact with each other.
+
+In general, we observe two regimes. For problems with less than about 40 bodies,
+SAP outperforms Gurobi significantly by up to a factor of 25 in the case with
+walls and up to a factor of 50 with no walls. Beyond 80 bodies, Gurobi
+outperforms both SAP and Geodesic IPM in the case with walls, but SAP is about
+10 times faster for the case with no walls. Though SAP shows to be about twice
+as fast as Geodesic IPM for most problem sizes, it can be five times faster for
+small problems with 8 bodies or less.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.45\columnwidth]{figures/pile_of_objects/wall_clock_vs_contacts.png}
-	\includegraphics[width=0.45\columnwidth]{figures/pile_of_objects/wall_clock_contributions_vs_contacts.png}\\
-	\caption{\label{fig:clutter_cost_budget} 
-	Computational cost budget. Cost in seconds per Newton iteration (left) and
-	percentile contribution per iteration (right).}
+    %trim={<left> <lower> <right> <upper>}
+    \adjincludegraphics[width=0.49\columnwidth,trim={{0.02\width} 0 {0.05\width} 0},clip]{figures/clutter/speedup_w_walls.png}
+    \adjincludegraphics[width=0.49\columnwidth,trim={{0.02\width} 0 {0.05\width} 0},clip]{figures/clutter/speedup_no_walls.png}
+	\caption{\label{fig:clutter_speedup} 
+	Speedup against Gurobi for both SAP and Geodesic IPM for the configuration with walls (left) and without walls (right).}
 \end{figure}
 
+It could be argued that these speedup results depend on the accuracy settings of
+each solver. For a fair comparison, we define the dimensionless momentum error
+as
+\begin{equation}
+	e_m = \frac{\Vert\tilde{\nabla}\ell_p\Vert}{\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)},\nonumber
+\end{equation}
+using the scaled generalized momentum quantities in Eq.
+(\ref{eq:scaled_momentum_quantities}). We assess the accuracy of the
+complementarity slackness with the dimensionless quantity
+\begin{eqnarray*}
+	e_\mu = \frac{1/n_c\sum_i|\bm{g}_i\cdot\bgamma_i|}{\ell_p}.
+\end{eqnarray*}
+
+Figure \ref{fig:clutter_errors_w_wall} shows average values of $e_m$ and $e_\mu$
+over all time steps. Since SAP satisfies the complementarity slackness exactly,
+$e_\mu$ is not shown. We have verified this to be true within machine precision
+for all simulated cases.
+
+SAP's momentum error is below $10^{-5}$ as expected since this is the value used
+for the termination condition. Similarly, the complementarity slackness is below
+$10^{-5}$ for Geodesic IPM, since this is the value used for its own termination
+condition. Gurobi does a good job at satisfying the complementarity slackness.
+However, it is the solver with the largest error in the momentum equations, even
+though both SAP and Geodesic IPM outperform Gurobi in most of the test cases.
+These metrics demonstrate that when SAP and Geodesic IPM outperform Gurobi, it
+is not at the cost of losing accuracy.
+\begin{figure}[!h]
+	\centering
+    %trim={<left> <lower> <right> <upper>}
+    \adjincludegraphics[height=0.40\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_w_walls.png}
+	\adjincludegraphics[height=0.40\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_no_walls.png}\\
+    \adjincludegraphics[height=0.40\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_w_walls.png}
+    \adjincludegraphics[height=0.40\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_no_walls.png}
+	\caption{\label{fig:clutter_errors_w_wall} 
+	Momentum balance error $e_m$ (top) and complementarity condition error
+	$e_\mu$ (bottom) for the clutter case with walls (left) and without walls
+	(right).}
+\end{figure}
+
+\subsubsection{Slip Parameter}
+
+We study the effect of the slip parameter $\sigma$ in Eq.
+(\ref{eq:slip_time_scale}). As before, we use $\delta t = 10\text{ ms}$ and
+simulate 40 objects for 10 seconds to a steady state configuration. At this
+steady state at the end of the simulation, we compute the mean slip velocity
+among all contacts. Figure \ref{fig:clutter_sigma_vt} shows this mean slip
+velocity along with the estimated slip in Eq. (\ref{eq:slip_estimation}), $v_s
+\approx\sigma\mu\delta t g$, shown in dashed lines. We see that the mean slip
+velocity remains below the estimated slip as expected in a static configuration
+with objects in stiction. In the case with walls where stiction helps to hold
+the steady state static configuration, we see that the mean slip velocity
+closely follows the slope of the slip estimate. Without the walls, objects do
+not pile up in a complex static structure but simply lie on the ground, and
+therefore, the resulting slip velocities are significantly smaller. The sudden
+drop in the slip velocity for $\sigma>10^{-3}$ is caused by the sensitivity of
+the final state on the value of $\sigma$. As $\sigma$ increases, so does the
+slip velocity bound $v_s$ and objects in the configuration without walls can
+slowly drift into a configuration leading to more contacts. In particular, boxes
+are more likely to slowly drift until one of their faces lies flat
+on the ground, a configuration with zero slip once steady state is reached.
+Finally, we observe that when using $\sigma=10^{-3}$, the amount of slip is
+negligible for robotic applications.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{figures/clutter/sigma_vt.png}
+	\caption{\label{fig:clutter_sigma_vt} 
+	Mean slip velocity at the end of the simulation with objects at rest as a
+	function of the slip parameter. The estimated slip $v_s = \sigma\mu\delta t g$ is shown in dashed lines.}
+\end{figure}
+
+We conclude by examining the effect of $\sigma$ on the conditioning of the
+system. Figure \ref{fig:clutter_sigma} shows the condition number of the Hessian
+in the final configuration and the mean number of Newton iterations throughout
+the simulation. We see that the condition number scales as $\sigma^{-1}$ while
+the mean number of Newton iterations is roughly proportional to  $\ln(\sigma)$.
+Notice that our choice $\sigma=10^{-3}$ for this paper is placed right in the
+middle, in a log scale, of the range of values examined in this study.
+\begin{figure}[!h]
+	\centering
+    %trim={<left> <lower> <right> <upper>}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/sigma_iterations.png}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/sigma_condition_number.png}
+	\caption{\label{fig:clutter_sigma} 
+	Effect of the slip parameter on the conditioning of the system. Mean Newton iterations per step (left) and mean condition number (right).}
+\end{figure}
+
+    
