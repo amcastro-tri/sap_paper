@@ -128,10 +128,10 @@ unphysical artifacts.
 Firstly, the factor $1+\tilde{\mu}^2$ models an effective stiffness
 $k_\text{eff}=k/(1+\tilde{\mu}^2)$ and dissipation
 $c_\text{eff}=c/(1+\tilde{\mu}^2)$, different from the physical values. This
-implies that in order to accurately model compliance during sliding, we must
-satisfy the condition $\tilde{\mu} \approx 0$ or, equivalently, $R_t \ll R_n$.
-Section \ref{sec:understanding_model_parameters} introduces a parameterization
-of $R_t$ that satisfies this condition.
+tell us that in order to accurately model compliance during sliding we must
+satisfy the condition $\tilde\mu=\mu\,(R_t/R_n)^{1/2} \approx 0$ or,
+equivalently, $R_t \ll R_n$. Section \ref{sec:understanding_model_parameters}
+introduces a parameterization of $R_t$ that satisfies this condition.
 
 Secondly, while we'd like to recover $\gamma_n = -\delta t(k\phi + c v_n)$ as in
 stiction, we instead see that the slip velocity $\vf{v}_t$
