@@ -175,9 +175,10 @@ time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
 they are computed with the order of accuracy of the $\theta\text{-method}$.
 Furthermore, we also expect to recover the properties of the
 $\theta\text{-method}$ when contact constraints are not active. As an example,
-for bodies in contact that are under rolling friction but not sliding friction,
+for bodies in contact that are under rolling friction,
 the contact constraints behave as bi-lateral constraints that impose zero slip
-velocity. In this case, our method conserves energy when it is used with the
-symplectic mid-point rule. We demonstrate this in Section XXX with an example
-simulation of billiard balls.  \RedHighlight{Alejandro: Add proper reference to
-the billiard balls example in the numerical examples section.}
+velocity. In this case, our two stage method using the midpoint rule to compute
+$\mf{v}^*$ exhibits considerably less numerical dissipation than other methods.
+We demonstrate this in Section \ref{sec:spring_cylinder} with an example of a
+mechanical system with rolling friction.
+
