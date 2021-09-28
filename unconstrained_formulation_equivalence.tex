@@ -4,33 +4,45 @@ Before proving this theorem, we need the following result.
     if $\bsigma$ is given by $P_\mathcal{F}(\mf{y(\mf{v})})$.
     \label{lemma:conic_constraints_are_satisfied_analytically}
 \end{lemma}
-\RedHighlight{TODO: incorporate detailed proof from Xuchen in PR 8. The one here is just a placeholder.}
 \begin{IEEEproof}
-    The proof follows immediately from Moreau's decomposition theorem. That is,
-    with $\mf{v}_c - \hat{\mf{v}}_c\in\mathbb{R}^{3n_c}$ and $\bsigma$ the
-    result from the projection into $\mathcal{F}$ using the $\mf{R}$ norm, the
-    linear combination $\mf{v}_c - \hat{\mf{v}}_c + \mf{R}\bsigma$ must be in
-    $\mathcal{F}^*$.
+    Since $\bsigma$ is the projection of $\mf{y}(\mf{v})$ to the cone
+    $\mathcal{F}$ with the $\mf{R}$ norm, by Moreau's decomposition theorem, we
+    know that $\mf{y}(\mf{v}) - \bsigma$ is in the polar cone of $\mathcal{F}$
+    with the $\mf{R}$ norm. That is,
+    \begin{align*}
+        \langle \mf{y}(\mf{v}) - \bsigma, \mf{x} \rangle_\mf{R} \le 0 
+    \end{align*}
+    for all $\mf{x} \in \mathcal{F}$, with the inner product
+    $\langle\mf{v},\mf{w}\rangle_\mf{R}=\mf{v}^T\mf{R}\mf{w}$. Reorganizing
+    terms, we get
+    \begin{align*}
+        \mf{x}^T \mf{R}(\mf{y}(\mf{v}) - \bsigma) &\le 0 \\
+        \mf{x}^T (-\mf{R}\bsigma - \mf{v}_c + \hat{\mf{v}}_c) &\le 0 \\
+        \langle \mf{x}, -\mf{R}\bsigma - \mf{v}_c + \hat{\mf{v}}_c \rangle &\le 0
+    \end{align*}
+    for all $\mf{x} \in \mathcal{F}$. Therefore, it follows that
+    $-\mf{g}=-(\mf{v}_c - \hat{\mf{v}}_c + \mf{R}\bsigma)$ is in the polar cone
+    of $\mathcal{F}$ and thus $\mf{g}$ is in the dual cone of $\mathcal{F}$.
 \end{IEEEproof}
-\begin{IEEEproof}[Proof of Theorem \ref{th:unconstrained_formulation_equivalance}]
-    The optimality condition for the unconstrained formulation in
-    \eqref{eq:primal_unconstrained} is $\nabla\ell_p(\mf{v})=\mf{0}$. It is
-    shown in Appendix \ref{app:gradients_derivation} that
-    \begin{equation*}
-        \nabla\ell_p(\mf{v})=\mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
-    \end{equation*}
-    \RedHighlight{TODO: Make sure the appendix is consistent when you update it. In particular, the appendix has $\mf{M}$ instead of $\mf{A}$.}
-    with impulses given by $\bgamma(\mf{v})=P_\mathcal{F}(\mf{y}(\mf{v}))$,
-    the dual optimal. Therefore, $\nabla\ell_p(\mf{v})=\mf{0}$ implies
-    \eqref{eq:momentum_optimality}, the first optimality condition for
-    \eqref{eq:primal_regularized}.
-   
-    The analytical inverse dynamics solution shows that
-    $\bgamma = P_\mathcal{F}(\mf{y(\mf{v})})$ with the primal optimal $\mf{v}$.
-    Hence, choosing $\bsigma = P_\mathcal{F}(\mf{y(\mf{v})})$ with the primal
-    optimal $\mf{v}$ satisfies \eqref{eq:sigma_equal_gamma}, the second
-    optimality condition for \eqref{eq:primal_regularized}.
 
-    Finally, by Lemma \ref{lemma:conic_constraints_are_satisfied_analytically},
-    the cone constraint $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$ is satisfied.
-\end{IEEEproof}
+The optimality condition for the unconstrained formulation in
+\eqref{eq:primal_unconstrained} is $\nabla\ell_p(\mf{v})=\mf{0}$. It is shown in
+Appendix \ref{app:gradients_derivation} that
+\begin{equation*}
+    \nabla\ell_p(\mf{v})=\mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
+\end{equation*}
+\RedHighlight{TODO: Make sure the appendix is consistent when you update it. In
+particular, the appendix has $\mf{M}$ instead of $\mf{A}$.} with impulses given
+by $\bgamma(\mf{v})=P_\mathcal{F}(\mf{y}(\mf{v}))$, the dual optimal. Therefore,
+$\nabla\ell_p(\mf{v})=\mf{0}$ implies \eqref{eq:momentum_optimality}, the first
+optimality condition for \eqref{eq:primal_regularized}.
+   
+The analytical inverse dynamics solution shows that $\bgamma =
+P_\mathcal{F}(\mf{y(\mf{v})})$ with the primal optimal $\mf{v}$. Hence, choosing
+$\bsigma = P_\mathcal{F}(\mf{y(\mf{v})})$ with the primal optimal $\mf{v}$
+satisfies \eqref{eq:sigma_equal_gamma}, the second optimality condition for
+\eqref{eq:primal_regularized}.
+
+Finally, by Lemma \ref{lemma:conic_constraints_are_satisfied_analytically}, the
+cone constraint $\mf{g}(\mf{v}, \bsigma)\in\mathcal{F}^*$ is satisfied.
+\hfill\IEEEQED
