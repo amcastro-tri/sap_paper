@@ -1,14 +1,33 @@
 We present a convex formulation of compliant contact along with with a robust
-iterative method to solve it in practice. Our formulation eliminates contact
-constraints analytically to write an unconstrained convex formulation of
-frictional contact on velocities only, with guaranteed unique solution. Written in velocities only, we show our method warms-starts effectively using velocities computed at the previous time step, enabling the simulation of complex multibody systems with frictional contact at interactive rates. 
+iterative method with guaranteed convergence to solve it in practice. Our
+formulation eliminates contact constraints analytically to write an
+unconstrained convex formulation of frictional contact on velocities only. We
+show our method warms-starts effectively, enabling the simulation of complex
+multibody systems with frictional contact at interactive rates. 
 
-Our time stepping approach is based on the $\theta\text{-method}$, which includes the second order midpoint rule. Our method linearizes the discrete $\theta\text{-method}$, introduces a positive definite approximation of its gradients, and solves a single quadratic program with second order cone constraints per time step.
+We provide a succinct physical interpretation of the convex approximation of
+contact not previously available in the literature. This allows us to
+incorporate not only point contact models of compliance, but also more
+sophisticated models of compliant surface patches. Accurate physical modeling of
+contact is critical for meaningful sim-to-real transfer. Moreover, we provide
+explicit analytical expressions for the contact forces as a function of state,
+which allow us to characterize artifacts introduced by the convex approximation
+in a novel and transparent way. 
 
-We demonstrate with our numerical simulations that when using the midpoint rule
-our approach conserves energy very well (\RedHighlight{use another term}) for
-systems with rolling contact.
+Our time stepping approach is based on the $\theta\text{-method}$, which
+includes not only the popular symplectic Euler method but also the second order
+midpoint rule. We demonstrate that the midpoint rule can achieve second order
+accuracy even in simulation through frictional contact. Moreover, unlike the
+symplectic Euler scheme, the midpoint rule is unconditionally stable, enabling
+the simulation of mechanical systems with stiff force elements.
 
-We show our method can solve to tight tolerances enabling the simulation of challenging robotics tasks, such peg-in-hole task with dexterous hands.
+We introduce a number of accuracy metrics and show that our method outperforms
+existing commercial and open source alternatives without sacrificing accuracy.
 
+Finally, we demonstrate the effectiveness of our approach with the simulation of
+a complex dual arm manipulation task with dexterous hands. Our method can
+resolve the tight coupling between motions and contact forces with high mass
+ratios, which is essential for the stable simulation of manipulation tasks.
+
+Our method is implemented in the open source Drake robotics toolkit.
 
