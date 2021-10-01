@@ -12,6 +12,46 @@
 % \IEEEPARstart{T}{his demo} file is ....
 
 \section{Introduction}
+\label{sec:introduction}
+
+\IEEEPARstart{I}{ntro} paragraph stating why sim and modeling with contact is
+important for robotics planning and control plus some sim-to-real bullshit.
+
+Paragraph on super quick history on how we went from continuous, through measure
+differential inclusion (or whatev buzzword) to velocity level methods. This
+leads to next paragraph on time stepping methods. Kaufman has a great intro in his thesis, very detailed. Here only do a quick summary.
+
+Brief overview of time stepping methods, how we go from NCP to LCP
+approximations. Anisotropy of LCP methods. How Anitescu Potra (or was it
+Stewaret Trinkle?) have guaranteed solution but the LCP still might be an
+NP-hard problem, cite Kaufman's statement. Essentially this paragraph states how
+difficult is to solve the original NCP, whether with NCP or other approximation.
+Methods like the staggered projection I believe have not convergence guarantees,
+see what Kaufman himself says.
+
+Brief paragraph on available engineering solvers. Essentially copy what you have
+in the folder above. State how Mujoco is possibly the only software that uses the convex approximation of contact, though the inner workings are not common knowledge in the community. Also state here or below, how after 15 years after Anitescu's work, there is no freely available knowledge on how to solve this problem effectively.
+
+\RedHighlight{Careful not to say twice what we talk about in Section
+\ref{sec:previous_work}. See if worth merging or how to consolidate these two.}
+Quick paragraph introducing convex approximations (probably state we explicitly
+say \emph{approximation} instead of \emph{relaxation} as Anitescu calls it to
+cleary covey the fact that it is an approximation to contact.). Cite work by
+Anitescu, state convergence to original problem with step size. Cite work from
+Acary (2011) in whatev context is applied. Quickly introduce todorov's saying he
+came up with regularization so that the problem has unique solution and that he
+came up with \emph{inverse dynamics}. Say how he uses regularization as a means
+of constraint stabilization, which is different from our work.
+
+\RedHighlight{Probably a small paragraph here on convex optimization methods and how for simulation there is the need for a methods that warms starts effectively? Ask Frank for help.}
+
+Paragraph clearly stating our contributions. Probably bullets to make it very
+clear?
+
+Paragraph on outline of this work.
+
+
+\section{Introduction (Old)}
 \RedHighlight{TODO: Rewrite for paper.}
 
 \IEEEPARstart{A}{Anitescu}'s convex relaxation of contact
