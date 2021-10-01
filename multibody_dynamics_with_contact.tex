@@ -36,26 +36,14 @@ stacking velocities $\vf{v}_{c,k}$ of all contact pairs together. Similarly, we
 denote by $\bgamma_k\in\mathbb{R}^3$ the contact impulse at a specific contact
 point and with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all contact impulses.
 In general, unless otherwise specified, we use bold italics for vectors in
-$\mathbb{R}^3$ and non-italics bold for their stacked counterpart.
-
-The generalized velocities $\mf{v}$ and contact velocities $\mf{v}_c$ satisfy
-the equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
+$\mathbb{R}^3$ and non-italics bold for their stacked counterpart. The
+generalized velocities $\mf{v}$ and contact velocities $\mf{v}_c$ satisfy the
+equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
 $\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.
 
-\RedHighlight{TODO: Consider moving this paragraph to the introduction.}
-The dynamics of the system are described by the Newton-Euler equations subject
-to contact constraints. At the acceleration level this problem is cast as a
-differential variational inequality \cite{bib:pang2008differential}. It is well
-known however \cite{bib:baraff1993issues} that rigid contact when combined with
-the Coulomb model of friction can lead to paradoxical configurations for which
-solutions in terms of accelerations and reaction forces do not exist. These
-phenomena are known as Painlev\'e paradoxes \cite{bib:hogan2017regularization}.
-
-Nevertheless, the problem can be solved in a weaker formulation at the velocity
-level using a time-stepping scheme where impulses are the unknowns at each time
-step \cite{bib:stewart1998convergence}. To this end the momentum balance
-equations are advanced forward in time at fixed intervals of size $dt$ from time
-step $t^n$ to the next time step $t^{n+1}=t^n+dt$
+To arrive to a discrete time system of equations, we can integrate the the
+momentum balance at intervals of size $dt$ from time step $t^n$ to the
+next time step $t^{n+1}=t^n+dt$. We write this as
 \begin{eqnarray}
 	\mf{M}(\mf{v}^{n+1}-\mf{v}^n)  = dt\,\bar{\vf{\tau}} + \mf{J}^T\mf{\bgamma},
 	\label{eq:momentum_balance}

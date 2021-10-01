@@ -14,20 +14,40 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\IEEEPARstart{I}{ntro} paragraph stating why sim and modeling with contact is
-important for robotics planning and control plus some sim-to-real bullshit.
+\CyanHighlight{\IEEEPARstart{I}{ntro} paragraph stating why sim and modeling
+with contact is important for robotics planning and control plus some
+sim-to-real bullshit.}
 
-Paragraph on super quick history on how we went from continuous, through measure
-differential inclusion (or whatev buzzword) to velocity level methods. This
-leads to next paragraph on time stepping methods. Kaufman has a great intro in his thesis, very detailed. Here only do a quick summary.
+Rigid body dynamics with frictional contact is complicated by the non-smooth
+nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
+contact when combined with the Coulomb model of friction can lead to paradoxical
+configurations for which solutions in terms of accelerations and reaction forces
+do not exist. These phenomena are known as Painlev\'e paradoxes
+\cite{bib:hogan2017regularization}. Theory resolves these paradoxes by allowing
+discrete velocity jumps and impulsive forces, formally casting the problem as a
+differential variational inequality \cite{bib:pang2008differential}. In practice
+event based approaches can resolve impulsive transitions \cite{bib:haug1986},
+though it is not clear how to detect these events even for simple one degree of
+free systems \cite{bib:hogan2017regularization}.
 
-Brief overview of time stepping methods, how we go from NCP to LCP
+Nevertheless, the problem can be solved in a weaker formulation at the velocity
+level using a time-stepping scheme where impulses are the unknowns at each time
+step \cite{bib:stewart1998convergence, bib:anitescu1997}. 
+
+\CyanHighlight{Brief overview of time stepping methods, how we go from NCP to LCP
 approximations. Anisotropy of LCP methods. How Anitescu Potra (or was it
 Stewaret Trinkle?) have guaranteed solution but the LCP still might be an
 NP-hard problem, cite Kaufman's statement. Essentially this paragraph states how
 difficult is to solve the original NCP, whether with NCP or other approximation.
 Methods like the staggered projection I believe have not convergence guarantees,
 see what Kaufman himself says.
+\begin{itemize}
+	\item Stewart and Trinkle 1996 \cite{bib:chakraborty2007implicit} are probably the first ones to give an LCP formulation, though Anitescu below seems to claim it it was the first time existence was proved. I'd just put them at the same level.
+	\item Anitescu 2007\cite{bib:anitescu1997}: ``is the first consistent discretization of the
+	dynamic multi-body contact problem with friction that is guaranteed to have
+	a solution for the general case.''
+\end{itemize}
+}
 
 Brief paragraph on available engineering solvers. Essentially copy what you have
 in the folder above. State how Mujoco is possibly the only software that uses the convex approximation of contact, though the inner workings are not common knowledge in the community. Also state here or below, how after 15 years after Anitescu's work, there is no freely available knowledge on how to solve this problem effectively.
