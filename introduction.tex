@@ -62,30 +62,32 @@ proportional to the time step size $\delta t$ and to the sliding velocity
 $\Vert\vf{v}_t\Vert$ \cite{bib:mazhar2014}, i.e. $\phi\sim \delta
 t\Vert\vf{v}_t\Vert$. Therefore the approximation is exact for sticking contact
 and it can be sufficiently accurate for robotics applications for which the
-product $\delta t\Vert\vf{v}_t\Vert$ can be neglected.
+product $\delta t\Vert\vf{v}_t\Vert$ can be neglected. Todorov
+\cite{bib:todorov2014} introduces regularization into Anitescu's formulation in
+order to write a strictly convex formulation with a unique solution. In his
+work, regularization is used to introduce \emph{numerical compliance} as a means
+of a Baumgarte-like stabilization and avoid constraints drift.
 
-Todorov \cite{bib:todorov2014} introduces regularization into Anitescu's
-formulation in order to write a strictly convex formulation with a unique
-solution. Todorov uses regularization to introduce \emph{numerical compliance}
-as a means of a Baumgarte-like stabilization and avoid constraints drift.
+Even though these formulations introduce a tractable approximation of frictional
+contact, somehow they haven't become a popular solution approach in practice.
+Sofware such as ODE \cite{bib:ode}, Dart \cite{bib:dart} and Vortex
+\cite{bib:vortex} use a polyhedral approximation of the friction cone leading to
+an LCP formulation. Algoryx \cite{bib:algoryx} uses a \emph{split solver},
+similar to one iteration of the staggered projections method
+\cite{bib:Kaufman2008}. Drake \cite{bib:drake} models compliant contact with
+regularized friction and solves the underlyaing equations with its transition
+aware solver TAMSI \cite{bib:castro2020}. The multi-physics simulation package
+Chrono \cite{bib:hrono2016} implements a variant of the PGS method for solving
+Anitescu's formulation \cite{bib:tasora2011}. This method is specially targeted
+to the simulation of very large scale systems as those found in granular flow.
+Even though some convergence guarantees are provided in \cite{bib:anitescu2010},
+the solver exhibits low convergences rates. This is expected for such first
+order method. To the knowledge of the authors, Mujoco \cite{bib:mujoco} is the
+only software targeted to robotics that implements a second order Newton solver
+for the convex approximation of contact. However  underlying technology is
+proprietary and implementation details are not known in the community.
 
-
-\CyanHighlight{Quick paragraph introducing convex approximations (probably state
-we explicitly say \emph{approximation} instead of \emph{relaxation} as Anitescu
-calls it to cleary covey the fact that it is an approximation to contact.). Cite
-work by Anitescu, state convergence to original problem with step size.
-\sout{Cite work from Acary (2011) in whatev context is applied}. Quickly
-introduce todorov's saying he came up with regularization so that the problem
-has unique solution and that he came up with \emph{inverse dynamics}. Say how he
-uses regularization as a means of constraint stabilization, which is different
-from our work.}
-
-\CyanHighlight{Brief paragraph on available engineering solvers. Point out that
-there are not solvers besides Mujoco that use the convex approximation. Point
-out that this has to do in par that it is not know how to solve it effectively,
-or similar. Essentially copy what you have in the folder above. State how Mujoco
-is possibly the only software that uses the convex approximation of contact,
-though the inner workings are not common knowledge in the community. Also state
+\CyanHighlight{State
 here or below, how after 15 years after Anitescu's work, there is no freely
 available knowledge on how to solve this problem effectively.}
 
