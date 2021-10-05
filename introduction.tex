@@ -13,9 +13,13 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\CyanHighlight{\IEEEPARstart{I}{ntro} paragraph stating why sim and modeling
-with contact is important for robotics planning and control plus some
-sim-to-real bullshit.}
+\IEEEPARstart{S}{imulation} of multibody systems with frictional contact has
+proven indispensable in robotics, aiding at multiple stages during the
+mechanical and control design, testing, and training of robotic systems.
+However, reliable modeling and simulation through contact remains somewhat
+elusive. There is a need for robust simulation tools that can perform at
+interactive rates as often required by robotic applications without sacrificing
+accuracy, a critical aspect for meaningful sim-to-real transfer. 
 
 Rigid body dynamics with frictional contact is complicated by the non-smooth
 nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
@@ -38,7 +42,7 @@ complementarity problem (LCP) when a polyhedral approximation of the friction
 cone is used. Even though LCP formulations guarantee solution existence
 \cite{bib:anitescu1997, bib:stewart1998convergence}, their accurate and
 efficient solution has remained difficult in practice. This has been explained
-in part to the fact that these formulations are equivalent to nonconvex problems
+in part as due to the fact that these formulations are equivalent to nonconvex problems
 in global optimization, which are generally NP-hard \cite{bib:Kaufman2008}.
 Indeed, the popular direct methods based on Lemke's pivoting algorithm to solve
 LCPs may exhibit exponential worst-case complexity \cite{bib:baraff1994fast}. As
@@ -124,7 +128,7 @@ problem in terms of impulses, we write a primal formulation of compliant contact
 in terms of velocities in Section \ref{sec:primal_formulation}. In Section
 \ref{sec:unconstrained_convex_formulation} we eliminate constraints from the
 primal formulation analytically to write an unconstrained convex formulation of
-the same problem. This lead us to development of our semi-analytical primal
+the same problem. This led us to development of our semi-analytical primal
 solver (SAP) in Section \ref{sec:sap_solver} to solve the unconstrained
 formulation in practice. SAP warms starts effectively using only the velocities
 from the previous time step. We provide thorough details for its implementation
@@ -140,4 +144,4 @@ the effectiveness of our approach in a number of simulation cases, including the
 simulation of a challenging dual arm manipulation task. We conclude our work
 with a discussion on extensions and variations in Section
 \ref{sec:variations_and_extensions} and provide conclusions and future
-directions in Section \ref{sec:future_directions}
+research directions in Section \ref{sec:future_directions}.
