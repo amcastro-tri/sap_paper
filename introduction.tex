@@ -130,18 +130,19 @@ in terms of velocities in Section \ref{sec:primal_formulation}. In Section
 primal formulation analytically to write an unconstrained convex formulation of
 the same problem. This led us to development of our semi-analytical primal
 solver (SAP) in Section \ref{sec:sap_solver} to solve the unconstrained
-formulation in practice. SAP warms starts effectively using only the velocities
-from the previous time step. We provide thorough details for its implementation
-including the computation of the Hessian analytically, our fast exact line
-search and sparsity analysis. Section \ref{sec:understanding_model_parameters}
-presents a judicious parameterization of regularization that allows for a tight
-resolution of stiction and simulation of \emph{near-rigid} objects while keeping
-the conditioning of the Hessian under control. This is critical for the
-simulation of demanding robotics tasks such as manipulation. We evaluate the
-accuracy, robustness and performance of SAP against available commercial and
-open-source optimization solvers. In section \ref{sec:test_cases} we demonstrate
-the effectiveness of our approach in a number of simulation cases, including the
-simulation of a challenging dual arm manipulation task. We conclude our work
-with a discussion on extensions and variations in Section
-\ref{sec:variations_and_extensions} and provide conclusions and future
-research directions in Section \ref{sec:future_directions}.
+formulation in practice. SAP has proven convergence and warms starts effectively
+using only the velocities from the previous time step. We provide thorough
+details for its implementation including the computation of the Hessian
+analytically, our fast exact line search and sparsity analysis. Section
+\ref{sec:understanding_model_parameters} presents a judicious parameterization
+of regularization that allows for a tight resolution of stiction and simulation
+of \emph{near-rigid} objects while keeping the conditioning of the Hessian under
+control. This is critical for the simulation of demanding robotics tasks such as
+manipulation. We evaluate the accuracy, robustness and performance of SAP
+against available commercial and open-source optimization solvers. In section
+\ref{sec:test_cases} we demonstrate the effectiveness of our approach in a
+number of simulation cases, including the simulation of a challenging dual arm
+manipulation task. We conclude our work with a discussion on extensions and
+variations in Section \ref{sec:variations_and_extensions} and provide
+conclusions and future research directions in Section
+\ref{sec:future_directions}.
