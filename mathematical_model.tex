@@ -9,10 +9,9 @@ extension to the second-order midpoint rule is analyzed in
 \cite{bib:potra2006linearly}. In contrast to \cite{bib:potra2006linearly} which
 uses a polyhedral approximation of the friction cone that leads to an LCP
 formulation, our approach does not approximate the friction cone but introduces
-the convex approximation of contact from \cite{bib:anitescu2006} instead.
-\RedHighlight{TODO: Introduce definition of LCP in the introduction}. We remark
-that combining the $\theta\text{-method}$ with the convex approximation of
-contact is novel to our work. 
+the convex approximation of contact from \cite{bib:anitescu2006} instead. We
+remark that combining the $\theta\text{-method}$ with the convex approximation
+of contact is novel to our work. 
 
 We discretize time into intervals of fixed size $dt$ and seek to advance the
 state of the system from time $t^n$ to the next step at $t^{n+1} = t^n + dt$. In
@@ -49,10 +48,7 @@ $\mf{G}(\mf{q}, \mf{v})$ include all other contributions that cannot guarantee
 positive definiteness of its Jacobian, such as Coriolis and gyroscopic forces
 arising in multibody dynamics with generalized coordinates.
 
-Using the above definitions, we write our discrete update in the following form:
-\RedHighlight{TODO: once you have most of the text, find out how to reconciliate
-this equation with Eq. (\ref{eq:momentum_balance}), along the text that goes
-with it. Avoid repetition.}
+Using the above definitions, we write our discrete update in the following form
 \begin{align}
 	\mf{m}(\mf{v}) &= \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
 	\label{eq:v_update}\\
@@ -165,10 +161,6 @@ We summarize our discrete time stepping strategy as follows
 
 The constraint impulses in step \ref{it:solve_for_contact} are the solutions to
 our convex approximation of compliant contact described in the next section.
-Section \ref{sec:sap_solver} presents the SAP solver to solve it in practice.
-\RedHighlight{TODO: Make sure SAP is defined somewhere befor you start using.
-The introduction?}
-
 
 Notice that, in the absence of constraint impulses, the velocities at the next
 time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
