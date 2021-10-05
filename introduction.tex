@@ -20,8 +20,8 @@ sim-to-real bullshit.}
 Rigid body dynamics with frictional contact is complicated by the non-smooth
 nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
 contact when combined with the Coulomb model of friction can lead to paradoxical
-configurations for which solutions in terms of accelerations and forces
-do not exist. These phenomena are known as Painlev\'e paradoxes
+configurations for which solutions in terms of accelerations and forces do not
+exist. These phenomena are known as Painlev\'e paradoxes
 \cite{bib:hogan2017regularization}. Theory resolves these paradoxes by allowing
 discrete velocity jumps and impulsive forces, formally casting the problem as a
 differential variational inequality \cite{bib:pang2008differential}. In practice
@@ -49,8 +49,7 @@ These observations are not just of a purely theoretical value, but in practice
 methods to compute contact forces often lack robustness and are numerically
 brittle. This inherent lack stability and robustness is tackled in software with
 large amounts of non-physical constraint softening and stabilization. Still,
-simulations require a significant amount of parameter tunning to make them
-work.
+simulations require a significant amount of parameter tunning to make them work.
 
 \RedHighlight{Careful not to say twice what we talk about in Section
 \ref{sec:previous_work}. See if worth merging or how to consolidate these two.}
@@ -63,15 +62,15 @@ introduces a \emph{gliding} artifact for sliding contacts at a distance $\phi$
 proportional to the time step size $\delta t$ and to the sliding velocity
 $\Vert\vf{v}_t\Vert$ \cite{bib:mazhar2014}, i.e. $\phi\sim \delta
 t\Vert\vf{v}_t\Vert$. Therefore the approximation is exact for sticking contact
-and it can be adequate for robotics applications for which the
-product $\delta t\Vert\vf{v}_t\Vert$ can be sufficiently small. For trajectory
-optimization, Todorov \cite{bib:todorov2011} introduces regularization into
-Anitescu's formulation in order to write a strictly convex formulation with a
-unique, smooth and invertible solution. For simulation, Todorov
-\cite{bib:todorov2014} uses regularization to introduce \emph{numerical
-compliance} as a means of a Baumgarte-like stabilization and avoid constraints
-drift. As a side effect, the regularized formulation can lead to a noticeable
-non-zero slip velocity even during stiction \cite{bib:simbenchmark}.
+and it can be adequate for robotics applications for which the product $\delta
+t\Vert\vf{v}_t\Vert$ can be sufficiently small. For trajectory optimization,
+Todorov \cite{bib:todorov2011} introduces regularization into Anitescu's
+formulation in order to write a strictly convex formulation with a unique,
+smooth and invertible solution. For simulation, Todorov \cite{bib:todorov2014}
+uses regularization to introduce \emph{numerical compliance} as a means of a
+Baumgarte-like stabilization and avoid constraints drift. As a side effect, the
+regularized formulation can lead to a noticeable non-zero slip velocity even
+during stiction \cite{bib:simbenchmark}.
 
 Even though these formulations introduce a tractable approximation of frictional
 contact, somehow they haven't become a popular solution approach in practice. We
@@ -87,16 +86,15 @@ transition aware solver TAMSI \cite{bib:castro2020}.
 
 To the knowledge of the authors, Chrono \cite{bib:hrono2016} and Mujoco
 \cite{bib:mujoco} are the only software that implement the convex approximation
-of contact. The multi-physics simulation package Chrono
-implements a variant of the PGS method for solving Anitescu's convex formulation
-\cite{bib:tasora2011}. This method is specially targeted to the simulation of
-very large scale systems as those found in granular flow. Even though some
-convergence guarantees are provided in \cite{bib:anitescu2010}, the solver
-exhibits low convergences rates. This is expected for such first order method.
-Mujoco is a software targeted to robotics that implements both a PGS solver
-variant \cite{bib:todorov2014} and a second order Newton solver. However the
-underlying technology is proprietary and implementation details are not known in
-the community.
+of contact. The multi-physics simulation package Chrono implements a variant of
+the PGS method for solving Anitescu's convex formulation \cite{bib:tasora2011}.
+This method is specially targeted to the simulation of very large scale systems
+as those found in granular flow. Even though some convergence guarantees are
+provided in \cite{bib:anitescu2010}, the solver exhibits low convergences rates.
+This is expected for such first order method. Mujoco is a software targeted to
+robotics that implements both a PGS solver variant \cite{bib:todorov2014} and a
+second order Newton solver. However the underlying technology is proprietary and
+implementation details are not known in the community.
 
 Summarizing, after more than 15 years after the introduction of these convex
 approximations, robust and performant algorithms for their solution in practice
@@ -105,44 +103,44 @@ a real advantage when compared to more traditional approaches and whether the
 artifacts introduced by the approximation are appropriate for robotics
 applications. In this work we aim to provide answers to these questions. 
 
-To answer the question of physical accuracy and validity of the approximation,
-in Section \ref{sec:physical_intuition} we build on Todorov's work
-\cite{bib:todorov2014} to write compact analytical expressions of the impulses
-that provide a clear physical interpretation of the convex formulation. This
-allow us to succinctly describe the model in physical terms rather than in
-optimization specific terms that might be elusive to non-experts on optimization. Moreover, the artifacts introduced by the approximation become apparent and can be characterized precisely.
+We make a number of novel contributions in this work. To answer the question of
+physical accuracy and validity of the approximation, in Section
+\ref{sec:physical_intuition} we build on Todorov's work \cite{bib:todorov2014}
+to write compact analytical expressions of the impulses that provide a clear
+physical interpretation of the convex formulation. This allow us to succinctly
+describe the model in physical terms rather than in optimization specific terms
+that might be elusive to non-experts on optimization. Moreover, the artifacts
+introduced by the approximation become apparent and can be characterized
+precisely. This contribution is novel to our work and different from
+\cite{bib:todorov2014} where regularization is used as a Baumgarte-like
+stabilization. This allow us to incorporate not only compliant point contact but
+also complex models of compliant surface patches, as we demonstrate in Section
+\ref{sec:slip_control}. We introduce in Section
+\ref{sec:discrete_time_formulation} a time stepping approach  based on the
+$\theta\text{-method}$. This includes the popular symplectic Euler method and
+the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we demonstrate
+that the midpoint rule can achieve second order accuracy even in problems with
+frictional contact.
 
-
-
-We summarize our contributions as follows:
-\begin{itemize}
-	\item \sout{We build on Todorov's work \cite{bib:todorov2014} to write compact
-	analytical expressions of the impulses that provide a clear physical
-	interpretation of the convex formulation.}
-	\item We show how to use these expressions to incorporate the modeling of
-	physical compliance and even complex models of \RedHighlight{compliant
-	surface patches. [Reference to arxiv version]}. This is different from
-	\cite{bib:todorov2014} where regularization is used as a Baumgarte-like
-	stabilization.
-	\item \sout{Our clear analogy with compliant contact allow us to succinctly
-	describe the artifacts introduced by the convex approximation of contact.}
-	\item We present a discrete time stepping approach based on the
-	$\theta\text{-method}$. This includes the popular symplectic Euler and the
-	implicit midpoint rule. We demonstrate the midpoint rule can achieve second
-	order accuracy even in problems with frictional contact.
-	\item We write a primal formulation of compliant contact written in terms of
-	velocities, in contrast to the dual formulations in terms of impulses
-	introduced by Anitescu and Todorov.
-	\item We develop our Semi-Analytical Primal solver (SAP) which eliminates
-the contact constraints analytically to write an unconstrained convex
-formulation. We provide thorough details for its practical implementation.
-	\item We find that, unlike formulations on impulses, SAP warms starts effectively using velocities from the previous time step. 
-	\item We evaluate the accuracy, robustness and performance of SAP against available commercial and open-source solvers.
-	\item We show how a judicious parameterization of regularization allows for a tight resolution of stiction without sacrificing performance. This is critical for the simulation of demanding robotics tasks such as manipulation.
-	\item Our method is implemented in the open-source robotics toolkit Drake \cite{bib:drake}.
-\end{itemize}
-
-\CyanHighlight{Paragraph clearly stating our contributions. Probably bullets to
-make it very clear?}
-
-\CyanHighlight{Paragraph on outline of this work.}
+Unlike previous work \cite{bib:anitescu2010,bib:todorov2014} that formulate the
+problem in terms of impulses, we write a primal formulation of compliant contact
+in terms of velocities in Section \ref{sec:primal_formulation}. In Section
+\ref{sec:unconstrained_convex_formulation} we eliminate constraints from the
+primal formulation analytically to write an unconstrained convex formulation of
+the same problem. This lead us to development of our semi-analytical primal
+solver (SAP) in Section \ref{sec:sap_solver} to solve the unconstrained
+formulation in practice. SAP warms starts effectively using only the velocities
+from the previous time step. We provide thorough details for its implementation
+including the computation of the Hessian analytically, our fast exact line
+search and sparsity analysis. Section \ref{sec:understanding_model_parameters}
+presents a judicious parameterization of regularization that allows for a tight
+resolution of stiction and simulation of \emph{near-rigid} objects while keeping
+the conditioning of the Hessian under control. This is critical for the
+simulation of demanding robotics tasks such as manipulation. We evaluate the
+accuracy, robustness and performance of SAP against available commercial and
+open-source optimization solvers. In section \ref{sec:test_cases} we demonstrate
+the effectiveness of our approach in a number of simulation cases, including the
+simulation of a challenging dual arm manipulation task. We conclude our work
+with a discussion on extensions and variations in Section
+\ref{sec:variations_and_extensions} and provide conclusions and future
+directions in Section \ref{sec:future_directions}
