@@ -1,151 +1,112 @@
+\algblockdefx{RepeatUntil}{EndRepeatUntil}{\textbf{repeat until}}{}
+\algnotext{EndRepeatUntil}
+
 \section{Semi-Analytical Primal Solver}
 \label{sec:sap_solver}
 
 Our Semi-Analytical Primal Solver, or SAP for short, essentially is a Newton
 iteration used to find the minimum of the unconstrained formulation stated in
 Eq. (\ref{eq:primal_unconstrained}), where constraints have been eliminated
-using our analytical inverse dynamics, and thus the name of the solver.
+using our analytical inverse dynamics. At each $m\text{-th}$ Newton iteration,
+SAP uses analytical expressions of both the gradient and Hessian of
+$\ell_p(\mf{v})$, with line search to find the unique optimal solution
+\begin{algorithm}[H]
+	\caption{SAP Newton Iteration}	
+	\begin{algorithmic}
+	\State Initialize $\mf{v}^0 \gets \mf{v}_0$
+	\RepeatUntil $~\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a + \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)$, Eq. \eqref{eq:stopping_criteria}
+	\State $\displaystyle \Delta\mf{v}^{m} = -\mf{H}^{-1}(\mf{v}^m)\nabla_\mf{v}\ell_p(\mf{v}^m)\nonumber$
+	\State $\displaystyle \alpha^m = \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}^m + t \Delta\mf{v}^{m})$
+	\State $\displaystyle \mf{v}^{m+1} = \vf{v}^m + \alpha^{m}\Delta\mf{v}^{m}$
+	\EndRepeatUntil
+	\State\Return $\mf{v}$, $\bgamma=P_\mathcal{F}(\vf{y}(\mf{v}))$
+\end{algorithmic}
+\end{algorithm}
+where we use the previous time step velocity $\mf{v}_0$ to initialize the
+iteration. The stopping criteria is discussed in below in Section
+\ref{sec:stopping_criteria}.
 
-Though this new problem is strictly convex and can be solved using Newton's method
-we make the following observations
-\begin{enumerate}
-	\item Since projections $P_\mathcal{F}$ are continuous, we will see when
-	computing gradients, that not only the cost $\ell_p(\mf{v})$ is continuous,
-	but also its gradient.
-	\item The Hessian $\mf{H}=\nabla^2\ell_p$ is piecewise continuous, with
-	large variations of \textit{curvature}. While this is not a problem for
-	Newton's method given its \textit{affine invariance} property in theory, in
-	practice we will use an analytically computed Hessian to avoid numerical
-	round-off errors.
-	\item\label{item:line_sarch} Since the problem is strictly convex, line
-	search combined with Newton's method leads to guaranteed convergence.
-	However, given the large variations in curvature, in practice we find that a
-	specially designed exact line search performs best.
-\end{enumerate}
-
-Item \ref{item:line_sarch} is of utmost important in practice. We'll show a
-strategy that allows to perform line search with machine precision. A
-careful pre-computation of commonly occurring terms enable us to perform this
-step for a small fraction of the total cost. While machine precision is
-not required in practice, we show that the cost to achieve this level of
-convergence is negligible and it is well worth it for a robust implementation
-that can handle very stiff systems (with small regularization).
-
-In the next subsections we describe each component of the solver in detail.
+Specifics of the line search algorithm are critical to the success of the SAP
+solver given that the cost can undergo large changes as $\mf{v}^m$ explores
+states corresponding to different contact modes. We explored two line-search
+algorithms: an approximate backtracking line-search with Armijo's stopping
+criteria and an exact (to machine epsilon) line-search. We show how a careful
+pre-computation of commonly occurring terms enables the exact line-search step
+for a small fraction of the total cost. While backtracking line-search with
+Armijo's rule guarantees the convergence of SAP, we found out that exact
+line-search can lead to a performance improvement between 15\% to 35\%. In the
+next subsections we describe each component of the solver in detail.
 
 \subsection{Gradients}
 \label{sec:gradients}
 
-We summarize the main results required for implementation. Detailed derivations
-are provided in the Appendix \ref{app:gradients_derivation}. We will see that in
-order to compute both the gradient and Hessian of the cost we only need
-analytical expressions of the projection $P_\mathcal{F}$ and its gradient.
+%Appendix \ref{app:gradients_derivation}
 
-The gradient of the primal cost $\ell_p$ is
+We summarize the main results required for implementation. The gradient of the
+primal cost $\ell_p$ is
 \begin{equation}
-	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R,
 \end{equation}
-
-Computing this gradient might seem a daunting enterprise, but after substitution
-of $\nabla_\mf{v}P_\mathcal{F}$ the result is beautifully simple
+where we defined the regularizer cost as $\ell_R(\mf{v})=\frac{1}{2}\Vert
+P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$. We show in Appendix
+\ref{app:gradients_derivation} that this gradient can be computed analytically,
+with the result
 \begin{equation}
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
 	\label{eq:primal_gradient}
 \end{equation}
-with $\bgamma(\mf{v})$ from the analytical inverse dynamics. This recovers the
-original momentum balance in Eq. (\ref{eq:momentum_linearized}) since Newton's
-method solves for $\nabla_\mf{v}\ell_p=\mf{0}$.
-
-Notice tha the gradient in Eq. (\ref{eq:primal_gradient}) is continuous since
-the projection in the analytical inverse dynamics in Eq.
-(\ref{eq:analytical_y_projection}) is continuous.
+with $\bgamma(\mf{v})=P_\mathcal{F}(\vf{y})$ from the analytical inverse
+dynamics in Eq. \eqref{eq:analytical_y_projection}. This recovers the original
+momentum balance in Eq. (\ref{eq:momentum_linearized}) since Newton's method
+solves for $\nabla_\mf{v}\ell_p=\mf{0}$.
 
 We obtain the Hessian $\mf{H}=\nabla_\mf{v}^2\ell_R$ by taking the gradient of
 Eq. (\ref{eq:primal_gradient}). The result is
 \begin{eqnarray}
-	\nabla_\mf{v}^2\ell_R(\mf{v}) &=&
-	\mf{J}^T\mf{G}\,\mf{J}\nonumber\\
-	\mf{G} &=& \nabla_{\mf{v}_c}\bgamma = -\nabla_\mf{y}\bgamma \mf{R}^{-1}
+	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
+	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
 	\label{eq:ellR_hessian}
 \end{eqnarray}
 where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
-diagonal elements is the $3\times 3$ matrix
-$\nabla_{\mf{v}_{c,k}}\!\bgamma_k$ for the $k\text{-th}$ contact. As shown in
-Appendix \ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and
-thus $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
+diagonal elements is the $3\times 3$ matrix $\nabla_{\mf{v}_{c,i}}\!\bgamma_i$
+for the $i\text{-th}$ contact. As shown in Appendix
+\ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and thus
+$\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
 
 Finally, the Hessian needed in Newtons's method is
 \begin{equation}
 	\mf{H}= \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
 	\label{eq:ell_hessian}
 \end{equation}
-which, since $\mf{A}\succ 0$, is strictly positive definite. We note however that
-showing $\mf{H}\succ 0$ is not enough for $\ell_p$ to be
-strictly convex. Since $\nabla_\mf{v}\ell_p$ is a piecewise function, we must
-additionally require that the directional derivative across the boundary
-$\partial\mathcal{F}$, of $\mathcal{F}$ increases. Formally, if $\mf{\nu}$ is
-the normal to $\partial\mathcal{F}$, then we require
-\begin{equation}
-	\frac{\partial \ell_p^-}{\partial \nu} \le \frac{\partial \ell_p^+}{\partial \nu}
-\end{equation}
-we show this to be the case in Appendix \ref{app:gradients_derivation} which
-then leads to the confirmation that $\mf{H}\succ 0$.
+which, since $\mf{A}\succ 0$, $\mf{H}$ is strictly positive definite. Notice
+that to compute the requried gradient and Hessian we need analytical expressions
+for the projection $P_\mathcal{F}(\vf{y})$ and its gradient
+$\nabla_\mf{y}P_\mathcal{F}(\vf{y})$, both provided in Appendices
+\ref{app:analytical_inverse_dynamics_derivations} and
+\ref{app:gradients_derivation} respectively.
 
-\RedHighlight{Question to Frank: what's the easiest way to show that
-$\ell_p(\mf{v})$ is convex? vs. my approach of showing that the Hessian is
-piecewise convex.}
+\subsection{Line Search}
+At each $m\text{-th}$ Newton iteration, our implementation of the backtracking
+line-search tests candidate steps lengths until Armijo's criteria \cite[\S
+3.1]{bib:nocedal2006numerical} is satisfied
+\begin{algorithm}[H]
+	\caption{Backtracking line-search}	
+	\begin{algorithmic}
+	\State With $\rho \in (0, 1)$, $c \in (0, 1)$ and $\alpha_\text{Max}>0$
+	\State $\alpha\gets \alpha_\text{Max}$ 
+	\RepeatUntil $~\ell_p(\alpha) <
+	\ell_p(\mf{v}^m) + c\,\alpha \frac{d\ell_p}{d\alpha}(\mf{v}^m)$ \State
+	$\alpha\gets \rho\alpha$
+	\EndRepeatUntil
+	\State\Return $\alpha$
+\end{algorithmic}
+\end{algorithm}	
+and we typically use $\rho=0.8$, $c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
 
-\subsection{Newton iteration}
-\label{sec:solver_details}
-
-With the analytical expressions for both the gradient and Hessian of
-$\ell_p(\mf{v})$, we use Newton's method to find the unique minimum of Eq.
-(\ref{eq:primal_unconstrained}). At each $k\text{-th}$ iteration we
-compute a search direction according to
-\begin{equation}
-	\Delta\mf{v}^{k+1} = -\mf{H}^{-1}(\mf{v}^k)\nabla_\mf{v}\ell_p(\mf{v}^k)
-	\label{eq:Newton_iteration}
-\end{equation}
-
-Since the problem is convex, we can perform a line search along this direction
-to find the global minimum. At each Newton iteration, the line search solves the
-one-dimensional minimization problem
-\begin{eqnarray}
-	\alpha = \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}^k + t \Delta\mf{v}^{k+1})
-	\label{eq:line_search_optimization}
-\end{eqnarray}
-and the iteration is updated as $\mf{v}^{k+1}=\mf{v}^{k} + \alpha
-\Delta\mf{v}^{k+1}$.
-
-Specifics of the line search algorithm are critical to the success of the SAP
-solver given that the Hessian can undergo large changes as $\mf{v}^k$ explores
-states corresponding to different contact modes. We tried two line search
-strategies that we describe next.
-
-\subsection{Inexact Line Search}
-Most if not all mature solver implementations that use Newton's method solve Eq.
-(\ref{eq:line_search_optimization}) only approximately.
-
-Our implementation explores values in a geometric sequence $\alpha_{m} = \rho^m$
-with $\rho \in (0, 1)$ until Armijo's criteria is satisfied, i.e.
-$\ell_p(\alpha_m) < \ell_p(\alpha^k) + c\,\alpha_m d\ell_p/d\alpha(\alpha^k)$.
-We typically use $\rho=0.8$ and $c=10^{-4}$. We refer to this procedure as the
-\textit{inexact} method to differentiate it from our exact (modulo round-off
-errors) line search described next. Armijo's rule allows to prove convergence of
-Newton's method, see \RedHighlight{Cite here, possibly best book by Michel
-Bierlaire}.
-
-\subsection{Exact Line Search}
-Given that $\ell_p$ might exhibit steep gradients, we found out that the
-accuracy of the inexact line search can lead to a large number of Newton
-iterations.
-Therefore we propose an exact method that uses a fast computation of the
-first and second derivatives of $\ell_p$ to drive a local one-dimensional Newton
-method. We make the following additional observations
+For our exact line-search, we make the following observations
 \begin{enumerate}
 	\item $\ell_p(\alpha)$ is strictly convex, i.e. there is a unique minimum.
-	\item Since $\ell_p(\alpha)$ is strictly convex, a Newton step is guaranteed
-	to be well formed given that $d^2\ell_p/d\alpha^2>0$.
+	\item Newton steps are well formed since $d^2\ell_p/d\alpha^2>0$.
 	\item $\ell_p(\alpha)$ is a piecewise $C^1$ function. In other words,
 	$d\ell_p/d\alpha$ is continuous but $d^2\ell_p/d\alpha^2$ might not be.	
 	\item Given the regularization used to model friction and stiff compliance,
@@ -162,19 +123,20 @@ whenever its convergence is slow. Using analytical first and second derivatives,
 our line search simply reduces to finding the unique root of $d\ell/d\alpha$
 using the \verb;rtsafe; algorithm. We found this method to perform so well, that
 we iterate $\alpha$ to a machine precision at a negligible impact on the
-computational cost. This allow us to use very tight regularization parameters
-without having to tune tolerances in the line search.
+computational cost. In practice this is our preferred algorithm since it allow
+us to use very tight regularization parameters without having to tune tolerances
+in the line search. Moreover, we observed 15\%-35\% performance improvement when
+compared to the backtracking line-search.
 
 \subsection{Efficient Analytical Derivatives For Line Search}
 
-\verb;rtsafe; requires the first and second derivatives of
-$\ell_p$, while the inexact method only requires the first derivative to verify
-Armijo's stopping criteria. We show how to compute these gradients efficiently
-in $\mathcal{O}(n)$ operations.
+\verb;rtsafe; requires the first and second derivatives of $\ell_p$, while the
+backtracking method only requires the first derivative to verify Armijo's
+stopping criteria. We show how to compute these gradients efficiently in
+$\mathcal{O}(n)$ operations.
 
-Defining $\ell(\alpha) = \ell_p(\mf{v}+\alpha\Delta\mf{v})$ we can
-compute first and second derivatives with respect to $\alpha$ using the gradient
-and Hessian
+Defining $\ell(\alpha) = \ell_p(\mf{v}+\alpha\Delta\mf{v})$ we can compute first
+and second derivatives with respect to $\alpha$ using the gradient and Hessian
 \begin{eqnarray}
 	\frac{d\ell}{d\alpha}&=&\Delta\mf{v}^T\nabla_\mf{v}\ell(\alpha)\nonumber\\
 	\frac{d^2\ell}{d\alpha^2}&=&\Delta\mf{v}^T\nabla_\mf{v}^2\ell(\alpha)\Delta\mf{v}\nonumber
@@ -235,7 +197,7 @@ a \emph{forest}. Consider the system in Fig. (\ref{fig:sparsity_example}).
 	simulation of robotic mechanical systems. The graph on the right puts
 	\textit{trees} as nodes and contact \textit{patches} as edges. Notice how
 	this graph exactly describes the sparsity pattern of the matrix
-	$\mf{J}^T\mf{G}\mf{J}$ in Eq. (\ref{eq:JTGJ_sparsity}).}
+	$\mf{J}^T\mf{G}\mf{J}$ in Fig. \ref{fig:JTGJ_schematic}.}
 \end{figure}
 In this example a robot arm mounted on a mobile base constitutes its own tree,
 here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
@@ -264,12 +226,11 @@ the mass matrix of the $t\text{-th}$ tree. For the example in Fig.
 \end{equation}
 \RedHighlight{Make this equation a Figure instead.}
 
-In general, we define as \textit{patches} as a collection of contact pairs
-between the same two trees. We label in red all contact patches in Fig.
-(\ref{fig:sparsity_example}). Each $k\text{-th}$ pair will correspond to a
-single cone constraint in our formulation. The set of constraint indexes
-$k$ that belong to patch $p$ is denoted with $\mathcal{I}_p$ of size
-(cardinality) $|\mathcal{I}_p| = r_p$.
+We define as \textit{patches} a collection of contact pairs between the same two
+trees. We label in red all contact patches in Fig. (\ref{fig:sparsity_example}).
+Each $i\text{-th}$ pair will correspond to a single cone constraint in our
+formulation. The set of constraint indexes $i$ that belong to patch $p$ is
+denoted with $\mathcal{I}_p$ of size (cardinality) $|\mathcal{I}_p| = r_p$.
 
 Notice that our definition of \textit{patches} as used here to describe sparsity
 has nothing to do with the actual geometrical topology of the contact surface
@@ -279,14 +240,15 @@ formed by a set of disconnected surfaces. Figure (\ref{fig:sparsity_example})
 labels trees and patches and shows the corresponding graph where the nodes are
 the trees and the edges are the contact patches.
 
-Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} = \nabla_{\mf{v}_c}\bgamma$
-is a block diagonal matrix, with $\mf{G}_k = \nabla_{\mf{v}_{c,k}}\bgamma_k \in
-\mathbb{R}^{3\times 3}$ at the $k\text{-th}$ diagonal block. We can write this
-also as $\mf{G} = \text{diag}(\mf{G}_p)$ if we group contact pairs by patches to
-define $\mf{G}_p=\text{diag}(\mf{G}_k), \,\forall k\in\mathcal{I}_p$.
+Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} =
+-\nabla_{\mf{v}_c}\bgamma$ is a block diagonal matrix, with $\mf{G}_i =
+\nabla_{\mf{v}_{c,i}}\bgamma_i \in \mathbb{R}^{3\times 3}$ at the $i\text{-th}$
+diagonal block. We can write this also as $\mf{G} = \text{diag}(\mf{G}_p)$ if we
+group contact pairs by patches to define $\mf{G}_p=\text{diag}(\mf{G}_i),
+\,\forall i\in\mathcal{I}_p$.
 
-The contact Jacobian will in general be a sparse since the relative velocity at
-a contact pair $k$ will only involve the generalized velocities of the two trees
+The contact Jacobian will in general be sparse since the relative velocity at a
+contact pair $i$ will only involve the generalized velocities of the two trees
 in contact. For the case in Fig. (\ref{fig:sparsity_example}) the Jacobian will
 look like\\\\
 \begin{equation}
@@ -314,33 +276,30 @@ where each non-zero block is the Jacobian $\mf{J}_{\rr{p}\cc{t}}$ of size
 $3r_p\times n_t$.
 
 We have now the elements to describe the sparsity of the product
-$\mf{J}^T\mf{G}\mf{J}$. For the example in Fig.
-(\ref{fig:sparsity_example}) the block sparsity of $\mf{J}^T\mf{G}\mf{J}$ is
-illustrated in Fig. (\ref{fig:JTGJ_schematic}).
+$\mf{J}^T\mf{G}\mf{J}$. For the example in Fig. \ref{fig:sparsity_example}, the
+block sparsity of $\mf{J}^T\mf{G}\mf{J}$ is illustrated in Fig.
+\ref{fig:JTGJ_schematic}. Notice how the sparsity pattern of
+$\mf{J}^T\mf{G}\mf{J}$ exactly matches the graph from Fig.
+(\ref{fig:sparsity_example}). Finally the Hessian will have the sparsity
+structure of $\mf{A} + \mf{J}^T\mf{G}\mf{J}$.
 \begin{figure*}[!h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/JTGJ_schematic.png}
 	\caption{\label{fig:JTGJ_schematic} 
 	Block sparsity of the $\mf{J}^T\mf{G}\mf{J}$ for the example illustrated in
-	Fig. (\ref{fig:sparsity_example}).}
+	Fig. \ref{fig:sparsity_example}.}
 \end{figure*}
-
-Notice how the sparsity pattern of $\mf{J}^T\mf{G}\mf{J}$ exactly matches the
-graph from Fig. (\ref{fig:sparsity_example}). Moreover, given blocks $\mf{G}_p$
-are symmetric, so is the product $\mf{J}^T\mf{G}\mf{J}$.
-
-Finally the Hessian will have the sparsity structure of $\mf{A} +
-\mf{J}^T\mf{G}\mf{J}$.
 
 Our implementation organizes the blocks of the Jacobian $\mf{J}$ as described in
 this section, i.e. we condense rows by patches and columns by trees, so that the
-supernodal Cholesky factorization can exploit this rich structure. By condensing
-into dense blocks, the supernodal solver can take full advantage of specific
+supernodal Cholesky factorization can exploit this rich structure. Using this
+block structure, the supernodal solver can take full advantage of specific
 optimizations for dense algebra.
 
 
 
 \subsection{Stopping Criteria}
+\label{sec:stopping_criteria}
 
 To assess convergence, we monitor the optimality condition for the unconstrained
 problem in Eq. (\ref{eq:primal_unconstrained}) by evaluating the norm of the
@@ -352,8 +311,8 @@ momentum balance in Eq. (\ref{eq:primal_gradient})
 Notice that the components of $\nabla\ell_p$ have units of generalized momentum
 $\mf{p}=\mf{M}\mf{v}$. Depending on the choice of generalized coordinates, the
 generalized momentum components will have different units. In order to weigh all
-components equally, we define the diagonal matrix
-$\mf{D} = \text{diag}(\mf{M})^{-1/2}$ and perform the following change of variables
+components equally, we define the diagonal matrix $\mf{D} =
+\text{diag}(\mf{M})^{-1/2}$ and perform the following change of variables
 \begin{align}
 	\tilde{\nabla}\ell_p &= \mf{D}\nabla\ell_p, \nonumber\\
 	\tilde{\mf{p}} &= \mf{D}\mf{p}, \nonumber \\
@@ -368,16 +327,8 @@ $\text{J}^{1/2}$. Using these definitions, we write our stopping criteria as
 	\label{eq:stopping_criteria}
 \end{equation}
 where $\varepsilon_r$ is a dimensionless relative tolerance that we usually set
-in the range $10^{-6}$ to $10^{-3}$. For all of our simulations in this paper, we
-use $\varepsilon_r = 10^{-5}$. The absolute tolerance $\varepsilon_a$ is used to
-detect rare cases where the solution leads to no contact and no motion, typically
-due to externally applied forces. We always set this tolerance to a small number,
-$\varepsilon_a=10^{-16}$.
-
-\subsection{Implementation Details}
-\RedHighlight{TODO: write.}
-\begin{itemize}
-	\item Implemented in Drake.
-	\item Using supernodal algebra from Frank
-	\item Using C++ and Eigen's library to get the most out of AVX and the like (let Frank say more here.)
-\end{itemize}
+in the range $10^{-6}$ to $10^{-3}$. For all of our simulations in this paper,
+we use $\varepsilon_r = 10^{-5}$. The absolute tolerance $\varepsilon_a$ is used
+to detect rare cases where the solution leads to no contact and no motion,
+typically due to externally applied forces. We always set this tolerance to a
+small number, $\varepsilon_a=10^{-16}$.
