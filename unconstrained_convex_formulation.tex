@@ -39,8 +39,14 @@ The unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}) includes
 the same cost in velocities as the primal formulation from Eq.
 (\ref{eq:primal_regularized}). However, the conic constraint $\mf{g}\in
 \mathcal{F}^*$ in Eq. (\ref{eq:primal_regularized}) has been replaced by a cost
-term using the analytical inverse dynamics. We state the main result of this
-section in the following result, proved in Appendix \ref{app:unconstrained_formulation_equivalance}.
+term using the analytical inverse dynamics. Lemma
+\RedHighlight{Add proper reference} in Appendix \RedHighlight{Add proper reference} proofs
+that the unconstrained cost $\ell_p(\mf{v})$ is strongly convex and
+differentiable with Lipschitz continuous gradients. Therefore the problem
+stated in Eq. (\ref{eq:primal_unconstrained}) has a unique solution.
+
+We state the main result of this section in the following result, proved in
+Appendix \ref{app:unconstrained_formulation_equivalance}.
 \begin{theorem}
     The pair $\{\mf{v},\bsigma\}$, with velocities $\mf{v}$ solution to the
     unconstrained formulation in Eq. (\ref{eq:primal_unconstrained}) and

@@ -38,21 +38,37 @@ SAP necessities a larger number of iterations to converge than Geodesic IPM duri
 similar. This tells us that SAP's cost per iteration is lower than that of
 Geodesic IPM, even when they both use the same supernodal algebra. Unlike SAP and Geodesic IPM that benefit from warm start, we see that Gurobi performs
 about $9$ iterations per time step in both the initial transient and the steady state.
-
-\RedHighlight{TODO: Don't forget to add a plot showing convergence. Probably for
-a worst case taking about 25 iterations and for a mean case taking about 5
-iterations.}
-
 \begin{figure}[!h]
 	\centering
     %trim={<left> <lower> <right> <upper>}
-    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/iterations_nb40.png}
-    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/wall_clock_nb40.png}    
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 0 0},clip]{figures/clutter/iterations_nb40.png}
+    \adjincludegraphics[width=0.49\columnwidth,trim={0 0 0 0},clip]{figures/clutter/wall_clock_nb40.png}    
 	\caption{\label{fig:clutter_w_walls_nb40} 
 	Iterations and wall-clock time per time step for SAP, Geodesic IPM, and
 	Gurobi for the clutter case with 40 bodies and with walls. Most of the
 	energy is lost during the first $\sim300$ time steps as the objects pile up
 	at the bottom of the box.}
+\end{figure}
+
+Figure \ref{fig:clutter_line_search} shows two examples of convergence history
+for the case with walls. We denote with $\ell^0$ to the cost evaluated at the
+initial guess, the previous time step velocity. With $\ell_*$ we denote the
+optimal cost, which we approximate with its value from the last iteration. At
+step 60 during the initial transient for which SAP requires 21 iterations to
+converge, we observe that the algorithm reaches quadratic convergence after an
+initial linear convergence transient. At step 520, past the initial energetic
+transient, SAP exhibits linear convergence and satisfies the convergence
+criteria within 5 iterations. We observed this convergence behavior for other
+time steps as well. For time steps requiring about 10 iterations or more, SAP
+exhibits linear convergence followed by quadratic convergence. For time steps
+requiring less than about 10 iterations, the linear convergence regime is enough
+to reach convergence.
+\begin{figure}[!h]
+	\centering
+    \includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step60_21its_wwalls_latex_labels.png}
+	\includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step520_5its_wwalls_latex_labels.png}    
+	\caption{\label{fig:clutter_line_search} 
+	Normalized cost as a function of Newton iterations for step 60 (left) and for step 520 (right). SAP ensures that the cost decreases with each newt iteration. Reference lines are shown for linear convergence (dotted) and quadratic convergence (dashed).}
 \end{figure}
 
 \subsubsection{Scalability}
