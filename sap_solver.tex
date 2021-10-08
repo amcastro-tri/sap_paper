@@ -19,11 +19,11 @@ $\ell_p(\mf{v})$, with line search to find the unique optimal solution
 	\State $\displaystyle \alpha^m = \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}^m + t \Delta\mf{v}^{m})$
 	\State $\displaystyle \mf{v}^{m+1} = \vf{v}^m + \alpha^{m}\Delta\mf{v}^{m}$
 	\EndRepeatUntil
-	\State\Return $\mf{v}$, $\bgamma=P_\mathcal{F}(\vf{y}(\mf{v}))$
+	\State\Return $\{\mf{v}$, $\bgamma=P_\mathcal{F}(\vf{y}(\mf{v}))\}$
 \end{algorithmic}
 \end{algorithm}
 where we use the previous time step velocity $\mf{v}_0$ to initialize the
-iteration. The stopping criteria is discussed in below in Section
+iteration. The stopping criteria is discussed below in Section
 \ref{sec:stopping_criteria}.
 
 Specifics of the line search algorithm are critical to the success of the SAP
@@ -32,10 +32,11 @@ states corresponding to different contact modes. We explored two line-search
 algorithms: an approximate backtracking line-search with Armijo's stopping
 criteria and an exact (to machine epsilon) line-search. We show how a careful
 pre-computation of commonly occurring terms enables the exact line-search step
-for a small fraction of the total cost. While backtracking line-search with
-Armijo's rule guarantees the convergence of SAP, we found out that exact
-line-search can lead to a performance improvement between 15\% to 35\%. In the
-next subsections we describe each component of the solver in detail.
+for a small fraction of the total cost. Though both line-search approaches
+guarantee the convergence of SAP \RedHighlight{ref to Frank's proof}, we found
+out that exact line-search can lead to a performance improvement between 15\% to
+35\%. In the next subsections we describe each component of the solver in
+detail.
 
 \subsection{Gradients}
 \label{sec:gradients}
@@ -86,22 +87,14 @@ $\nabla_\mf{y}P_\mathcal{F}(\vf{y})$, both provided in Appendices
 \ref{app:gradients_derivation} respectively.
 
 \subsection{Line Search}
-At each $m\text{-th}$ Newton iteration, our implementation of the backtracking
-line-search tests candidate steps lengths until Armijo's criteria \cite[\S
-3.1]{bib:nocedal2006numerical} is satisfied
-\begin{algorithm}[H]
-	\caption{Backtracking line-search}	
-	\begin{algorithmic}
-	\State With $\rho \in (0, 1)$, $c \in (0, 1)$ and $\alpha_\text{Max}>0$
-	\State $\alpha\gets \alpha_\text{Max}$ 
-	\RepeatUntil $~\ell_p(\alpha) <
-	\ell_p(\mf{v}^m) + c\,\alpha \frac{d\ell_p}{d\alpha}(\mf{v}^m)$ \State
-	$\alpha\gets \rho\alpha$
-	\EndRepeatUntil
-	\State\Return $\alpha$
-\end{algorithmic}
-\end{algorithm}	
-and we typically use $\rho=0.8$, $c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
+
+At each $m\text{-th}$ Newton iteration, backtracking line-search starts with a
+maximum value of the step length $\alpha_\text{Max}$ and progressively reduces
+it by a factor $\rho \in (0, 1)$ to $\alpha\gets\rho\alpha$ until Armijo's
+criteria \cite[\S 3.1]{bib:nocedal2006numerical} is satisfied. We write Armijo's
+criteria as $~\ell_p(\mf{v}^m + \alpha \Delta\mf{v}^{m}) < \ell_p(\mf{v}^m) +
+c\,\alpha\,d\ell_p/d\alpha(\mf{v}^m)$. Typical parameters we used are
+$\rho=0.8$, $c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
 
 For our exact line-search, we make the following observations
 \begin{enumerate}
