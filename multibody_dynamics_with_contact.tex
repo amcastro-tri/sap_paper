@@ -44,10 +44,10 @@ equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
 $\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.
 
 To arrive at a discrete time system of equations, we can integrate the
-momentum balance at intervals of size $dt$ from time step $t^n$ to the
-next time step $t^{n+1}=t^n+dt$. We write this as
+momentum balance at intervals of size $\delta t$ from time step $t^n$ to the
+next time step $t^{n+1}=t^n+\delta t$. We write this as
 \begin{eqnarray}
-	\mf{M}(\mf{v}^{n+1}-\mf{v}^n)  = dt\,\bar{\vf{\tau}} + \mf{J}^T\mf{\bgamma},
+	\mf{M}(\mf{v}^{n+1}-\mf{v}^n)  = \delta t\,\bar{\vf{\tau}} + \mf{J}^T\mf{\bgamma},
 	\label{eq:momentum_balance}
 \end{eqnarray}
 where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
@@ -116,7 +116,7 @@ problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
 (\ref{eq:momentum_balance}), the maximum dissipation principle, and the modified
 non-penetration condition
 \begin{equation}
-	0 < \phi_i - dt \Vert {\bm v}_{t,i} \Vert \perp \gamma_{n,i} > 0
+	0 < \phi_i - \delta t \Vert {\bm v}_{t,i} \Vert \perp \gamma_{n,i} > 0
 	\label{eq:convex_approximation_complementarity_condition}
 \end{equation}
 where $\vf{v}_{t,i}$ is the tangential component of the contact velocity
