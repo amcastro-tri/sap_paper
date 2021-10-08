@@ -16,8 +16,8 @@ nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
 contact when combined with the Coulomb model of friction can lead to paradoxical
 configurations for which solutions in terms of accelerations and forces do not
 exist. These phenomena are known as Painlev\'e paradoxes
-\cite{bib:hogan2017regularization}. In theory, these paradoxes can be resolved by allowing
-discrete velocity jumps and impulsive forces and formally casting the problem as a
+\cite{bib:hogan2017regularization}. Theory resolves these paradoxes by allowing
+discrete velocity jumps and impulsive forces, formally casting the problem as a
 differential variational inequality \cite{bib:pang2008differential}. In practice,
 event based approaches can resolve impulsive transitions \cite{bib:haug1986},
 though it is not clear how to detect these events even for simple one degree of
@@ -27,11 +27,11 @@ Nevertheless, the problem can be solved in a weaker formulation at the velocity
 level using a time-stepping scheme where the next step velocities and impulses
 are the unknowns at each time
 step \cite{bib:stewart1996implicit, bib:anitescu1997}. These formulations lead
-in general to a non-linear complementarity problem (NCP) or a linear
-complementarity problem (LCP) when polyhedral approximations of the friction
-cone are used. Even though LCP formulations guarantee solution existence
+in general to a non-linear complementarity problem (NCP) or to a linear
+complementarity problem (LCP) when a polyhedral approximations of the friction
+cone is used. Even though LCP formulations guarantee solution existence
 \cite{bib:anitescu1997, bib:stewart1998convergence}, solving them accurately and
-efficiently has remained difficult in practice. This is 
+efficiently has remained difficult in practice. This has been explained
 partly due to the fact that these formulations are equivalent to nonconvex problems
 in global optimization, which are generally NP-hard \cite{bib:Kaufman2008}.
 Indeed, popular direct methods based on Lemke's pivoting algorithm to solve
@@ -43,7 +43,7 @@ These observations are not just of theoretical value, but in practice,
 these methods are numerically brittle and lack robustness when tasked with computing contact forces.
 This inherent lack of stability and robustness is tackled in software with a
 large amount of non-physical constraint softening and stabilization.
-The resulting simulation requires a significant amount of bespoke parameter tuning.
+Still, the resulting simulation requires a significant amount of bespoke parameter tuning.
 
 To improve computational tractability, Anitescu introduces a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
@@ -54,7 +54,7 @@ proportional to the time step size $\delta t$ and to the sliding velocity
 $\Vert\vf{v}_t\Vert$ \cite{bib:mazhar2014}, i.e. $\phi\sim \delta
 t\Vert\vf{v}_t\Vert$. The approximation is exact for sticking contacts,
 and it can be adequate for robotics applications for which the product $\delta
-t\Vert\vf{v}_t\Vert$ are usually sufficiently small. For trajectory optimization,
+t\Vert\vf{v}_t\Vert$ is usually sufficiently small. For trajectory optimization,
 Todorov \cite{bib:todorov2011} introduces regularization into Anitescu's
 formulation in order to write a strictly convex formulation with a unique,
 smooth and invertible solution. For simulation, Todorov \cite{bib:todorov2014}
