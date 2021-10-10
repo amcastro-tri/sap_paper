@@ -1,13 +1,15 @@
+% Dummy commit so that this file shows in Reviewable.
+
 \section{Introduction}
 \label{sec:introduction}
 
 \IEEEPARstart{S}{imulation} of multibody systems with frictional contact has
 proven indispensable in robotics, aiding at multiple stages during the
 mechanical and control design, testing, and training of robotic systems.
-However, reliable modeling and simulation through contact remains somewhat
-elusive. There is a need for robust simulation tools that can perform at
-interactive rates as often required by robotic applications without sacrificing
-accuracy, a critical aspect for meaningful sim-to-real transfer. 
+Robotic applications often require robust simulation tools that can perform at
+interactive rates without sacrificing accuracy, a critical prerequisite for
+meaningful sim-to-real transfer. However, reliable modeling and simulation
+through contact remains somewhat elusive.
 
 Rigid body dynamics with frictional contact is complicated by the non-smooth
 nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
@@ -16,56 +18,56 @@ configurations for which solutions in terms of accelerations and forces do not
 exist. These phenomena are known as Painlev\'e paradoxes
 \cite{bib:hogan2017regularization}. Theory resolves these paradoxes by allowing
 discrete velocity jumps and impulsive forces, formally casting the problem as a
-differential variational inequality \cite{bib:pang2008differential}. In practice
+differential variational inequality \cite{bib:pang2008differential}. In practice,
 event based approaches can resolve impulsive transitions \cite{bib:haug1986},
 though it is not clear how to detect these events even for simple one degree of
 freedom systems \cite{bib:hogan2017regularization}.
 
 Nevertheless, the problem can be solved in a weaker formulation at the velocity
 level using a time-stepping scheme where the next step velocities and impulses
-(integral of the forces over a given time step) are the unknowns at each time
+are the unknowns at each time
 step \cite{bib:stewart1996implicit, bib:anitescu1997}. These formulations lead
-in general to a non-linear complementarity problem (NCP) and to a linear
-complementarity problem (LCP) when a polyhedral approximation of the friction
+in general to a non-linear complementarity problem (NCP) or to a linear
+complementarity problem (LCP) when a polyhedral approximations of the friction
 cone is used. Even though LCP formulations guarantee solution existence
-\cite{bib:anitescu1997, bib:stewart1998convergence}, their accurate and
-efficient solution has remained difficult in practice. This has been explained
-in part as due to the fact that these formulations are equivalent to nonconvex problems
+\cite{bib:anitescu1997, bib:stewart1998convergence}, solving them accurately and
+efficiently has remained difficult in practice. This has been explained
+partly due to the fact that these formulations are equivalent to nonconvex problems
 in global optimization, which are generally NP-hard \cite{bib:Kaufman2008}.
-Indeed, the popular direct methods based on Lemke's pivoting algorithm to solve
-LCPs may exhibit exponential worst-case complexity \cite{bib:baraff1994fast}. As
-popular as direct pivoting methods, iterative methods based on projected
+Indeed, popular direct methods based on Lemke's pivoting algorithm to solve
+LCPs may exhibit exponential worst-case complexity \cite{bib:baraff1994fast}. Similar
+to direct methods, popular iterative methods based on projected
 Gauss-Seidel (PGS) \cite{bib:duriez2006_realistic_haptic_rendering, bib:bullet}
 have also shown exponentially slow convergence \cite{bib:erleben2007velocity}.
-These observations are not just of a purely theoretical value, but in practice
-methods to compute contact forces often lack robustness and are numerically
-brittle. This inherent lack stability and robustness is tackled in software with
-large amounts of non-physical constraint softening and stabilization. Still,
-simulations require a significant amount of parameter tunning to make them work.
+These observations are not just of theoretical value, but in practice,
+these methods are numerically brittle and lack robustness when tasked with computing contact forces.
+This inherent lack of stability and robustness is tackled in software with a
+large amount of non-physical constraint softening and stabilization.
+Still, the resulting simulation requires a significant amount of bespoke parameter tuning.
 
 To improve computational tractability, Anitescu introduces a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
 convex approximation with proven convergence to the solution of a measure
-differential inclusion as the time step goes to zero. The convex approximation
-introduces a \emph{gliding} artifact for sliding contacts at a distance $\phi$
+differential inclusion as the time step goes to zero. For sliding contacts,
+the convex approximation introduces a \emph{gliding} artifact at a distance $\phi$
 proportional to the time step size $\delta t$ and to the sliding velocity
 $\Vert\vf{v}_t\Vert$ \cite{bib:mazhar2014}, i.e. $\phi\sim \delta
-t\Vert\vf{v}_t\Vert$. Therefore the approximation is exact for sticking contact
+t\Vert\vf{v}_t\Vert$. The approximation is exact for sticking contacts,
 and it can be adequate for robotics applications for which the product $\delta
-t\Vert\vf{v}_t\Vert$ can be sufficiently small. For trajectory optimization,
+t\Vert\vf{v}_t\Vert$ is usually sufficiently small. For trajectory optimization,
 Todorov \cite{bib:todorov2011} introduces regularization into Anitescu's
 formulation in order to write a strictly convex formulation with a unique,
 smooth and invertible solution. For simulation, Todorov \cite{bib:todorov2014}
-uses regularization to introduce \emph{numerical compliance} as a means of a
-Baumgarte-like stabilization and avoid constraints drift. As a side effect, the
+uses regularization to introduce \emph{numerical compliance} that provides
+Baumgarte-like stabilization and avoids constraints drift. As a side effect, the
 regularized formulation can lead to a noticeable non-zero slip velocity even
 during stiction \cite{bib:simbenchmark}.
 
 Even though these formulations introduce a tractable approximation of frictional
-contact, somehow they haven't become a popular solution approach in practice. We
+contact, they haven't become a popular approach in practice. We
 believe this is not because the approximation is not suitable for robotics
 applications, but rather because of the lack of robust solution methods with a
-computational cost suitable for real-time simulation. Sofware such as ODE
+computational cost suitable for real-time simulation. Software such as ODE
 \cite{bib:ode}, Dart \cite{bib:dart} and Vortex \cite{bib:vortex} use a
 polyhedral approximation of the friction cone leading to an LCP formulation.
 Algoryx \cite{bib:algoryx} uses a \emph{split solver}, reminiscent of one
@@ -79,33 +81,34 @@ of contact. The multi-physics simulation package Chrono implements a variant of
 the PGS method for solving Anitescu's convex formulation \cite{bib:tasora2011}.
 This method is specially targeted to the simulation of very large scale systems
 as those found in granular flow. Even though some convergence guarantees are
-provided in \cite{bib:anitescu2010}, the solver exhibits low convergences rates.
+provided in \cite{bib:anitescu2010}, the solver exhibits low convergence rates.
 This is expected for such first order method. Mujoco is a software targeted to
 robotics that implements both a PGS solver variant \cite{bib:todorov2014} and a
-second order Newton solver. However the underlying technology is proprietary and
+second order Newton solver. However, the underlying technology is proprietary and
 implementation details are not known in the community.
 
-Summarizing, after more than 15 years after the introduction of these convex
+Summarizing, 15 years after the introduction of these convex
 approximations, robust and performant algorithms for their solution in practice
 are lacking. It is not even clear in the community if these formulations present
 a real advantage when compared to more traditional approaches and whether the
 artifacts introduced by the approximation are appropriate for robotics
-applications. In this work we aim to provide answers to these questions. 
+applications. In this work, we aim to provide answers to these questions. 
 
 We make a number of novel contributions in this work. To answer the question of
 physical accuracy and validity of the approximation, in Section
 \ref{sec:physical_intuition} we build on Todorov's work \cite{bib:todorov2014}
 to write compact analytical expressions of the impulses that provide a clear
-physical interpretation of the convex formulation. This allow us to succinctly
+physical interpretation of the convex formulation. This allows us to succinctly
 describe the model in physical terms rather than in optimization specific terms
-that might be elusive to non-experts on optimization. Moreover, the artifacts
+that might be elusive to non-experts of optimization. Moreover, the artifacts
 introduced by the approximation become apparent and can be characterized
 precisely. This contribution is novel to our work and different from
 \cite{bib:todorov2014} where regularization is used as a Baumgarte-like
-stabilization. This allow us to incorporate not only compliant point contact but
-also complex models of compliant surface patches \cite{bib:elandt2019pressure},
-as we demonstrate in Section \ref{sec:slip_control}. We introduce in Section
-\ref{sec:discrete_time_formulation} a time stepping approach  based on the
+stabilization. This allow us to incorporate not only compliant point contact,
+but also complex models of compliant surface patches
+\cite{bib:elandt2019pressure}, as we demonstrate in Section
+\ref{sec:slip_control}. We introduce in Section
+\ref{sec:discrete_time_formulation} a time stepping approach based on the
 $\theta\text{-method}$. This includes the popular symplectic Euler method and
 the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we demonstrate
 that the midpoint rule can achieve second order accuracy even in problems with
@@ -114,21 +117,21 @@ frictional contact.
 Unlike previous work \cite{bib:anitescu2010,bib:todorov2014} that formulate the
 problem in terms of impulses, we write a primal formulation of compliant contact
 in terms of velocities in Section \ref{sec:primal_formulation}. In Section
-\ref{sec:unconstrained_convex_formulation} we eliminate constraints from the
+\ref{sec:unconstrained_convex_formulation}, we eliminate constraints from the
 primal formulation analytically to write an unconstrained convex formulation of
-the same problem. This led us to development of our semi-analytical primal
+the same problem. This leads us to the development of our semi-analytical primal
 solver (SAP) in Section \ref{sec:sap_solver} to solve the unconstrained
-formulation in practice. SAP has proven convergence and warms starts effectively
+formulation in practice. SAP has proven convergence and warm-starts effectively
 using only the velocities from the previous time step. We provide thorough
-details for its implementation including the computation of the Hessian
-analytically, our fast exact line search and sparsity analysis. Section
+details for its implementation including analytic computation of the Hessian,
+our fast exact line search, and sparsity analysis. Section
 \ref{sec:understanding_model_parameters} presents a judicious parameterization
 of regularization that allows for a tight resolution of stiction and simulation
 of \emph{near-rigid} objects while keeping the conditioning of the Hessian under
 control. This is critical for the simulation of demanding robotics tasks such as
 manipulation. We evaluate the accuracy, robustness and performance of SAP
-against available commercial and open-source optimization solvers. In section
-\ref{sec:test_cases} we demonstrate the effectiveness of our approach in a
+against available commercial and open-source optimization solvers. In Section
+\ref{sec:test_cases}, we demonstrate the effectiveness of our approach in a
 number of simulation cases, including the simulation of a challenging dual arm
 manipulation task. We conclude our work with a discussion on extensions and
 variations in Section \ref{sec:variations_and_extensions} and provide
