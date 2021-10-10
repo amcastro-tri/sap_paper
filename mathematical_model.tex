@@ -1,3 +1,5 @@
+% Dummy commit so that this file shows in Reviewable.
+
 \section{Discrete Time Formulation}
 \label{sec:discrete_time_formulation}
 
@@ -13,14 +15,13 @@ the convex approximation of contact from \cite{bib:anitescu2006} instead. We
 remark that combining the $\theta\text{-method}$ with the convex approximation
 of contact is novel to our work. 
 
-We discretize time into intervals of fixed size $dt$ and seek to advance the
-state of the system from time $t^n$ to the next step at $t^{n+1} = t^n + dt$. In
+We discretize time into intervals of fixed size $\delta t$ and seek to advance the
+state of the system from time $t^n$ to the next step at $t^{n+1} = t^n + \delta t$. In
 the $\theta\text{-method}$, variables are evaluated at intermediate time steps
 $t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. We define
 \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
 $\mf{v}^{\theta_{vq}}$ in accordance with the standard $\theta\text{-method}$
 using scalar parameters $\theta_q$, $\theta_v$, and $\theta_{vq}$
-\RedHighlight{Make a pass to use $\delta t$ instead.}
 \begin{align}
 	\mf{q}^{\theta_q} &= \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
 	\mf{v}^{\theta_v} &= \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
@@ -41,25 +42,25 @@ generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as
 where we split the forces into two contributions $\mf{F}$ and $\mf{G}$ so that
 the Jacobians $\partial \mf{F}/\partial\mf{q}$ and $\partial
 \mf{F}/\partial\mf{v}$ are positive definite matrices while the same is
-generally not true for the Jacobian of $\mf{G}$. The term $\mf{F}(\mf{q},
-\mf{v})$ can include modeling elements such as spring and dampers and even
+generally not true for the Jacobians of $\mf{G}$. The term $\mf{F}(\mf{q},
+\mf{v})$ can include forces from modeling elements such as spring and dampers and even
 internal forces for the modeling of soft-body deformation. The term
-$\mf{G}(\mf{q}, \mf{v})$ include all other contributions that cannot guarantee
-positive definiteness of its Jacobian, such as Coriolis and gyroscopic forces
+$\mf{G}(\mf{q}, \mf{v})$ includes all other contributions that cannot guarantee
+positive definiteness of their Jacobians, such as Coriolis and gyroscopic forces
 arising in multibody dynamics with generalized coordinates.
 
 Using the above definitions, we write our discrete update in the following form
 \begin{align}
 	\mf{m}(\mf{v}) &= \mf{J}(\mf{q}^{\theta_{q}})^T\mf{\bgamma},
 	\label{eq:v_update}\\
-	\mf{q} &= \mf{q}_0 + dt \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + dt\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+	\mf{q} &= \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + \delta t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
 	\label{eq:q_update}
 \end{align}
 with the discrete momentum residual $\mf{m}(\mf{v})$ defined as
 \begin{multline}
 	\mf{m}(\mf{v}) =
 	\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) -
-	dt\,\bar{\vf{\tau}}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
+	\delta t\,\bar{\vf{\tau}}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
 	\label{eq:m_definition}
 \end{multline}
 and the kinematic map $\mf{N}(\mf{q})$ as defined by Eq.
@@ -104,11 +105,10 @@ $\mathcal{O}(n)$ \emph{Articulated Body Algorithm}
 
 In the second stage, we approximately solve Eq. (\ref{eq:v_update}) by
 linearizing $\mf{m}(\mf{v})$ around $\mf{v}^*$. Our linearization uses a
-symmetric positive definite (SPD) \RedHighlight{TODO: make sure SPD is
-introduced only once in the entire text.} approximation $\mf{A}$ of the Jacobian
+symmetric positive definite (SPD) approximation $\mf{A}$ of the Jacobian
 of $\mf{m}(\mf{v})$ with
 \begin{align}
-	\mf{A}&=\mf{M}+dt^2\,\theta_q\theta_{qv}\mf{K}+dt\,\theta_v\mf{D},
+	\mf{A}&=\mf{M}+\delta t^2\,\theta_q\theta_{qv}\mf{K}+\delta t\,\theta_v\mf{D},
 	\label{eq:expression_for_A}\\
 	\mf{K}(\mf{q}, \mf{v})&=-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial
 	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},
@@ -139,7 +139,7 @@ order as shown by the following result, proved in Appendix
 Matrix $\mf{A}$ is a first order approximation to the Jacobian of $\mf{m}$,
 i.e.,
 \begin{align}
-	\left. \frac{\partial \mf{m}}{\partial \mf{v}} \right|_{\mf{v}=\mf{v}^*} = \mf{A} + \mathcal{O}(dt).
+	\left. \frac{\partial \mf{m}}{\partial \mf{v}} \right|_{\mf{v}=\mf{v}^*} = \mf{A} + \mathcal{O}(\delta t).
 \end{align}
 Therefore, Eq. (\ref{eq:momentum_linearized}) is a second order approximation of
 the discrete balance of momentum in Eq. (\ref{eq:v_update}). Moreover, $\mf{A}
