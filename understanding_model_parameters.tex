@@ -3,16 +3,16 @@
 \section{Understanding Model Parameters}
 \label{sec:understanding_model_parameters}
 
-We provided explicit algebraic expressions for the impulses as a function of
-contact velocities in Eq. \eqref{eq:analytical_y_projection}, the inverse
+We have provided explicit algebraic expressions for the impulses as a function of
+contact velocities in Eq. \eqref{eq:analytical_y_projection} via the inverse
 dynamics. While these expressions are given in terms of regularization $\mf{R}$,
 Section \ref{sec:physical_intuition} describes in detail the resulting physical
 model in terms of contact stiffness $k$, dissipation time constant $\tau_d$ and
-friction coefficient $\mu$. Therefore users of this model only need to provide
-these physical parameters and regularization is computed for them.
+friction coefficient $\mu$. Therefore, users of this model only need to provide
+these physical parameters and regularization is computed from them.
 
 Regularization parameters not only determine the physical model, but
-they also affect the robustness and performance of the SAP solver. Modeling near-rigid
+also affect the robustness and performance of the SAP solver. Modeling near-rigid
 objects and avoiding viscous drift during stiction require very small values of
 $R_t$ and $R_n$ that can lead to badly ill-conditioned problems. Under these
 conditions, the Hessian of the system exhibits a large condition number, and
@@ -25,7 +25,7 @@ sacrificing accuracy.
 
 With the formulation presented in this work, all bodies are modeled as compliant.
 Therefore, rigid objects must be modeled as \emph{near-rigid} bodies with large
-stiffness $k$. However, as mentioned above, blindly choosing large values of stiffness can
+stiffness. However, as mentioned above, blindly choosing large values of stiffness can
 lead to ill-conditioned systems of equations. Here, we propose a principled way
 to choose the stiffness parameter when modeling near-rigid contact.
 
@@ -40,7 +40,7 @@ resolve the contact dynamics.
 In this \emph{near-rigid} regime, we use compliance as a means to add a
 Baumgarte-like \emph{stabilization} to avoid constraint drift, as similarly
 done in \cite{bib:todorov2011}. Choosing the time scale of the contact to be
-$T_n = \beta \delta t$ with $\beta < 1$, we model inelastic contact with a dissipation
+$T_n = \beta \delta t$ with $\beta \le 1$, we model inelastic contact with a dissipation
 that leads to a critically damped oscillator, or $\zeta=1$. This dissipation is
 $\tau_d=2\zeta/\omega_n$, or in terms of the time step,
 \begin{equation}
@@ -61,9 +61,8 @@ the ground. In this case we have
 \begin{align*}
 	\phi &= \frac{mg}{k} \\
 	&= \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2\\
-	&= \frac{\beta^2}{4\pi^2}g\delta t^2
+	&= \frac{\beta^2}{4\pi^2}g\delta t^2.
 \end{align*}
-
 Taking $\beta=1.0$ and Earth's gravitational constant, a typical simulation
 time step of $\delta t=10^{-3}~\text{s}$ leads to $\phi\approx 2.5\times
 10^{-7}~\text{m}$, and a large simulation time step of $\delta
