@@ -1,5 +1,3 @@
-% Dummy commit so that this file shows in Reviewable.
-
 \section{Multibody Dynamics with Contact}
 \label{sec:multibody_dynamics_with_contact}
 
@@ -51,9 +49,8 @@ next time step $t^{n+1}=t^n+\delta t$. We write this as
 	\label{eq:momentum_balance}
 \end{eqnarray}
 where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
-$\vf{\tau}\in\mathbb{R}^{n_v}$ models external forces such as gravity and
-gyroscopic terms arising in multibody dynamics; we use the mean value
-$\bar{\vf{\tau}}$ of ${\vf{\tau}}$ in the interval $(t^n,t^{n+1})$.
+$\bar{\vf{\tau}}\in\mathbb{R}^{n_v}$ models external forces such as gravity and
+gyroscopic terms arising in multibody dynamics.
 We present a
 comprehensive discussion of our discrete time-stepping scheme in Section
 \ref{sec:discrete_time_formulation}.
