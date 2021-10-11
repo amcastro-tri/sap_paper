@@ -6,18 +6,31 @@
 \section{Semi-Analytical Primal Solver}
 \label{sec:sap_solver}
 
-SAP essentially is Newton's method
-applied to the unconstrained formulation stated in
-Eq. (\ref{eq:primal_unconstrained}), where constraints have been eliminated
-using our analytical inverse dynamics. At the $m\text{-th}$ Newton iteration,
-SAP uses analytical expressions of both the gradient and Hessian of
-$\ell_p(\mf{v})$, along with a line search to find the unique optimal solution.
-We use the previous time step velocity $\mf{v}_0$ to initialize the
-iteration. The stopping criteria is discussed below in Section
+The Semi-Analytical Primal Solver (SAP) is an iterative algorithm for solving
+the unconstrained  formulation (\ref{eq:primal_unconstrained}) that is inspired
+by Newton's method.  Exploiting differentiability of the objective
+$\ell_p(\mf{v})$, it selects a search direction $\Delta\mf{v}$ at each iteration using the
+formula
+\[
+  \Delta\mf{v} =  \mf{H}(\mf{v})^{-1} \nabla \ell_p(\mf{v}),
+\]
+where $\mf{H}(\mf{v})$ is a positive-definite weighting
+matrix. It then descends the cost function along this direction
+using line-search.  When $\nabla \ell_p(\mf{v})$ is differentiable,
+$\mf{H}(\mf{v})$ returns the Hessian matrix $\nabla^2 \ell_p(\mf{v})$.
+Otherwise, $\mf{H}(\mf{v})$ is evaluated by extending
+analytical expressions for $\nabla^2 \ell_p$ to points
+of non-differentiability.  As we show \fbox{TODO: add reference}, SAP 
+globally convergences at at least a linear-rate.
+Further, SAP exhibits quadratic convergence when
+$\nabla^2 \ell_p$ exists in a neighborhood of the
+optimal $\mf{v}$.
+In practice, we initialize SAP at the previous time-step velocity $\mf{v}_0$.
+The stopping criteria is discussed below in Section
 \ref{sec:stopping_criteria}.
 
 \begin{algorithm}[H]
-	\caption{SAP Newton Iteration}	
+  \caption{The Semi-Analytical Primal Solver (SAP)}	
 	\label{alg:sap}
 	\begin{algorithmic}[1]
 		\State Initialize $\mf{v}^0 \gets \mf{v}_0$
@@ -30,9 +43,9 @@ iteration. The stopping criteria is discussed below in Section
 	\end{algorithmic}
 \end{algorithm}
 
-Specifics of the line search algorithm are critical to the success of the SAP
-solver given that the cost can undergo large changes as $\mf{v}^m$ explores
-states corresponding to different contact modes. We explore two line-search
+The line-search algorithm is critical to the success of SAP
+given that $\nabla \ell_p(\mf{v})$ can rapidly change during 
+contact-mode transitions.  We explore two line-search
 algorithms: an approximate backtracking line-search with Armijo's stopping
 criteria and an exact (to machine epsilon) line-search. We show how a careful
 pre-computation of commonly occurring terms enables the exact line-search step
@@ -59,13 +72,12 @@ P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$. We show in Appendix
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
 	\label{eq:primal_gradient}
 \end{equation}
-with $\bgamma(\mf{v})=P_\mathcal{F}(\vf{y})$ from the analytical inverse
-dynamics in Eq. \eqref{eq:analytical_y_projection}. This recovers the original
-momentum balance in Eq. (\ref{eq:momentum_linearized}) since Newton's method
-solves for $\nabla_\mf{v}\ell_p=\mf{0}$.
-
-We obtain the Hessian of the regularizer $\ell_R(\mf{v})$ from the
-gradients of $\bgamma(\mf{v})$ as
+where $\bgamma(\mf{v})=P_\mathcal{F}(\vf{y}(\mf{v}))$ is defined by the analytical inverse
+dynamics in Eq. \eqref{eq:analytical_y_projection}. 
+The map $P_\mathcal{F}(\mf{y}(\mf{v}))$ is differentiable
+when $\mf{y}$ is not on the boundary of $\mathcal{F}$.
+At these points, we obtain the Hessian of $\nabla_\mf{v}^2\ell_R$  by differentiating 
+$\mf{J}^T\bgamma(\mf{v})$. The result is
 \begin{eqnarray}
 	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
 	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
@@ -77,9 +89,9 @@ for the $i\text{-th}$ contact. As shown in Appendix
 \ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and thus
 $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
 
-Finally, the Hessian needed in Newton's method is
+In total, the Hessian of $\ell_p$ is
 \begin{equation}
-	\mf{H}= \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
+	\nabla_\mf{v}^2\ell_R(\mf{v})= \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
 	\label{eq:ell_hessian}
 \end{equation}
 which, since $\mf{A}\succ 0$, is strictly positive definite. Notice
@@ -104,13 +116,12 @@ Lipschitz continuous gradients, see Lemma \RedHighlight{reference to Frank's
 proof}, its restriction to a line $\ell(\alpha)$ inherits the following
 properties
 \begin{enumerate}
-	\item $\ell_p(\alpha)$ is strictly convex, i.e. there is a unique minimum.
-	\item Newton steps are well formed since $d^2\ell_p/d\alpha^2>0$.
-	\item $\ell_p(\alpha)$ is a piecewise $C^1$ function. In other words,
-	$d\ell_p/d\alpha$ is continuous but $d^2\ell_p/d\alpha^2$ might not be.	
-	\item Given the regularization used to model friction and stiff compliance,
-	gradients of $\ell_p(\alpha)$ can undergo large changes, even within a
-	region where $\ell_p(\alpha)$ is continuous.
+	\item $\ell_p(\alpha)$ is strongly convex, i.e. there is a unique minimum.
+	\item $\ell_p(\alpha)$ is a once, but not twice, differentiable. 
+      \item With the prescribed regularization for friction 
+        and stiff compliance (Section~\ref{sec:understanding_model_parameters}),
+	gradients of $\ell_p(\alpha)$ can change rapidly, even within 
+        the same contact mode.
 \end{enumerate}
 
 This leads us to choose a one-dimensional strategy that is robust under these
@@ -118,20 +129,24 @@ conditions. We find the method \verb;rtsafe; in \cite[\S
 9.4]{bib:numerical_recipes} to work the best. \verb;rtsafe; is a one-dimensional
 root finder that uses the Newton-Raphson method and switches to bisection
 whenever Newton's method leads to an iterate outside a search bracket or
-whenever its convergence is slow. Using analytical first and second derivatives,
+whenever its convergence is slow. Using analytical first and second derivatives
+(analytically extended to points of non-differentiability),
 our line search simply reduces to finding the unique root of $d\ell/d\alpha$
 using the \verb;rtsafe; algorithm. The high performance of this method allows us 
 to iterate $\alpha$ to machine precision at a negligible impact on the
 computational cost. In practice, this is our preferred algorithm since it allows
-us to use very tight regularization parameters without having to tune line search parameters. Moreover, we observe 15\%-35\% performance improvement when
+us to use very low regularization parameters without having to tune tolerances
+in the line search. Moreover, we observe 15\%-35\% performance improvement when
 compared to the backtracking line-search.
 
 \subsection{Efficient Analytical Derivatives For Line Search}
 
-\verb;rtsafe; requires the first and second derivatives of $\ell_p$, while the
+The algorithm \verb;rtsafe; requires the first and second directional
+derivatives of $\ell_p$, while the
 backtracking method only requires the first derivative to verify Armijo's
-stopping criteria. We show how to compute these gradients efficiently in
-$\mathcal{O}(n)$ operations.
+stopping criteria. We show how to compute these derivatives efficiently in
+$\mathcal{O}(n)$ operations. To simplify exposition, we assume
+that $\nabla^2 \ell_p(\mf{v})$ exists so that the second-derivative is well-defined.
 
 Defining $\ell(\alpha) = \ell_p(\mf{v}+\alpha\Delta\mf{v})$, we can compute first
 and second derivatives with respect to $\alpha$ using the gradient and Hessian
@@ -142,17 +157,18 @@ and second derivatives with respect to $\alpha$ using the gradient and Hessian
 
 These derivatives are expensive to compute for general non-linear functions, and
 most line search variations in practice are approximations that avoid their
-computation altogether. We show that first and second derivatives can be
-computed efficiently given the structure of the problem.
+computation altogether. For $\ell_p$, we  show they can be
+computed efficiently.
 
 Using the gradients from Section \ref{sec:gradients}, we can write
 \begin{eqnarray}
 	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{v}^T\mf{A}(\mf{v}(\alpha)-\mf{v}^*)\\
 	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}^T\mf{J}^T\bgamma.
 \end{eqnarray}
-Defining the change of constraint velocity
-$\Delta\mf{v}_c=\mf{J}\Delta\mf{v}$ and change of momentum $\Delta\mf{p} =
-\mf{A}\Delta\mf{v}$, we obtain the much simpler and faster to compute versions
+These is computed efficiently by first calculating the change in velocity
+$\Delta\mf{v}_c:=\mf{J}\Delta\mf{v}$ and change of momentum $\Delta\mf{p} :=
+\mf{A}\Delta\mf{v}$ by exploiting kinematic sparsity. 
+The calculation is then completed via 
 \begin{eqnarray}
 	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{p}^T(\mf{v}(\alpha)-\mf{v}^*)\\
 	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}_c^T\bgamma(\alpha)
