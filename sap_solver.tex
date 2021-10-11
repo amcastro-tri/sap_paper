@@ -6,8 +6,8 @@
 \section{Semi-Analytical Primal Solver}
 \label{sec:sap_solver}
 
-Our Semi-Analytical Primal Solver, or SAP for short, essentially is a Newton
-iteration used to find the minimum of the unconstrained formulation stated in
+SAP essentially is Newton's method
+applied to the unconstrained formulation stated in
 Eq. (\ref{eq:primal_unconstrained}), where constraints have been eliminated
 using our analytical inverse dynamics. At the $m\text{-th}$ Newton iteration,
 SAP uses analytical expressions of both the gradient and Hessian of
@@ -18,6 +18,7 @@ iteration. The stopping criteria is discussed below in Section
 
 \begin{algorithm}[H]
 	\caption{SAP Newton Iteration}	
+	\label{alg:sap}
 	\begin{algorithmic}[1]
 		\State Initialize $\mf{v}^0 \gets \mf{v}_0$
 		\RepeatUntil $~\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a + \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)$, Eq. \eqref{eq:stopping_criteria}
@@ -35,7 +36,7 @@ states corresponding to different contact modes. We explore two line-search
 algorithms: an approximate backtracking line-search with Armijo's stopping
 criteria and an exact (to machine epsilon) line-search. We show how a careful
 pre-computation of commonly occurring terms enables the exact line-search step
-with a small fraction of the total cost. Though both line-search approaches
+at a small fraction of the total cost. Though both line-search approaches
 guarantee the convergence of SAP \RedHighlight{ref to Frank's proof}, we find
 that the exact line-search can lead to a performance improvement between 15\% to
 35\%. In the next subsections, we describe each component of the solver in
@@ -63,8 +64,8 @@ dynamics in Eq. \eqref{eq:analytical_y_projection}. This recovers the original
 momentum balance in Eq. (\ref{eq:momentum_linearized}) since Newton's method
 solves for $\nabla_\mf{v}\ell_p=\mf{0}$.
 
-We obtain the Hessian $\mf{H}=\nabla_\mf{v}^2\ell_R$ by taking the gradient of
-Eq. (\ref{eq:primal_gradient}). The result is
+We obtain the Hessian of the regularizer $\ell_R(\mf{v})$ from the
+gradients of $\bgamma(\mf{v})$ as
 \begin{eqnarray}
 	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
 	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
@@ -91,14 +92,17 @@ $\nabla_\mf{y}P_\mathcal{F}(\vf{y})$. They are provided in Appendices
 \subsection{Line Search}
 
 At the $m\text{-th}$ Newton iteration, backtracking line-search starts with a
-maximum step length of $\alpha_\text{Max}$ and progressively decreases
-by a factor $\rho \in (0, 1)$ to $\alpha\gets\rho\alpha$ until Armijo's
+maximum step length of $\alpha_\text{Max}$ and progressively decreases it
+by a factor $\rho \in (0, 1)$ as $\alpha\gets\rho\alpha$ until Armijo's
 criteria \cite[\S 3.1]{bib:nocedal2006numerical} is satisfied. We write Armijo's
 criteria as $~\ell_p(\mf{v}^m + \alpha \Delta\mf{v}^{m}) < \ell_p(\mf{v}^m) +
 c\,\alpha\,d\ell_p/d\alpha(\mf{v}^m)$. Typical parameters we use are
 $\rho=0.8$, $c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
 
-For our exact line-search, we make the following observations
+Since the cost $\ell_p(\mf{v})$ is strongly convex and differentiable with
+Lipschitz continuous gradients, see Lemma \RedHighlight{reference to Frank's
+proof}, its restriction to a line $\ell(\alpha)$ inherits the following
+properties
 \begin{enumerate}
 	\item $\ell_p(\alpha)$ is strictly convex, i.e. there is a unique minimum.
 	\item Newton steps are well formed since $d^2\ell_p/d\alpha^2>0$.
@@ -119,8 +123,7 @@ our line search simply reduces to finding the unique root of $d\ell/d\alpha$
 using the \verb;rtsafe; algorithm. The high performance of this method allows us 
 to iterate $\alpha$ to machine precision at a negligible impact on the
 computational cost. In practice, this is our preferred algorithm since it allows
-us to use very tight regularization parameters without having to tune tolerances
-in the line search. Moreover, we observe 15\%-35\% performance improvement when
+us to use very tight regularization parameters without having to tune line search parameters. Moreover, we observe 15\%-35\% performance improvement when
 compared to the backtracking line-search.
 
 \subsection{Efficient Analytical Derivatives For Line Search}
@@ -173,8 +176,8 @@ the block diagonal structure of $\nabla_{\mf{v}_c}\bgamma$.
 \label{sec:problem_sparsity}
 
 The Hessian in Eq. (\ref{eq:ell_hessian}) inherits a block sparse structure from
-the specific contact configuration of the problem. We want to exploit this
-structure when solving Line~\ref{op:Newton_iteration} at each Newton iteration.
+the specific contact configuration of the problem. We seek to exploit this
+structure when solving Line~\ref{op:Newton_iteration} at each iteration of Algorithm \ref{alg:sap}.
 To that end, we use a supernodal Cholesky factorization \cite[\S
 9]{bib:davis2016survey}. Implementing this factorization requires construction
 of a \emph{junction tree}.  For this we apply the algorithm in
@@ -183,7 +186,7 @@ use the implementation from the Conex solver \cite{bib:permenter2020}.
 
 The block sparsity of the Hessian is best described with an example. We organize
 our multibody systems as a collection of articulated \emph{tree structures}, or
-a \emph{forest}. Consider the system in Fig. (\ref{fig:sparsity_example}).
+a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/sparsity_example.png}
@@ -196,8 +199,8 @@ a \emph{forest}. Consider the system in Fig. (\ref{fig:sparsity_example}).
 \end{figure}
 In this example, a robot arm mounted on a mobile base constitutes its own tree,
 here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
-will be denoted with $n_t$. A free body is a special case of a tree with
-$n_t=6$, this is a very common case. In general, the mass matrix will have a
+will be denoted with $n_t$. A free body is the common case of a tree with
+$n_t=6$. In general, the mass matrix will have a
 block diagonal structure where the $t\text{-th}$ diagonal block corresponds to
 the mass matrix of the $t\text{-th}$ tree. For the example in Fig.
 (\ref{fig:sparsity_example}), the mass matrix looks like\\\\\\
@@ -236,10 +239,10 @@ labels trees and patches and shows the corresponding graph where the nodes are
 the trees and the edges are the contact patches.
 
 Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} =
--\nabla_{\mf{v}_c}\bgamma$ is a block diagonal matrix, with $\mf{G}_i =
-\nabla_{\mf{v}_{c,i}}\bgamma_i \in \mathbb{R}^{3\times 3}$ at the $i\text{-th}$
+-\nabla_{\mf{v}_c}\bgamma$ is a block diagonal matrix, with $\vf{G}_i =
+\nabla_{\vf{v}_{c,i}}\bgamma_i \in \mathbb{R}^{3\times 3}$ at the $i\text{-th}$
 diagonal block. We can also write this as $\mf{G} = \text{diag}(\mf{G}_p)$ if we
-group contact pairs by patches to define $\mf{G}_p=\text{diag}(\mf{G}_i),
+group contact pairs by patches to define $\mf{G}_p=\text{diag}(\vf{G}_i),
 \,\forall i\in\mathcal{I}_p$.
 
 The contact Jacobian is in general sparse since the relative velocity at a
@@ -316,14 +319,14 @@ components equally, we define the diagonal matrix $\mf{D} =
 \end{align}
 where we define the generalized contact impulse $\mf{j}_c=\mf{J}^T\bgamma$.
 With this scaling, all the new \emph{tilde} variables have the same units,
-$\text{J}^{1/2}$. Using these definitions, we write our stopping criteria as
+square root of Joules. Using these definitions, we write our stopping criteria
+as
 \begin{equation}
 	\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a + \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert).
 	\label{eq:stopping_criteria}
 \end{equation}
 where $\varepsilon_r$ is a dimensionless relative tolerance that we usually set
-in the range from $10^{-6}$ to $10^{-3}$. For all of our simulations in this paper,
-we use $\varepsilon_r = 10^{-5}$. The absolute tolerance $\varepsilon_a$ is used
-to detect rare cases where the solution leads to no contact and no motion,
-typically due to external forces. We always set this tolerance to a
+in the range from $10^{-6}$ to $10^{-3}$. The absolute tolerance $\varepsilon_a$
+is used to detect rare cases where the solution leads to no contact and no
+motion, typically due to external forces. We always set this tolerance to a
 small number, $\varepsilon_a=10^{-16}$.
