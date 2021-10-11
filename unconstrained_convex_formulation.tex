@@ -8,14 +8,15 @@ formulation in \eqref{eq:primal_regularized}. This is referred to as the
 separable structure of the constraints, the impulse $\bgamma_i$ at the
 $i\text{-th}$ contact point is the solution to the following convex optimization
 problem
-\begin{eqnarray}
-	\bgamma_i(\vf{v}_{c,i})&=& P_{\mathcal{F}_i}(\vf{y}_i(\vf{v}_{c,i}))
-	\nonumber\\
-	&=&\begin{aligned} \argmin_{\bgamma\in\mathcal{F}_i} \quad &
-		\frac{1}{2}(\bgamma-\vf{y}_i)^T\vf{R}_i(\bgamma-\vf{y}_i) \end{aligned}
-	\label{eq:y_projection}\\
-	\vf{y}_i(\vf{v}_{c,i}) &=& -\vf{R}_i^{-1}(\vf{v}_{c,i}-\hat{\vf{v}}_{c,i})	
-\end{eqnarray}
+\begin{equation}
+	\begin{aligned}
+	\bgamma_i(\vf{v}_{c,i})&= P_{\mathcal{F}_i}(\vf{y}_i(\vf{v}_{c,i}))\\
+	&= \argmin_{\bgamma\in\mathcal{F}_i} \quad 
+		\frac{1}{2}(\bgamma-\vf{y}_i)^T\vf{R}_i(\bgamma-\vf{y}_i)\\
+	\vf{y}_i(\vf{v}_{c,i}) &= -\vf{R}_i^{-1}(\vf{v}_{c,i}-\hat{\vf{v}}_{c,i})	
+	\end{aligned}
+	\label{eq:y_projection}
+\end{equation}
 where $\vf{R}_i\in\mathbb{R}^{3\times3}$ is the $i\text{-th}$ diagonal block of
 the regularization matrix $\mf{R}$. That is, $\bgamma_i$ is the projection
 $P_{\mathcal{F}_i}$ of $\vf{y}_i(\vf{v}_{c,i})$ onto the friction cone
