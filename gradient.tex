@@ -1,0 +1,187 @@
+We first compute the regularization term as
+\begin{eqnarray}
+	\ell_R = \frac{1}{2}(R_t\Vert\bgamma_t\Vert^2+R_n\gamma_n^2)
+\end{eqnarray}
+
+During \textbf{stiction} the cost is written as
+\begin{eqnarray}
+	\ell_R(\vf{y}) = \frac{1}{2}(R_t y_r^2+R_n y_n^2)
+\end{eqnarray}
+
+During \textbf{sliding} Eq. (\ref{eq:inverse_dynamics_projection}) applies and
+the cost can be written as
+\begin{eqnarray}
+	\ell_R(\vf{y}) =
+	\frac{1}{2}\gamma_n^2(R_t\mu^2+R_n)=\frac{R_n}{2}(1+\tilde\mu^2)\gamma_n^2=\frac{R_n}{2(1+\tilde\mu^2)}\left(\mu\frac{R_t}{R_n}y_r+y_n\right)^2
+\end{eqnarray}
+
+and finally when there is \textbf{no contact}
+\begin{eqnarray}
+	\ell_R(\vf{y}) = 0
+\end{eqnarray}
+
+Therefore $\ell_R$ is a piecewise function that we can summarize as
+\begin{equation}
+	\ell_R(\vf{y}) = 
+\begin{dcases}
+	% Region I, stiction
+	\frac{1}{2}(R_t y_r^2+R_n y_n^2) & \text{stiction, } y_r < \mu y_n\\
+	% Region II, sliding.
+	\frac{R_n}{2(1+\tilde\mu^2)}\left(\mu\frac{R_t}{R_n}y_r+y_n\right)^2 & \text{sliding, } -\mu \frac{R_t}{R_n} y_r < y_n \leq \frac{y_r}{\mu}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact, } y_n \leq -\mu \frac{R_t}{R_n} y_r
+\end{dcases}	  
+	\label{eq:ell_R_piecewise}
+\end{equation}
+
+\subsection{Gradients per Contact Point}
+In this section we compute the gradients of $\ell_R(\mf{y})$ with respect to the
+$i\text{-th}$ contact point variable $\vf{y}_i\in\mathbb{R}^3$. Unless otherwise
+stated, in this section we'll drop the subindex $i$ for the $i\text{-th}$
+contact point. Therore in this section $\nabla_\vf{y}\ell_R\in\mathbb{R}^3$ and
+$\nabla_\vf{y}^2\ell_R\in\mathbb{R}^{3\times 3}$ (notice that as per our
+notation, we consistently use a bold italic font for 3D vectors and only bold,
+not italic, for $n\text{-dimensional}$ vectors.)
+
+The full gradient $\nabla_\mf{y}\ell_R$ concatenates the three-dimensional
+gradients $\nabla_\vf{y}\ell_R$ while the full Hessian matrix is block-diagonal
+with each $3\times 3$ block containing the local $i\text{-th}$ point Hessian.
+This is particularly useful to exploit sparsity in the computations.
+
+We use the following identities to simplify the expressions
+\begin{eqnarray}
+	\frac{\partial y_r}{\partial\vf{y}_t} &=& \hat{\vf{t}}\nonumber\\
+	\frac{\partial \hat{\vf{t}}}{\partial\vf{y}_t} &=&
+	\frac{\vf{P}^\perp(\hat{\vf{t}})}{y_r}
+	\label{eq:yt_derivatives}
+\end{eqnarray}
+where the $2\times 2$ projection matrices along and perpendicular to
+$\hat{\vf{t}}$ are defined as
+\begin{eqnarray}
+	\vf{P}(\hat{\vf{t}}) &=& \hat{\vf{t}}\otimes\hat{\vf{t}}\nonumber\\
+	\vf{P}^\perp(\hat{\vf{t}})&=&\vf{I}_2 - \vf{P}(\hat{\vf{t}})
+	\label{eq:tangential_projections}
+\end{eqnarray}
+
+Taking the gradient of Eq. (\ref{eq:ell_R_piecewise}) results in
+\begin{equation}
+	\nabla_\vf{y}\ell_R(\vf{y}) = 
+\begin{dcases}
+	%%%%%%%%%%%%%%%%%%%%
+	% Region I, stiction
+	\vf{R}\,\vf{y} & 
+	% when,
+	\text{stiction, } y_r < \mu y_n\\
+	%
+	%%%%%%%%%%%%%%%%%%%%
+	% Region II, sliding.
+	\frac{1}{1+\tilde\mu^2}\hat{s}^\circ(\vf{y})\begin{bmatrix}
+		\mu R_t\hat{\vf{t}}\\
+		R_n\\
+	\end{bmatrix} &
+	% when,
+	\text{sliding, } -\mu \frac{R_t}{R_n} y_r < y_n \leq \frac{y_r}{\mu}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact, } y_n \leq -\mu \frac{R_t}{R_n} y_r
+\end{dcases}	  
+	\label{eq:gradient_ell_R_piecewise}
+\end{equation}
+where we defined $\hat{\mu}=\mu R_t/R_n$ and $\hat{s}^\circ(\vf{y}) =
+\hat{\mu}y_r+y_n$. $\hat{s}^\circ(\vf{y})$ is a measure how close the solution
+is to the polar cone $\mathcal{F}^\circ$. $\hat{s}^\circ(\vf{y}) > 0$ in the
+sliding region and $\hat{s}^\circ<0$ when there is no contact.
+
+Similarly, we can compute the Hessian of $\ell_R$ by taking the gradient in Eq.
+(\ref{eq:gradient_ell_R_piecewise})
+\begin{equation}
+	\nabla_\vf{y}^2\ell_R(\vf{y}) = 
+\begin{dcases}
+	%%%%%%%%%%%%%%%%%%%%
+	% Region I, stiction
+	\vf{R} & 
+	% when,
+	\text{stiction, } y_r < \mu y_n\\
+	%
+	%%%%%%%%%%%%%%%%%%%%
+	% Region II, sliding.
+	\frac{R_n}{1+\tilde\mu^2}
+	\begin{bmatrix}
+		% ∂²ℓ/∂yₜ²:
+		\hat{\mu}\left(\hat{\mu}\vf{P}(\hat{\vf{t}})+\hat{s}^\circ(\vf{y})\vf{P}^\perp(\hat{\vf{t}})/y_r\right) & 
+		% ∂²ℓ/∂yₙ∂yₜ:
+		\hat{\mu}\vf{t}\\
+		% ∂²ℓ/∂yₜ∂yₙ:
+		\hat{\mu}\vf{t}^T & 
+		% ∂²ℓ/∂yₙ²:
+		1\\
+	\end{bmatrix} &
+	% when,
+	\text{sliding, } -\mu \frac{R_t}{R_n} y_r < y_n \leq \frac{y_r}{\mu}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact, } y_n \leq -\mu \frac{R_t}{R_n} y_r
+\end{dcases}	  
+	\label{eq:hessian_ell_R_piecewise}
+\end{equation}
+
+Clearly in the stiction region we have $\nabla_\vf{y}^2\ell_R(\vf{y})\succ 0$.
+Since in the stiction region we have $\hat{s}^\circ(\vf{y})>0$, the linear
+combination of $\vf{P}(\hat{\vf{t}})$ and $\vf{P}(\hat{\vf{t}})^\perp$ in Eq.
+(\ref{eq:hessian_ell_R_piecewise}) is PSD (since both projection matrices are
+PSD). Therefore, in the sliding region we find out that
+$\nabla_\vf{y}^2\ell_R(\vf{y})\succeq 0$.
+\todo{Show that the jump condition across the cone's boundary is satisfied.}
+
+\subsection{Gradients with Respect to Velocities}
+These gradients are computed using the chain rule since we know that
+\begin{equation}
+	\mf{y}=\mf{Jv+b}
+\end{equation}
+
+The gradient is
+\begin{equation}
+	\nabla_\mf{v}\ell_R = -\mf{J}^T\mf{R}^{-1}\nabla_\mf{y}\ell_R
+	\label{eq:ell_velocity_gradient}
+\end{equation}
+which, using Eq. (\ref{eq:gradient_ell_R_piecewise}), can be written as
+\begin{equation}
+	\nabla_\mf{v}\ell_R = -\mf{J}^T\bgamma
+	\label{eq:ell_velocity_gradient_simplified}
+\end{equation}
+
+And the Hessian is
+\begin{equation}
+	\nabla_\mf{v}^2\ell_R = \mf{J}^T\mf{R}^{-1}\nabla_\mf{y}^2\ell_R\mf{R}^{-1}\mf{J}
+	\label{eq:ell_velocity_hessian}
+\end{equation}
+
+Since we already showed $\nabla_\mf{y}^2\ell_R\succeq 0$, it follows that
+$\nabla_\mf{v}^2\ell_R\succeq 0$. Therefore the cost $\ell_R(\mf{v})$ is convex.
+
+Recall that $\nabla_\mf{y}^2\ell_R$ is block diagonal and $\mf{R}$ is diagonal.
+Therefore the Hessian $\nabla_\mf{v}^2\ell_R$ inherits the same sparsity
+structure as the product $\mf{J}^T\mf{J}$.
+
+\subsection{Gradients of the Primal Cost}
+With these results, we can now write the gradient and Hessian of the primal cost
+$\ell_p(\mf{v})$ in Eq. (\ref{eq:primal_unconstrained}). For the gradient we
+have
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{M}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
+\end{equation}
+
+Notice that, using Eq. (\ref{eq:ell_velocity_gradient_simplified}), the gradient
+can be written as
+\begin{equation}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{M}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma
+\end{equation}
+and since the unconstrained minimization looks for $\nabla_\mf{v}\ell_p=\mf{0}$,
+we essentially recover the balance of momentum, as expected.
+
+Similarly, we can write the Hessian as
+\begin{equation}
+	\mf{H} = \nabla_\mf{v}^2\ell_p(\mf{v}) = \mf{M} + \nabla_\mf{v}^2\ell_R
+\end{equation}
+and since we already proved that $\nabla_\mf{v}^2\ell_R\succeq 0$, we find that
+the $\nabla_\mf{v}^2\ell_p\succ 0$. Therefore $\ell_p(\mf{v})$ is strictly
+convex and there is a unique solution to the minimization problems in the
+velocities $\mf{v}$.
