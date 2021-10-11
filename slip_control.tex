@@ -5,12 +5,11 @@ incorporate physical compliance. This allow us not only to model compliant point
 contact, but also to incorporate sophisticated models of surfaces patches. We
 incorporate the pressure field model \cite{bib:elandt2019pressure} implemented
 as part of Drake's \cite{bib:drake} \emph{hydroelastic contact} model. We use
-the discrete approximation introduced in \RedHighlight{[discrete hydro arxiv]}
+the discrete approximation introduced in \cite{bib:masterjohn2021discrete}
 to approximate each face of the contact surface as a compliant element at its
 centroid.
 
-To demonstrate this capability, we reproduce the test in \RedHighlight{[discrete
-hydro arxiv]} that models a \emph{Soft-bubble} gripper
+To demonstrate this capability, we reproduce the test in \cite{bib:masterjohn2021discrete} that models a \emph{Soft-bubble} gripper
 \cite{bib:kuppuswamy2020soft}; a parallel jaw WSG 50 Schunk gripper outfitted
 with air filled compliant surfaces. The aforementioned gripper is simulated
 anchored to the world holding a spatula by the handle horizontally. The grasp
