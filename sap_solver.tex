@@ -6,9 +6,8 @@
 \section{Semi-Analytical Primal Solver}
 \label{sec:sap_solver}
 
-The Semi-Analytical Primal Solver (SAP) is an iterative algorithm for solving
-the unconstrained  formulation (\ref{eq:primal_unconstrained}) that is inspired
-by Newton's method.  Exploiting differentiability of the objective
+The Semi-Analytical Primal Solver (SAP) is an iterative algorithm inspired
+by Newton's method for solving the unconstrained  formulation (\ref{eq:primal_unconstrained}). Exploiting differentiability of the objective
 $\ell_p(\mf{v})$, it selects a search direction $\Delta\mf{v}$ at each iteration using the
 formula
 \[
@@ -20,8 +19,8 @@ using line-search.  When $\nabla \ell_p(\mf{v})$ is differentiable,
 $\mf{H}(\mf{v})$ returns the Hessian matrix $\nabla^2 \ell_p(\mf{v})$.
 Otherwise, $\mf{H}(\mf{v})$ is evaluated by extending
 analytical expressions for $\nabla^2 \ell_p$ to points
-of non-differentiability.  As we show \fbox{TODO: add reference}, SAP 
-globally convergences at at least a linear-rate.
+of non-differentiability, see Appendix \ref{app:gradients_derivation}.  As we show \RedHighlight{TODO: reference to Frank's proofs}, SAP 
+globally convergences at least at a linear-rate.
 Further, SAP exhibits quadratic convergence when
 $\nabla^2 \ell_p$ exists in a neighborhood of the
 optimal $\mf{v}$.
@@ -58,16 +57,15 @@ detail.
 \subsection{Gradients}
 \label{sec:gradients}
 
-%Appendix \ref{app:gradients_derivation}
-
-We summarize the main results required for implementation. The gradient of the
+We provide a detailed derivation of the gradients in Appendix
+\ref{app:gradients_derivation}. Here we summarize the main results required for
+implementation. The gradient of the
 primal cost $\ell_p$ is
 \begin{equation*}
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R,
 \end{equation*}
 where we define the regularizer cost as $\ell_R(\mf{v})=\frac{1}{2}\Vert
-P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$. We show in Appendix
-\ref{app:gradients_derivation} that this gradient can be computed analytically as
+P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$. This gradient can be computed analytically as
 \begin{equation}
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
 	\label{eq:primal_gradient}
@@ -76,8 +74,7 @@ where $\bgamma(\mf{v})=P_\mathcal{F}(\vf{y}(\mf{v}))$ is defined by the analytic
 dynamics in Eq. \eqref{eq:analytical_y_projection}. 
 The map $P_\mathcal{F}(\mf{y}(\mf{v}))$ is differentiable
 when $\mf{y}$ is not on the boundary of $\mathcal{F}$.
-At these points, we obtain the Hessian of $\nabla_\mf{v}^2\ell_R$  by differentiating 
-$\mf{J}^T\bgamma(\mf{v})$. The result is
+At these points, we obtain the Hessian of $\nabla_\mf{v}^2\ell_R$  by differentiating $\bgamma(\mf{v})$ and extend the analytical expressions to points of non-differentiability. The result is
 \begin{eqnarray}
 	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
 	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
@@ -91,7 +88,7 @@ $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
 
 In total, the Hessian of $\ell_p$ is
 \begin{equation}
-	\nabla_\mf{v}^2\ell_R(\mf{v})= \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
+	\mf{H} = \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
 	\label{eq:ell_hessian}
 \end{equation}
 which, since $\mf{A}\succ 0$, is strictly positive definite. Notice
@@ -165,10 +162,9 @@ Using the gradients from Section \ref{sec:gradients}, we can write
 	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{v}^T\mf{A}(\mf{v}(\alpha)-\mf{v}^*)\\
 	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}^T\mf{J}^T\bgamma.
 \end{eqnarray}
-These is computed efficiently by first calculating the change in velocity
+These are computed efficiently by first calculating the change in velocity
 $\Delta\mf{v}_c:=\mf{J}\Delta\mf{v}$ and change of momentum $\Delta\mf{p} :=
-\mf{A}\Delta\mf{v}$ by exploiting kinematic sparsity. 
-The calculation is then completed via 
+\mf{A}\Delta\mf{v}$. The calculation is then completed via 
 \begin{eqnarray}
 	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{p}^T(\mf{v}(\alpha)-\mf{v}^*)\\
 	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}_c^T\bgamma(\alpha)
