@@ -43,7 +43,7 @@ This inherent lack of stability and robustness is tackled in software with a
 large amount of non-physical constraint softening and stabilization.
 Still, the resulting simulation requires a significant amount of bespoke parameter tuning.
 
-To improve computational tractability, Anitescu introduces a \textit{convex
+To improve computational tractability, Anitescu introduced a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
 convex approximation with proven convergence to the solution of a measure
 differential inclusion as the time step goes to zero. For sliding contacts,
@@ -73,7 +73,7 @@ iteration in the staggered projections method \cite{bib:Kaufman2008}. Drake
 \cite{bib:drake} solves compliant contact with regularized friction with its
 transition aware solver TAMSI \cite{bib:castro2020}. 
 
-To the knowledge of the authors, Chrono \cite{bib:hrono2016} and Mujoco
+To our knowledge, Chrono \cite{bib:hrono2016} and Mujoco
 \cite{bib:mujoco} are the only software that implement the convex approximation
 of contact. The multi-physics simulation package Chrono implements a variant of
 the PGS method for solving Anitescu's convex formulation \cite{bib:tasora2011}.
@@ -92,20 +92,17 @@ a real advantage when compared to more traditional approaches and whether the
 artifacts introduced by the approximation are appropriate for robotics
 applications. In this work, we aim to provide answers to these questions. 
 
-We make a number of novel contributions in this work. To answer the question of
-physical accuracy and validity of the approximation, in Section
-\ref{sec:physical_intuition} we build on Todorov's work \cite{bib:todorov2014}
-to write compact analytical expressions of the impulses that provide a clear
-physical interpretation of the convex formulation. This allows us to succinctly
-describe the model in physical terms rather than in optimization specific terms
-that might be elusive to non-experts of optimization. Moreover, the artifacts
-introduced by the approximation become apparent and can be characterized
-precisely. This contribution is novel to our work and different from
-\cite{bib:todorov2014} where regularization is used as a Baumgarte-like
-stabilization. This allow us to incorporate not only compliant point contact,
-but also complex models of compliant surface patches
-\cite{bib:elandt2019pressure}, as we demonstrate in Section
-\ref{sec:slip_control}. We introduce in Section
+We make a number of novel contributions. To address accuracy and model validity,
+Section \ref{sec:physical_intuition} provides compact expressions for the
+impulses that correspond to the optimal velocities of the convex approximation.
+This provides intuition for the approximation, even to those without
+optimization expertise. Moreover, the artifacts introduced by the approximation
+become apparent and can be characterized precisely. In particular,
+\emph{regularization terms} introduced by Todorov \cite{bib:todorov2014} (for
+Baumgarte-like stabilization) are given a clear physical interpretation. Such
+interpretability  allows us to incorporate not only compliant point contact, but
+also complex models of compliant surface patches \cite{bib:elandt2019pressure},
+as we demonstrate in Section \ref{sec:slip_control}. We introduce in Section
 \ref{sec:discrete_time_formulation} a time stepping approach based on the
 $\theta\text{-method}$. This includes the popular symplectic Euler method and
 the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we demonstrate
@@ -113,20 +110,19 @@ that the midpoint rule can achieve second order accuracy even in problems with
 frictional contact.
 
 Unlike previous work \cite{bib:anitescu2010,bib:todorov2014} that formulate the
-problem in terms of impulses, we write a primal formulation of compliant contact
-in terms of velocities in Section \ref{sec:primal_formulation}. In Section
-\ref{sec:unconstrained_convex_formulation}, we eliminate constraints from the
-primal formulation analytically to write an unconstrained convex formulation of
-the same problem. This leads us to the development of our semi-analytical primal
-solver (SAP) in Section \ref{sec:sap_solver} to solve the unconstrained
-formulation in practice. SAP has proven convergence and warm-starts effectively
-using only the velocities from the previous time step. We provide thorough
-details for its implementation including analytic computation of the Hessian,
-our fast exact line search, and sparsity analysis. Section
-\ref{sec:understanding_model_parameters} presents a judicious parameterization
-of regularization that allows for a tight resolution of stiction and simulation
-of \emph{near-rigid} objects while keeping the conditioning of the Hessian under
-control. This is critical for the simulation of demanding robotics tasks such as
+problem in impulses, we write a primal formulation of compliant contact
+in velocities (Section \ref{sec:primal_formulation}). We then analytically eliminate constraints from this
+formulation to obtain an unconstrained convex problem (Section \ref{sec:unconstrained_convex_formulation}).
+To solve this formulation, we develop SAP---the Semi-Analytical Primal  solver---in Section \ref{sec:sap_solver} and study its theoretical and practical
+ convergence.  Crucially, we show that SAP warm-starts effectively
+using the previous time-step velocities, enabling simulation at real-time rates.  We provide full details needed for implementation,
+including formulae for selecting a search direction,
+a line search procedure, and sparsity analysis. Section
+\ref{sec:understanding_model_parameters} presents 
+ regularization procedures that improve numerical
+ conditioning without sacrificing the accuracy needed
+ for simulation of stiction and simulation of \emph{near-rigid} objects.
+This is critical for the simulation of demanding robotics tasks such as
 manipulation. We evaluate the accuracy, robustness and performance of SAP
 against available commercial and open-source optimization solvers. In Section
 \ref{sec:test_cases}, we demonstrate the effectiveness of our approach in a
