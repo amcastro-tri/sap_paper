@@ -1,7 +1,7 @@
 \section{Multibody Dynamics with Contact}
 \label{sec:multibody_dynamics_with_contact}
 
-We use generalized coordinates to describe our multibody system. Therefore the
+We use generalized coordinates to describe our multibody system. Therefore, the
 state is fully described by the generalized positions
 $\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
 $\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
@@ -14,80 +14,78 @@ Time derivatives of the generalized positions are described by the kinematic map
 \end{equation}
 where $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$ is a block diagonal matrix.
 For robotic systems comprised of revolute and prismatic joints, the blocks of
-$\mf{N}(\mf{q})$ correspond to the identity map. Similarly for the modeling
-deformable bodies, where the configuration is described by the position of each
-vertex in a deformable mesh. For cases including ball joints or free floating
-bodies and mobilize bases, where either quaternions or Euler angles are used,
+$\mf{N}(\mf{q})$ correspond to identity maps. The same is true for deformable
+body models where the configuration is described by the position of each
+vertex in a deformable mesh. For systems containing ball joints, free floating
+bodies, or mobile bases, where either quaternions or Euler angles are used,
 $\mf{N}(\mf{q})$ will contain non-identity blocks that are in general functions
 of the configuration $\mf{q}$.
 
 Given a configuration $\mf{q}$ of the system, our geometry engine reports a
-discrete set of $n_c$ contacts between a pair of bodies. The $k\text{-th}$
-\emph{contact pair} is described by the location $\vf{p}_k$ of the contact
-point, a normal direction $\hat{\vf{n}}_k$ and the \emph{signed distance} or
-\emph{gap function} $\phi_k(\mf{q})\in\mathbb{R}$. The kinematics of each
+discrete set of $n_c$ contacts between a pair of bodies. The $i\text{-th}$
+\emph{contact pair} is described by the location $\vf{p}_i$ of the contact
+point, a normal direction $\hat{\vf{n}}_i$ and the \emph{signed distance} or
+\emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$. The kinematics of each
 contact is further completed with the relative velocity
-$\vf{v}_{c,k}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_k$,
-expressed in a contact frame $C_k$ for which we arbitrarily choose the
-$z\text{-axis}$ to coincide with the contact normal $\hat{\vf{n}}_k$.
+$\vf{v}_{c,i}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_i$,
+expressed in a contact frame $C_i$ for which we arbitrarily choose the
+$z\text{-axis}$ to coincide with the contact normal $\hat{\vf{n}}_i$.
 
 We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
-stacking velocities $\vf{v}_{c,k}$ of all contact pairs together. Similarly, we
-denote by $\bgamma_k\in\mathbb{R}^3$ the contact impulse at a specific contact
-point and with $\bgamma\in\mathbb{R}^{3n_c}$ the vector of all contact impulses.
+stacking velocities $\vf{v}_{c,i}$ of all contact pairs together. Similarly, we
+denote by $\bgamma_i\in\mathbb{R}^3$ the contact impulse in the contact frame $C_i$ at a specific contact
+point and with $\bgamma\in\mathbb{R}^{3n_c}$ the stacked vector of all contact impulses.
 In general, unless otherwise specified, we use bold italics for vectors in
 $\mathbb{R}^3$ and non-italics bold for their stacked counterpart. The
 generalized velocities $\mf{v}$ and contact velocities $\mf{v}_c$ satisfy the
 equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
 $\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.
 
-To arrive to a discrete time system of equations, we can integrate the the
-momentum balance at intervals of size $dt$ from time step $t^n$ to the
-next time step $t^{n+1}=t^n+dt$. We write this as
+To arrive at a discrete time system of equations, we can integrate the
+momentum balance at intervals of size $\delta t$ from time step $t^n$ to the
+next time step $t^{n+1}=t^n+\delta t$. We write this as
 \begin{eqnarray}
-	\mf{M}(\mf{v}^{n+1}-\mf{v}^n)  = dt\,\bar{\vf{\tau}} + \mf{J}^T\mf{\bgamma},
+	\mf{M}(\mf{v}^{n+1}-\mf{v}^n)  = \delta t\,\bar{\vf{\tau}} + \mf{J}^T\mf{\bgamma},
 	\label{eq:momentum_balance}
 \end{eqnarray}
 where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
-$\vf{\tau}\in\mathbb{R}^{n_v}$ models external forces such as gravity and
-gyroscopic terms arising in multibody dynamics; we use the mean value
-$\bar{\vf{\tau}}$ of ${\vf{\tau}}$ in the interval $(t^n,t^{n+1})$.
-
-While specific details are not important at this point, we present a
+$\bar{\vf{\tau}}\in\mathbb{R}^{n_v}$ models external forces such as gravity and
+gyroscopic terms arising in multibody dynamics.
+We present a
 comprehensive discussion of our discrete time-stepping scheme in Section
 \ref{sec:discrete_time_formulation}.
 
-Denoting with $\gamma_{n,k} \in \mathbb{R}$ and with $\bgamma_{t,k} \in
+Denoting with $\gamma_{n,i} \in \mathbb{R}$ and with $\bgamma_{t,i} \in
 \mathbb{R}^2$ the normal and tangential components of the impulse
-$\bgamma_k=[\bgamma_{t,k}\,\gamma_{n,k}]$ in frame $C_k$, the formulation is
+$\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$ in frame $C_i$, the formulation is
 most often completed with the following set of standard constraints to be
 satisfied at each contact
 \begin{enumerate}
-	\item non-penetration constraint $0\le\phi_k\perp\gamma_{n,k}\ge0$,
+	\item non-penetration constraint $0\le\phi_i\perp\gamma_{n,i}\ge0$,
 	\item\label{it:cone_constraint} friction cone constraint
-	$\Vert\bgamma_{t,k}\Vert\le \mu_k\gamma_{n,k}$ and,
+	$\Vert\bgamma_{t,i}\Vert\le \mu_i\gamma_{n,i}$,
+    where $\mu_i \in \mathbb{R}$ is the coefficient of friction for the
+    $i\text{-th}$ contact, and
 	\item the \emph{maximum dissipation principle}, which states that given the
 	normal impulse, the friction impulse maximizes the rate of energy
 	dissipation. In other words, friction impulses oppose the sliding velocity
 	direction.
 \end{enumerate}
-where $\mu_k \in \mathbb{R}$ is the coefficient of friction for the
-$k\text{-th}$ contact. Condition \ref{it:cone_constraint} states that contact
-impulses $\bgamma_k$ at point $k$ are constrained to belong to the friction cone
-$\mathcal{F}_k=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
-\mu_k x_n\}$.
+Condition \ref{it:cone_constraint} states that contact
+impulses $\bgamma_i$ at point $i$ are constrained to belong to the friction cone
+$\mathcal{F}_i=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
+\mu_i x_n\}$.
 
-While these constraints model the widely used model of Colulomb friction, the
-resulting formulation leads to a very difficult to solve, non-convex, Non-linear
-Complementarity Problem (NCP).
+While these constraints describe the widely used Colulomb friction model, the
+resulting formulation leads to a very difficult to solve, non-convex, NCP.
 
 \section{Convex Approximation of Contact Dynamics}
 \label{sec:previous_work}
 
 To ensure existence of a solution and improve computational tractability,
 Anitescu introduces a \textit{convex approximation} of the contact
-problem \cite{bib:anitescu2006}. In this approximation the contact impulses are
-solution to the following convex optimization problem
+problem \cite{bib:anitescu2006}. In this approximation, the contact impulses are
+solutions to the following convex optimization problem
 \begin{eqnarray}
 	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
 	\frac{1}{2}\bgamma^T\mathbf{W}\bgamma + {\bm r}^T
@@ -98,49 +96,49 @@ where $\mathbf{W} =
 \mathbf{J}\mathbf{M}^{-1}\mathbf{J}^T\in\mathbb{R}^{3n_c\times 3n_c}$ is the
 \emph{Delassus operator}, $\mathcal{F} := \mathcal{F}_1 \times F_2 \times \cdots
 \times \mathcal{F}_{n_c}$ is a Cartesian product of friction cones, and ${\bm
-r}$ defines a linear cost  that encodes external force contributions and
+r}$ defines a linear cost that encodes external force contributions and
 stabilization terms used to impose non-penetration at the position level.
 
 Further, \cite{bib:anitescu2006} uses a polyhedral approximation to linearize
-the friction cone constraint $\bgamma_k\in\mathcal{F}_k$. In this work we do not
-linearize the cone constraints but we work with the second order cone
-constraints directly. This approach is preferred given that the polyhedral
+the friction cone constraint $\bgamma_i\in\mathcal{F}_i$. In this work, we do not
+linearize the cone constraints, but work directly with the second order cone
+constraints. This approach is preferred given that the polyhedral
 approximation is known to introduce non-physical anisotropy
 \cite{bib:li2018implicit}. In addition, the linearization of the friction cone
-results in a far larger problem due to the additional number of constraints
+results in a far larger problem due to the additional constraints
 needed to represent the polyhedral cone.
 
 Anitescu shows in \cite{bib:anitescu2006} that the optimality conditions for the
 problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
-(\ref{eq:momentum_balance}), the maximum dissipation principle and, the
+(\ref{eq:momentum_balance}), the maximum dissipation principle, and the modified
 non-penetration condition
 \begin{equation}
-	0 < \phi_k - dt \Vert {\bm v}_{t,k} \Vert \perp \gamma_{n,k} > 0
+	0 < \phi_i - \delta t \Vert {\bm v}_{t,i} \Vert \perp \gamma_{n,i} > 0
 	\label{eq:convex_approximation_complementarity_condition}
 \end{equation}
-where $\vf{v}_{t,k}$ is the tangential component of the contact velocity
-$\vf{v}_{c,k} = [\vf{v}_{t,k}\,v_{n,k}]$. Notice that Eq.
-(\ref{eq:convex_approximation_complementarity_condition}) is a modified
-non-penetration condition that introduces coupling with the sliding velocity, a
+where $\vf{v}_{t,i}$ is the tangential component of the contact velocity
+$\vf{v}_{c,i} = [\vf{v}_{t,i}\,v_{n,i}]$. Notice that the modified non-penetration
+condition in Eq. (\ref{eq:convex_approximation_complementarity_condition}) 
+introduces coupling with the sliding velocity, a
 result of the convex approximation. We provide a detailed discussion on the
 physical validity of this approximation in Section \ref{sec:physical_intuition},
 along with guidelines for determining its applicability to robotic simulation.
 
 In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regularization to
 the formulation in Eq. (\ref{eq:dual_cost}). Though not strictly applicable to
-contact problems, Todorov uses the \emph{Gauss's principle of least
-constraint} to obtain the following regularized form of Anitescu's formulation
+contact problems, the \emph{Gauss's principle of least constraint} is used to
+obtain the following regularized form of Anitescu's formulation
 \begin{eqnarray}
 	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
 	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
-	\bgamma
+	\bgamma,
 	\label{eq:dual_regularized}
 \end{eqnarray}
 where $\mathbf{R}$ is a diagonal positive definite matrix introduced to make
 $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W} \succeq
-0$. This makes the problem strictly convex, with a unique solution.
-\cite{bib:todorov2014} uses regularization as a means to introduce constraint
-stabilization with a set of global parameters to control the amount of numerical
+0$. This makes the problem strictly convex and thus a unique solution exists.
+Regularization is used as a means to add constraint
+stabilization with a set of global parameters that control the amount of numerical
 compliance introduced by the formulation. This is different from our approach
 described in Section \ref{sec:physical_intuition}, where we show how to use
 regularization to model physical compliance, with well defined physical
