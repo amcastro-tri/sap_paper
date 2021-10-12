@@ -14,7 +14,16 @@ nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
 contact when combined with the Coulomb model of friction can lead to paradoxical
 configurations for which solutions in terms of accelerations and forces do not
 exist. These phenomena are known as Painlev\'e paradoxes
-\cite{bib:hogan2017regularization}. Theory resolves these paradoxes by allowing
+\cite{bib:hogan2017regularization}.
+%
+\begin{figure}[!ht]
+	\centering
+    \includegraphics[width=0.95\columnwidth]{figures/dual_arm/tiled.png}
+	\caption{\label{fig:dual_arm_frames}
+    Keyframes of a dual arm manipulation task in simulation. The robot is commanded to pick up a jar full of marbles, open it, pour its contents into a bowl, close the lid and place the empty jar back in place. This is a computationally intensive simulation with 148 degrees of freedom and hundreds of contact constraints per time step, see Fig. \ref{fig:dual_arm_contacts}. Our SAP solver is robust and warm-starts effectively, enabling this simulation at interactive rates.}
+\end{figure}
+%
+Theory resolves these paradoxes by allowing
 discrete velocity jumps and impulsive forces, formally casting the problem as a
 differential variational inequality \cite{bib:pang2008differential}. In practice,
 event based approaches can resolve impulsive transitions \cite{bib:haug1986},
