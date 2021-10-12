@@ -3,11 +3,13 @@
 \section{Introduction}
 \label{sec:introduction}
 
-\IEEEPARstart{S}{imulation} of multibody systems has
-proven indispensable to  the design, control, and testing of robotic systems,
-aiding at multiple stages of the engineering process.
-Nevertheless, fast and accurate simulation of frictional contact 
- remains a challenge. 
+\IEEEPARstart{S}{imulation} of multibody systems with frictional contact has
+proven indispensable in robotics, aiding at multiple stages during the
+mechanical and control design, testing, and training of robotic systems.
+Robotic applications often require robust simulation tools that can perform at
+interactive rates without sacrificing accuracy, a critical prerequisite for
+meaningful sim-to-real transfer. However, reliable modeling and simulation
+through contact remains somewhat elusive.
 
 Rigid body dynamics with frictional contact is complicated by the non-smooth
 nature of the solutions. It is well known \cite{bib:baraff1993issues} that rigid
@@ -92,37 +94,30 @@ a real advantage when compared to more traditional approaches and whether the
 artifacts introduced by the approximation are appropriate for robotics
 applications. In this work, we aim to provide answers to these questions. 
 
-We make a number of novel contributions. To address 
-accuracy and model validity,
-Section \ref{sec:physical_intuition} 
-provides compact expressions for the impulses 
-that correspond to the optimal velocities of 
-the convex approximation.
-This provides intuition for the approximation, even to those without optimization expertise.
-Moreover, the artifacts
-introduced by the approximation become apparent and can be characterized
-precisely. In particular,   \emph{regularization terms} introduced by Todorov \cite{bib:todorov2014}
-(for Baumgarte-like stabilization) are given a clear physical interpretation.
-Such interpretability  allows us to incorporate not only compliant point contact,
-but also complex models of compliant surface patches
-\cite{bib:elandt2019pressure}, as we demonstrate in Section
-\ref{sec:slip_control}. We introduce in Section
+We make a number of novel contributions. To address accuracy and model validity,
+Section \ref{sec:physical_intuition} provides compact expressions for the
+impulses that correspond to the optimal velocities of the convex approximation.
+This provides intuition for the approximation, even to those without
+optimization expertise. Moreover, the artifacts introduced by the approximation
+become apparent and can be characterized precisely. In particular,
+\emph{regularization terms} introduced by Todorov \cite{bib:todorov2014} (for
+Baumgarte-like stabilization) are given a clear physical interpretation. Such
+interpretability  allows us to incorporate not only compliant point contact, but
+also complex models of compliant surface patches \cite{bib:elandt2019pressure},
+as we demonstrate in Section \ref{sec:slip_control}. We introduce in Section
 \ref{sec:discrete_time_formulation} a time stepping approach based on the
 $\theta\text{-method}$. This includes the popular symplectic Euler method and
 the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we demonstrate
 that the midpoint rule can achieve second order accuracy even in problems with
 frictional contact.
 
-While previous work \cite{bib:anitescu2010,bib:todorov2014} models 
-contact using impulses, we provide an equivalent \emph{primal formulation} using 
-velocities (Section \ref{sec:primal_formulation}). 
-We then analytically eliminate constraints from this
+Unlike previous work \cite{bib:anitescu2010,bib:todorov2014} that formulate the
+problem in impulses, we write a primal formulation of compliant contact
+in velocities (Section \ref{sec:primal_formulation}). We then analytically eliminate constraints from this
 formulation to obtain an unconstrained convex problem (Section \ref{sec:unconstrained_convex_formulation}).
-To solve this formulation, we develop SAP---the Semi-Analytical Primal  solver---
-in Section \ref{sec:sap_solver}. We also study its theoretical and practical
+To solve this formulation, we develop SAP---the Semi-Analytical Primal  solver---in Section \ref{sec:sap_solver} and study its theoretical and practical
  convergence.  Crucially, we show that SAP warm-starts effectively
-using only the previous velocities, enabling
-extremely fast simulation.  We also provide full details needed for implementation,
+using the previous time-step velocities, enabling simulation at real-time rates.  We provide full details needed for implementation,
 including formulae for selecting a search direction,
 a line search procedure, and sparsity analysis. Section
 \ref{sec:understanding_model_parameters} presents 
