@@ -1,3 +1,5 @@
+% Dummy comment for Reviewable2.
+
 \section{Introduction}
 \label{sec:introduction}
 
@@ -129,7 +131,7 @@ problem in impulses, we write a primal formulation of compliant contact
 in velocities (Section \ref{sec:primal_formulation}). We then analytically eliminate constraints from this
 formulation to obtain an unconstrained convex problem (Section \ref{sec:unconstrained_convex_formulation}).
 To solve this formulation, we develop SAP---the Semi-Analytical Primal  solver---in Section \ref{sec:sap_solver} and study its theoretical and practical
- convergence.  Crucially, we show that SAP warm-starts effectively
+ convergence.  Crucially, we show that SAP globally converges from all initial conditions (Appendix \RedHighlight{SAP convergence}) and warm-starts effectively
 using the previous time-step velocities, enabling simulation at real-time rates.  We provide full details needed for implementation,
 including formulae for selecting a search direction,
 a line search procedure, and sparsity analysis. Section
