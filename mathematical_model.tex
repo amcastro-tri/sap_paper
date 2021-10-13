@@ -39,7 +39,7 @@ generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as
 \end{equation}
 where we split the forces into two contributions $\mf{F}$ and $\mf{G}$ so that
 the Jacobians $\partial \mf{F}/\partial\mf{q}$ and $\partial
-\mf{F}/\partial\mf{v}$ are positive definite matrices while the same is
+\mf{F}/\partial\mf{v}$ are negative definite matrices while the same is
 generally not true for the Jacobians of $\mf{G}$. The term $\mf{F}(\mf{q},
 \mf{v})$ can include forces from modeling elements such as spring and dampers and even
 internal forces for the modeling of soft-body deformation. The term
@@ -115,7 +115,7 @@ of $\mf{m}(\mf{v})$ with
 	\mf{v}},
 	\label{eq:dissipation_matrix}
 \end{align}
-where $\mf{K}$ and $\mf{D}$ are the stiffness and damping matrices of the
+where $\mf{K} \succ 0$ and $\mf{D}\succ 0$ are the stiffness and damping matrices of the
 system, respectively. As an example, for joint level spring-dampers models,
 $\mf{K}$ and $\mf{D}$ are constant, diagonal, and positive definite matrices. A
 more complex example arises in the Finite Element Model (FEM) of soft body
