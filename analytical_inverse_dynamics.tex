@@ -4,8 +4,8 @@ impulses are solution to the convex program stated in Eq.
 (\ref{eq:y_projection}). This problem can be solved analytically using simple
 geometry. By noticing that the change of variables
 $\tilde\bgamma=\vf{R}^{1/2}\bgamma$ (and respectively
-$\tilde{\vf{y}}=\vf{R}^{1/2}\vf{y}$) leads to a projection with Euclidian norm
-on a cone $\mathcal{F}_{\tilde\mu}$ with friction coefficient
+$\tilde{\vf{y}}=\vf{R}^{1/2}\vf{y}$) leads to a projection with Euclidean norm
+on a cone $\tilde{\mathcal{F}}$ with friction coefficient
 $\tilde\mu=\mu\,(R_t/R_n)^{1/2}$
 \begin{eqnarray}
 	P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}})&=&\argmin_{\tilde\bgamma\in\mathcal{F_{\tilde\mu}}}
@@ -17,14 +17,14 @@ $\tilde\mu=\mu\,(R_t/R_n)^{1/2}$
 
 The optimization problem in the Euclidean norm given by Eq.
 (\ref{eq:local_optimization_problem_tilde}) can be solved by inspection. If
-$\tilde{\vf{y}}\in\mathcal{F}_{\tilde\mu}$, then we simply have $\tilde{\bgamma}
+$\tilde{\vf{y}}\in\tilde{\mathcal{F}}$, then we simply have $\tilde{\bgamma}
 = \tilde{\vf{y}}$, we call this \textit{Region I}. If however $\tilde{\vf{y}}$
-is inside the polar cone $\mathcal{F}_{\tilde\mu}^\circ$, the closest point to
+is inside the polar cone $\tilde{\mathcal{F}}^\circ$, the closest point to
 $\tilde{\vf{y}}_i$ within the (tilde) friction cone is zero, i.e.
 $\tilde{\bgamma} =\vf{0}$. We call this \textit{Region III}. Finally, if
-$\tilde{\vf{y}}$ is in the region outside both $\mathcal{F}_{\tilde\mu}$ and its
-polar $\mathcal{F}_{\tilde\mu}^\circ$, then the closest point is it's Euclidian
-projection on the boundary of $\mathcal{F}_{\tilde\mu}$. We call this
+$\tilde{\vf{y}}$ is in the region outside both $\tilde{\mathcal{F}}$ and its
+polar $\tilde{\mathcal{F}}^\circ$, then the closest point is it's Euclidean
+projection on the boundary of $\tilde{\mathcal{F}}$. We call this
 \textit{Region II}. To be more precise, we define the Region I as the closed set
 including the interior of the friction cone and its boundary. We define Region
 III as the open set only including the interior of the polar cone. Finally
@@ -32,7 +32,7 @@ Region II is the open set that consists all points in $\mathbb{R}^3$ except
 those in Regions I and III.
 
 Figure \ref{fig:cone_regions} shows a schematic of
-$\mathcal{F}_{\tilde\mu}$, $\mathcal{F}_{\tilde\mu}^\circ$ and labels the three
+$\tilde{\mathcal{F}}$, $\tilde{\mathcal{F}}^\circ$ and labels the three
 different regions. From Fig. \ref{fig:cone_regions}, for a cone forming an angle
 $\theta$ with the z axis, we have $\tan(\theta)=\tilde\mu$ and
 $\cos(\theta)=1/(1+\tilde\mu^2)$. Then the projection of a point
@@ -48,14 +48,14 @@ $\hat{\vf{t}}=\vf{y}_t/\Vert\vf{y}_t\Vert=-\vf{v}_t/\Vert\vf{v}_t\Vert$.
     \centering
     %\vspace{6pt}
     \includegraphics[width=0.45\columnwidth]{figures/cone_regions.png}
-    \caption{Geometry of $\mathcal{F}_{\tilde\mu}$ and regions in the
+    \caption{Geometry of $\tilde{\mathcal{F}}$ and regions in the
     $\tilde{\vf{y}}$ space.}
     \label{fig:cone_regions}
 \end{figure}
 
-Finally, we obtain Eq. (\ref{eq:y_projection}) by applying the transformation
+Finally, we obtain Eq. (\ref{eq:analytical_y_projection}) by applying the transformation
 $\bgamma=\mf{R}^{-1/2}\tilde\bgamma$ to recover the impulses projected onto the
-friction cone ${\mathcal{F}}_{\mu}$ using the norm in $\vf{R}$.
+friction cone $\mathcal{F}$ using the norm in $\vf{R}$.
 
 Though the tangent vector $\hat{\vf{t}}$ is not defined for $\vf{y}=\vf{0}$, the
 projection still is, $P_\mathcal{F}(\vf{0})=\vf{0}$. In practice however, we
