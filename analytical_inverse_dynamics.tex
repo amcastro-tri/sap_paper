@@ -7,45 +7,43 @@ these impulses have formula $\bgamma = P_{\mathcal{F}}(\vf{y})$,
 where $P_{\mathcal{F}}$ denotes projection
 with respect to the weighted norm $\|\cdot\|_{\mf R}$, i.e.,
 \[
-P_{\mathcal{F}}(\vf{y}) = \argmin_{\bgamma\in\mathcal{F}} \quad \frac{1}{2}(\bgamma-\vf{y})^T\vf{R}(\bgamma-\vf{y}).
+P_{\mathcal{F}}(\mf{y}) = \argmin_{\bgamma\in\mathcal{F}} \quad \frac{1}{2}(\bgamma-\mf{y})^T\vf{R}(\bgamma-\mf{y}).
 \]
 We next show this projection is easily computed
 if one first applies a change of variables and works with the usual Euclidean norm $\|\cdot\|$.
 
+Given the separable structure of the problem, projection of $\mf{y}$ onto $\mathcal{F} =
+\mathcal{F}_{1} \times \mathcal{F}_{2} \cdots
+\mathcal{F}_{{n-1}}\times\mathcal{F}_{n}$ can be done by projecting $\vf{y}_i$ onto each
+cone $\mathcal{F}_{i}$ individually. To ease notation, we drop the contact subindex $i$ and we consider a diagonal regularization of the form $\vf{R} = \text{diag}([R_t, R_t, R_n])$.
 
-To ease notation, we consider the case where $\mathcal{F}$
-is a single friction cone $\mathcal{F}_{\mu} \in \mathbb{R}^3$
-and $\mf{R}$ is the diagonal matrix $diag(R_n, R_t, R_t)$
-for $R_n, R_t \in \mathbb{R}$.  For the general setting, projection
-onto $\mathcal{F}_{\mu_1} \times \mathcal{F}_{\mu_2} \cdots \mathcal{F}_{\mu_{n-1}}\times\mathcal{F}_{\mu_n}$
-can be done  by applying the provided formula to
-each cone $\mathcal{F}_{\mu_i}$ individually.
-
-To begin, we let $\tilde\bgamma=\vf{R}^{1/2}\bgamma$ 
-and rewrite $P_{\mathcal{F}}(\vf{y})$ as
+To begin, we let $\tilde{\bgamma}=\vf{R}^{1/2}\bgamma$ and
+$\tilde{\vf{y}}=\vf{R}^{1/2}\vf{y}$ to rewrite $P_{\mathcal{F}}(\vf{y})$ as
 \[
-  P_{\mathcal{F}}(\vf{y}) = \mf{R}^{-1/2} \argmin_{\tilde \bgamma\in \mf{R}^{1/2} \mathcal{F}} \quad \Vert\tilde\bgamma-  \vf{R}^{1/2}\vf{y} \Vert_2^2
+  P_{\mathcal{F}}(\vf{y}) = \mf{R}^{-1/2} \argmin_{\tilde \bgamma\in \mf{R}^{1/2} \mathcal{F}} \frac{1}{2}\Vert\tilde\bgamma-\tilde{\vf{y}} \Vert_2^2
 \]                                                                               
-Observing that $\mf{R}^{1/2} \mathcal{F}_{\mu} = \mathcal{F}_{\tilde\mu}$ for $\tilde \mu =\mu\,(R_t/R_n)^{1/2}$,
+Observing that $\mf{R}^{1/2} \mathcal{F} = \tilde{\mathcal{F}}$ for $\tilde \mu =\mu\,(R_t/R_n)^{1/2}$,
 we conclude that
 \begin{eqnarray}
-  P_\mathcal{F}(\vf{y})=\vf{R}^{-1/2} \tilde{P}_\mathcal{F_{\tilde\mu}}(\vf{R}^{1/2}\vf{y})
+  P_\mathcal{F}(\vf{y})=\vf{R}^{-1/2} P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})
 	\label{eq:local_optimization_problem_tilde}
 \end{eqnarray}
-where $\tilde{P}_\mathcal{F_{\tilde\mu}} : \mathbb{R}^3 \rightarrow \mathbb{R}^3$ denotes Euclidean projection onto $F_{\tilde\mu}$.
+where $P_{\tilde{\mathcal{F}}} : \mathbb{R}^3 \rightarrow \mathbb{R}^3$ denotes Euclidean projection onto $\tilde{\mathcal{F}}$.
 
-A simple piecewise formula for evaluating $\tilde{P}_\mathcal{F_{\tilde\mu}}$ 
-is obtained by partitioning its domain  into three regions.
-This partition consists of the cone $\mathcal{F}_{\tilde\mu}$, which we call \textit{Region I},
-the interior of the polar $\mathcal{F}_{\tilde\mu}^\circ$, which we call \textit{Region II},
-and the remaining area, which we call \textit{Region III}.
-In Region I, we simply have that $\tilde P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}}) = \tilde{\vf{y}}$.
-In Region II, $\tilde P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}}) = 0$.
-Finally, in Region III, we evaluate $\tilde P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}})$
-via Euclidean projection onto the boundary of $\mathcal{F}_{\tilde\mu}$,
-which admits a simple formula. 
-Indeed, we have that 
-$\tilde P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}}) = (\tilde{\bgamma}_t, \tilde{\gamma}_n)$,
+A simple piecewise formula for evaluating $P_{\tilde{\mathcal{F}}}$ is obtained
+by partitioning its domain  into three regions, shown in Fig. \ref{fig:cone_regions}. This partition consists of the
+cone $\tilde{\mathcal{F}}$, which we call \textit{Region I}, the interior of the
+polar $\tilde{\mathcal{F}}^\circ$, which we call \textit{Region III}, and the
+remaining area, which we call \textit{Region II}. In Region I, we simply have
+that $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \tilde{\vf{y}}$. In Region III,
+$P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \vf{0}$. Finally, in Region II, we
+evaluate $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})$ via Euclidean projection onto
+the boundary of $\tilde{\mathcal{F}}$, which admits a simple formula. We define
+$\hat{\vf{f}}=[\tilde{\mu}\hat{\vf{t}}, 1]/\sqrt{1+\tilde{\mu}^2}$ the unit
+vector along the wall of the cone shown in Fig. \ref{fig:cone_regions}, with
+$\hat{\vf{t}}=\tilde{\vf{y}}_t/\Vert\tilde{\vf{y}}_t\Vert=\vf{y}_t/\Vert\vf{y}_t\Vert$. Then the projection is computed as
+$\tilde{\bgamma}=(\tilde{\vf{y}}\cdot\hat{\vf{f}})\hat{\vf{f}}$. After some algebraic manipulation we have that 
+$P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = [\tilde{\bgamma}_t, \tilde{\gamma}_n]$,
 where
 \begin{align}\label{eq:ProjectionFormula}
 \begin{aligned}
@@ -54,24 +52,21 @@ where
 	\tilde{\mu}\tilde{y}_r\right)
 \end{aligned}
 \end{align}
-and $\hat{\vf{t}}=\vf{y}_t/\Vert\vf{y}_t\Vert$. 
-Observe in Fig.~\ref{fig:cone_regions} that  $\tilde\mu$ is precisely the tangent of the angle $\theta$ between the boundary 
-of $\mathcal{F}_{\tilde\mu}$ and the vertical axis,
-whereas $1/(1+\tilde\mu^2)$ is its cosine. \fbox{The figure suggests it is $\cos^2 \theta$. 
-Which is correct?}. Also
-note that this formula is well-defined on Region III,
-since $\vf{y}_t = 0$ only if $\vf{y}$ is
-lies in Regions I or II.
+where $\tilde{y}_r=\Vert\tilde{\vf{y}}_t\Vert$. Note that this formula is
+well-defined on Region II, since $\vf{y}_t = \vf{0}$ only if $\vf{y}$ is lies in
+Regions I or III.
 \begin{figure}[!h]
     \centering
     %\vspace{6pt}
     \includegraphics[width=0.45\columnwidth]{figures/cone_regions.png}
     \caption{Geometry of $\tilde{\mathcal{F}}$ and regions in the
-    $\tilde{\vf{y}}$ space.}
+    $\tilde{\vf{y}}$ space.\RedHighlight{No need to define $\theta$, the text does not use it.}}
     \label{fig:cone_regions}
 \end{figure}
-In total, for $\mathcal{F} = \mathcal{F}_{\mu}$, we obtain the projection $\bgamma = P_\mathcal{F}(\vf{y})$  by setting 
-$\tilde{\vf{y}} = \mf{R}^{1/2} \tilde{\vf{y}}$, computing $\tilde\bgamma$ from
-the formula~\eqref{eq:ProjectionFormula} and applying the inverse transformation $\bgamma=\mf{R}^{-1/2}\tilde\bgamma$.
-%to recover the impulses projected onto the
-%friction cone ${\mathcal{F}}_{\mu}$ using the norm in $\vf{R}$.
+
+Finally, we apply the inverse transformation
+$\bgamma=\mf{R}^{-1/2}P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})$ and after some
+algebraic manipulation we recover the projection $\bgamma =
+P_\mathcal{F}(\vf{y})$ in Eq. \eqref{eq:analytical_y_projection}.
+
+
