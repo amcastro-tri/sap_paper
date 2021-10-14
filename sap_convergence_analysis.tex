@@ -1,0 +1,230 @@
+\newcommand{\coneName}{\mathcal{K}}
+\newcommand{\dist}{d}
+\newcommand{\cond}{\text{cond}}
+\newcommand{\vx}{\mf{v}}
+\newcommand{\fx}{\ell_p(\mf{\vx})}
+
+\newcommand{\vy}{\mf{u}}
+\newcommand{\fy}{\ell_p(\mf{\vy})}
+\newcommand{\vd}{\mf{d}}
+
+% As required by the IEEE template.
+\renewcommand\qedsymbol{$\IEEEQED$}
+
+Convergence of SAP is established
+by first showing crucial properties
+of the objective function 
+$\ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 + P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$.
+namely, it is  \emph{strongly convex},
+and differentiable with \emph{Lipschitz continuous} gradients.  The
+former property is inherited from the positive-definite quadratic term 
+provided by the positive definite matrix $\mf{A}$ in Eq. \eqref{eq:primal_unconstrained}.  The latter is shown using differentiability of the squared-distance function
+ and the Lipschitz continuity of its gradient map (Theorems 5.3-i 6.1-i of~\cite{bib:delfour2011shapes})
+ combined with the identity
+\[
+  \dist^2_{\coneName^\circ}(x) = \|P_{\coneName}(x)\|_{\mf{R}}^2
+\] 
+for any closed, convex cone $\coneName$. Here 
+the distance and projection functions are with respect to the
+norm $\|\cdot\|_\mf{R}$, while $\coneName^\circ$ denotes the polar
+cone with respect to the corresponding inner-product $\mf{x}^T \mf{R} \mf{y}$.
+\begin{lemma}\label{lem:PropertiesOfObj}
+  The following statements hold.
+  \begin{itemize}
+    \item The function $\fx$ is strongly convex, i.e., there exists $\mu >0$
+      such that 
+      \[
+        \fy \ge \fx + \nabla \fx(\vy-\vx) + \frac{\mu}{2} \|\vy-\vx\|^2
+      \]
+    \item The function $\fx$ is differentiable and has Lipschitz continuous gradients, i.e.,
+      $\nabla \fx$ exists for all $\mf{v}$ and there exists $L \ge 0$ satisfying
+      \[
+      \|\nabla \fx - \nabla \fy\| \le L \|\vy - \vx\|
+      \]
+  \end{itemize}
+  \begin{proof}
+
+The objective $\fx$ is a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$
+of the following form
+\[
+  f(\vx) = \frac{1}{2}\dist_{\coneName}^2(\mf{Z}\vx + \mf{b}) + \vx^{T}\mf{W}\vx + \mf{q}^T \vx,
+\]
+where $\mf{Z} \in \mathbb{R}^{m \times n}$, $\mf{W} \in \mathbb{R}^{n \times n}$ is
+symmetric and positive definite, and $\dist_{\coneName} : \mathbb{R}^{m} \rightarrow \mathbb{R}$ 
+denotes the distance function of a closed, convex set $\coneName \subseteq \mathbb{R}^m$
+as measured by some quadratic norm $\|\mf{x}\|_Q$, i.e.,
+\[
+  \dist_{\coneName}(\vx) = \inf \{ \|\vx-\mf{z}\|_Q : \mf{z} \in \coneName\}.
+\]
+    The sum of a strongly convex function with a convex function is strongly
+    convex.  Since the squared distance function is convex, and the quadratic
+    term $\vx^T \mf{W}\vx$ is strongly convex (given that $\mf{W} \succ 0$), the  first
+    statement holds.
+
+    The second statement follows trivially if we can show it holds 
+    for the squared distance function. 
+    Differentiability follows from Chapter 4 (Theorems 5.3-i 6.1-i) of~\cite{bib:delfour2011shapes},
+    which shows that
+  \[
+    \nabla \dist_{\coneName}^2(\vx) = 2 \mf{Q} (\vx - P_{\coneName}(\vx)).
+  \]
+    That the gradient of $\dist_{\coneName}^2(\vx)$ is Lipschitz follows
+    from Lipschitz continuity of projection maps onto closed, convex sets.
+  \end{proof}
+\end{lemma}
+\noindent We remark that strong convexity implies the reverse
+Lipschitz inequality $\|\nabla f(\vx) - \nabla f(\vy)\| \ge \mu \|\vx - \vy\|$,
+which in turn means that the parameter $\mu$ and the Lipschitz constant $L$
+satisfy $\mu \le L$.
+
+
+
+
+Recall that SAP (Algorithm~\ref{alg:sap}) is a special case
+of the following iterative method
+for minimizing a function $f : \mathbb{R}^n \rightarrow
+\mathbb{R}$ given some initial
+point $\vx_0 \in \mathbb{R}^n$:
+\begin{align}\label{eq:quasiNewtonIter}
+  \begin{aligned}
+    \vd_m &= -\mf{H}^{-1}(\vx_m) \nabla f(\vx_m), \\
+     t_m &= \argmin_{t} f(\vx_m + t \vd_m),\\
+    \vx_{m+1} &= \vx_m + t_m \vd_m,      
+  \end{aligned}
+\end{align}
+where $\mf{H} : \mathbb{R}^n \rightarrow \mathbb{R}^{n \times n}$ is a function 
+into the set of symmetric positive definite matrices, i.e.,  $\mf{H}(\vx) = \mf{H}(\vx)^T$ 
+and $\mf{H}(\vx) \succ 0$ for all $\vx\in\mathbb{R}^n$.  
+It is well known that gradient descent exhibits linear convergence to the global minimum when applied to a strongly convex
+function with Lipschitz continuous gradient. Incorporating
+a condition number bound  $\sigma$ for $\mf{H}(\vx)$  into standard gradient-descent analysis
+will prove that the iterations~\eqref{eq:quasiNewtonIter}
+also have linear convergence.
+To show this, we let
+$\cond(\mf{H}(\vx))$ denote the condition number of $\mf{H}(\vx)$
+and $S(\vx_0)$ denote the sub-level set $\{ \vx \in \mathbb{R}^n: f(\vx) \le f(\vx_0) \}$.
+\begin{lemma}\label{lem:GlobalConv}
+  Let $f : \mathbb{R}^n \rightarrow \mathbb{R}$ be strongly convex and differentiable
+  with Lipschitz-continuous gradients.
+  Fix $\vx_0 \in\mathbb{R}^n$. If there exists $\sigma > 0$
+  such that $\cond(\mf{H}(\vx)) \le \sigma$ for all  $\vx \in S(\vx_0)$, then
+  the iterations~\eqref{eq:quasiNewtonIter}
+  converge to the global minimum $\vx_*$ of $f(\vx)$ when initialized at $\vx_0$.
+  Moreover,
+  \[
+    f(\vx_m)  - f(\vx_*)  \le (1-\frac{\mu}{\sigma^2 L})^m (f(\vx_0) - f(\vx_*))
+  \]
+  for all iterations $m$, where $\mu$ is the strong-convexity parameter of $f(\vx)$ and $L$ is
+  the Lipschitz constant of $\nabla f(\vx)$.
+  \begin{proof}
+    Dropping the subscript $m$ from $(\vx_m, t_m, \vd_m)$, we first observe that
+\[
+f(\vx+t\vd) \le f(\vx) + \langle \nabla f(\vx), \vd \rangle t + \frac{L}{2}\|\vd\|^2 t^2
+\]
+by Lipschitz continuity.  Substituting $\vd =- \mf{H}^{-1}  \nabla  f(\vx)$ gives
+\[
+f(\vx+t\vd) = f(\vx) - \nabla f(\vx)^T  \mf{H}^{-1}  \nabla  f(\vx) t + \frac{L }{2}\|\mf{H}^{-1}\nabla f(\vx) \|^2 t^2.
+\]
+Letting $\lambda_{max}$ and $\lambda_{min}$ denote the
+maximum and minimum eigenvalues of $\mf{H}$ evaluated at $\vx$, it also follows that
+\[
+  f(\vx+t\vd) \le f(\vx) - \frac{1}{\lambda_{\max}} \|\nabla f(\vx)\|^2 t  + 
+    \frac{L }{2}  \frac{1}{\lambda^{2}_{\min}} \|\nabla f(\vx)\|^2 t^2.
+\]
+Letting $\bar t$ denote the  minimizer of the right-hand-side, we
+conclude that
+    \[
+      f(\vx+t\vd) \le  f(\vx + \bar t\vd ) \le f(\vx) - \frac{1}{2}(\frac{\lambda^{2}_{\min}}{\lambda^2_{\max} L} 
+      \|\nabla f(\vx)\|^2),
+    \]
+where the first inequality follows from the exact line-search
+used to select $t$.
+Since  $\sigma^2 \ge \lambda^{2}_{\max}/\lambda^2_{\min}$,
+we conclude that
+\[
+   f(\vx + t \vd) \le f(\vx) - \frac{1}{2\sigma^2 L}\| \nabla f(\vx) \|^2.
+\]
+    On the other hand, letting $f_* = f(\vx_*)$ 
+    we have from strong convexity that
+    \[
+  \|\nabla f(\vx)\|^2 \ge 2\mu (f(\vx)-f_* ).
+    \]
+Hence,
+\[
+  f(\vx + t \vd)   \le f(\vx) - \frac{\mu}{\sigma^2 L} (f(\vx)-f_* ).
+\]
+Subtracting $f_*$ from both sides and factoring shows
+\[
+  f(\vx + t \vd)  - f_* \le  (1-\frac{\mu}{\sigma^2 L})(f(\vx) - f_*)
+\]
+It follows that each iteration $m$ satisfies
+\[
+  f(\vx_{m+1}) - f_* \le  (1-\frac{\mu}{\sigma^2 L})^{m}(f(\vx_{0}) - f_*)
+\]
+Since $\sigma \ge 1$ and $L \ge \mu$, the iterations converge, and the proof is completed.
+  \end{proof}
+\end{lemma}
+
+Combining these lemmas shows that SAP globally convergences at (at least) a
+linear rate.  By observing that SAP reduces to Newton's
+method when the gradient is differentiable, we can also prove local quadratic
+convergence assuming differentiability on a neighborhood of
+the optimum $\vx_*$. 
+\begin{theorem}
+  The following statements hold.
+  \begin{itemize}
+    \item SAP globally converges from all initial conditions.
+    \item If $\nabla f(\vx)$  is differentiable on the ball $B(\vx_*, r) := \{ \vx :  \|\vx-\vx_*\| \le r\}$
+  for some $r > 0$, then SAP exhibits quadratic convergence, i.e., for some finite
+  $M$ and $\beta > 0$
+  \[
+    \|\vx_m - \vx_*\| \le \beta \|\vx_{m+1} - \vx_*\|^2
+  \]
+  for all $m > M$.
+  \end{itemize}
+
+  \begin{proof}
+
+    The first statement follows from Lemmas~\ref{lem:PropertiesOfObj}~and~\ref{lem:GlobalConv}.
+
+  To prove the second, we show that $B(\vx_*, r)$
+    contains a sublevel set $\Omega_{\beta} = \{ \vx : f(\vx) \le \beta\}$ for some
+  $\beta > 0$,  implying that SAP 
+  reduces to Newton's method with exact line-search for some $m > M$,
+ given that sublevel sets are invariant. 
+
+  To begin, we have, by strong convexity, that
+  \begin{equation}
+    \beta \ge f(\vx) \ge f(\vx_*)  + \frac{\mu}{2} \|\vx-\vx_*\|^2
+    \label{eq:strong_convexity_at_differentiable_optimal}
+  \end{equation}
+    for all $\vx \in \Omega_{\beta}$.
+    Rearranging shows that
+    \[
+      \|\vx-\vx_*\|^2 \le 2\frac{\beta- f(\vx_*)}{\mu}.
+    \]
+    Hence, $B(\vx_*, r)$ contains
+    $\Omega_{\beta}$ for any $\beta$ satisfying $2\frac{\beta- f(\vx_*)}{\mu} < r$.
+    For some finite $M$, we also have that $v_m \in \Omega_{\beta}$ for all $m > M$ 
+    by Lemma~\ref{lem:GlobalConv}.
+
+    Next, we prove that Newton iterations are quadratically convergent
+  with exact line-search. Indeed, using once more the strong convexity result in Eq.~\eqref{eq:strong_convexity_at_differentiable_optimal}
+  \begin{align*}
+    \|\vx_{m+1} - \vx_*\|^2&\le \frac{2}{\mu} ( f(\vx_{m+1}) - f(\vx_*)) \\
+                    &= \frac{2}{\mu} ( f(\vx_m + t_m \vd_m   ) - f(\vx_*)) \\
+                    &\le \frac{2}{\mu} ( f(\vx_m + \vd_m   ) - f(\vx_*)) \\
+                    &\le \frac{2}{\mu} L \|\vx_m + \vd_m - \vx_*\|^2
+  \end{align*}
+    where the first line uses strong convexity,
+    the third exact line search, and the last
+    Lipschitz continuity. But for some $\kappa > 0$,
+    we have that $\|\vx_m + \vd_m - \vx_*\|^2 \le \kappa \|\vx_{m} - \vx_*\|^4$
+    by quadratic convergence of Newton's method with unit step-size (\cite[Theorem 3.5]{bib:nocedal2006numerical}).
+    Hence,
+    \[
+      \|\vx_{m+1} - \vx_*\|^2 \le \frac{2}{\mu}  L \kappa \|\vx_{m} - \vx_*\|^4,
+    \]
+    and the claim is proven.
+  \end{proof}
+\end{theorem}

@@ -30,11 +30,11 @@ The stopping criteria is discussed below in Section
   \caption{The Semi-Analytical Primal Solver (SAP)}	
 	\label{alg:sap}
 	\begin{algorithmic}[1]
-		\State Initialize $\mf{v}^0 \gets \mf{v}_0$
+		\State Initialize $\mf{v}_m \gets \mf{v}_0$
 		\RepeatUntil $~\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a + \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)$, Eq. \eqref{eq:stopping_criteria}
-			\State $\Delta\mf{v}^{m} = -\mf{H}^{-1}(\mf{v}^m)\nabla_\mf{v}\ell_p(\mf{v}^m)$ \label{op:Newton_iteration}
-			\State $\displaystyle \alpha^m = \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}^m + t \Delta\mf{v}^{m})$
-			\State $\displaystyle \mf{v}^{m+1} = \vf{v}^m + \alpha^{m}\Delta\mf{v}^{m}$
+			\State $\Delta\mf{v}_{m} = -\mf{H}^{-1}(\mf{v}_m)\nabla_\mf{v}\ell_p(\mf{v}_m)$ \label{op:Newton_iteration}
+			\State $\displaystyle \alpha_m = \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}_m + t \Delta\mf{v}_{m})$
+			\State $\displaystyle \mf{v}_{m+1} = \vf{v}_m + \alpha_{m}\Delta\mf{v}_{m}$
 		\EndRepeatUntil
 		\State\Return $\{\mf{v}$, $\bgamma=P_\mathcal{F}(\vf{y}(\mf{v}))\}$
 	\end{algorithmic}
