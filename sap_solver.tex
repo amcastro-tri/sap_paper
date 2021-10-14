@@ -188,6 +188,7 @@ the block diagonal structure of $\nabla_{\mf{v}_c}\bgamma$.
 \subsection{Problem Sparsity}
 \label{sec:problem_sparsity}
 
+
 Each iteration of SAP requires the solution of the linear system
 $\mf{H}(\mf{v}^m)\Delta\mf{v}^{m} = -\nabla_\mf{v}\ell_p(\mf{v}^m)$.  Though
 the matrix $\mf{H}$ changes at each iteration, it has a fixed block-sparsity
@@ -203,44 +204,20 @@ which stores sparse matrices as a collection
 of dense sub-blocks; hence it is well-matched for problems with block-sparsity.
 Indeed, for block-diagonal matrices, this factorization
 reduces to Cholesky factorizations of each individual block.
-%This is in constrast with \emph{simplicial} sparsity algorithms,
-%which perform all sparse computation using a list of
-%triples $(i, j, H_{ij})$ encoding the non-zero entries  of $H$.
 
-The SAP algorithm uses the supernodal solver implemented for the
-open-source package Conex~\cite{bib:permenter2020}.
-As input, this solver takes the \emph{maximal cliques} of  an
-undirected graph 
-$G = (\{1, 2, \ldots, p\}, E)$
-induced by the non-zero entries of $\mf{H} \in \mathbb{R}^{p \times p}$,
-where the edgeset $E$ contains $\{i, j\}$ if  $H_{ij} \ne 0$.
-The next example illustrates these cliques can be identified
-easily from a graph $\tilde G$ that encodes pairwise contact information
-of  the multibody system. 
-To see this, suppose for simplicity that the
-$(i,j)^{th}$ entry of $\mf{A}$ is non-zero only if it
-is non-zero in $\mf{J}^T \mf{G} \mf{J}$. 
-%Note this situation
-%occurs if all velocities appear in at least one contact constraint,
-%and can be enforced in practice by presolving any unconstrained velocities
-%using the momentum equation.  
-Under this assumption,
-the sparsity of $\mf{H}$ is the same as $\mf{J}^T \mf{G} \mf{J}$.
-An example system with this property and corresponding
-pairwise-contact graph $\tilde G$ is shown in Fig. \ref{fig:sparsity_example};
-see also Equation~\ref{eq:JacobianExample}
-and Figure~\ref{fig:sparsity_example} for the matrices
-$\mf{J}^T \mf{G} \mf{J}$ and $\mf{J}$.
-The graph $\tilde G$ is constructed by first partitioning the columns of $\mf{J}$ into 
-groups $t_i$ that correspond with  distinct \emph{rigid-body trees} in the multibody system.
-The graph $\tilde G$ has nodes $t_i$,
-connected by
-an edge if and only if bodies in $t_i$ and $t_j$ make contact.  
-For this example, the maximal cliques of $\tilde G$  are
-$\{t_1, t_3\}$, $\{t_2, t_3\}$ and $\{t_4\}$.
-The cliques of the larger graph $G$ are obtained by simply replacing each
-$t_i$ with their corresponding set of column indices in the matrix $\mf H$.
 
+%The Hessian in Eq. (\ref{eq:ell_hessian}) inherits a block sparse structure from
+%the specific contact configuration of the problem. We seek to exploit this
+%structure when solving Line~\ref{op:Newton_iteration} at each iteration of Algorithm \ref{alg:sap}.
+%To that end, we use a supernodal Cholesky factorization \cite[\S
+%9]{bib:davis2016survey}. Implementing this factorization requires construction
+%of a \emph{junction tree}.  For this we apply the algorithm in
+%\cite{bib:smail2017junction}, using cliques of $\mf{J}\mf{J}^T$ as input. We
+%use the implementation from the Conex solver \cite{bib:permenter2020}.
+
+The block sparsity of the Hessian is best described with an example. We organize
+our multibody systems as a collection of articulated \emph{tree structures}, or
+a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/sparsity_example.png}
@@ -251,59 +228,59 @@ $t_i$ with their corresponding set of column indices in the matrix $\mf H$.
 	this graph exactly describes the sparsity pattern of the matrix
 	$\mf{J}^T\mf{G}\mf{J}$ in Fig. \ref{fig:JTGJ_schematic}.}
 \end{figure}
-%In this example, a robot arm mounted on a mobile base constitutes its own tree,
-%here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
-%will be denoted with $n_t$. A free body is the common case of a tree with
-%$n_t=6$. In general, the mass matrix will have a
-%block diagonal structure where the $t\text{-th}$ diagonal block corresponds to
-%the mass matrix of the $t\text{-th}$ tree. For the example in Fig.
-%(\ref{fig:sparsity_example}), the mass matrix looks like\\\\\\
-%\begin{equation}
-%	\mf{M}=\quad
-%	\begin{bmatrix}
-%		\tikzmark{M_topleft}
-%		\diagentry{\mf{M}_{\cc{11}}}&&&\tikzmark{M_topright}\\
-%		&\diagentry{\mf{M}_{\cc{22}}}\\
-%		&&\diagentry{\mf{M}_{\cc{33}}}\\		
-%		\tikzmark{M_bottomleft}&&&\diagentry{\mf{M}_{\cc{44}}}
-%	\end{bmatrix}
-%% Draw lil arrows on top and to the left.
-%\tikz[overlay,remember picture] {
-%	\draw[->,thick,color=cyan]
-%  ([yshift=3ex]M_topleft) -- ([yshift=3ex]M_topright) node[midway,above]
-%  {\scriptsize $t$}; 
-%  \draw[->,thick,color=cyan]
-%  ([yshift=1.5ex,xshift=-2ex]M_topleft) -- ([xshift=-4ex]M_bottomleft)
-%  node[near end,left] {\scriptsize $t$};}	
-%\end{equation}
-%\RedHighlight{Make this equation a Figure instead.}
+In this example, a robot arm mounted on a mobile base constitutes its own tree,
+here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
+will be denoted with $n_t$. A free body is the common case of a tree with
+$n_t=6$. In general, the mass matrix will have a
+block diagonal structure where the $t\text{-th}$ diagonal block corresponds to
+the mass matrix of the $t\text{-th}$ tree. For the example in Fig.
+(\ref{fig:sparsity_example}), the mass matrix looks like\\\\\\
+\begin{equation}
+	\mf{M}=\quad
+	\begin{bmatrix}
+		\tikzmark{M_topleft}
+		\diagentry{\mf{M}_{\cc{11}}}&&&\tikzmark{M_topright}\\
+		&\diagentry{\mf{M}_{\cc{22}}}\\
+		&&\diagentry{\mf{M}_{\cc{33}}}\\		
+		\tikzmark{M_bottomleft}&&&\diagentry{\mf{M}_{\cc{44}}}
+	\end{bmatrix}
+% Draw lil arrows on top and to the left.
+\tikz[overlay,remember picture] {
+	\draw[->,thick,color=cyan]
+  ([yshift=3ex]M_topleft) -- ([yshift=3ex]M_topright) node[midway,above]
+  {\scriptsize $t$}; 
+  \draw[->,thick,color=cyan]
+  ([yshift=1.5ex,xshift=-2ex]M_topleft) -- ([xshift=-4ex]M_bottomleft)
+  node[near end,left] {\scriptsize $t$};}	
+\end{equation}
+\RedHighlight{Make this equation a Figure instead.}
 
-%We define as \textit{patches} a collection of contact pairs between two
-%trees. We label in red all contact patches in Fig. (\ref{fig:sparsity_example}).
-%Each contact pair corresponds to a single cone constraint in our
-%formulation. The set of constraint indexes that belong to patch $p$ is
-%denoted with $\mathcal{I}_p$ of size (cardinality) $|\mathcal{I}_p| = r_p$.
+We define as \textit{patches} a collection of contact pairs between two
+trees. We label in red all contact patches in Fig. (\ref{fig:sparsity_example}).
+Each contact pair corresponds to a single cone constraint in our
+formulation. The set of constraint indexes that belong to patch $p$ is
+denoted with $\mathcal{I}_p$ of size (cardinality) $|\mathcal{I}_p| = r_p$.
 
-%Notice that our definition of \textit{patches} is used to describe sparsity and
-%has nothing to do with the actual geometrical topology of the contact surface
-%between two trees. That is, the \textit{patches} could in
-%general correspond to either a single connected surface or a complex contact area
-%formed by a set of disconnected surfaces. Figure (\ref{fig:sparsity_example})
-%labels trees and patches and shows the corresponding graph where the nodes are
-%the trees and the edges are the contact patches.
-%
-%Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} =
-%-\nabla_{\mf{v}_c}\bgamma$ is a block diagonal matrix, with $\vf{G}_i =
-%\nabla_{\vf{v}_{c,i}}\bgamma_i \in \mathbb{R}^{3\times 3}$ at the $i\text{-th}$
-%diagonal block. We can also write this as $\mf{G} = \text{diag}(\mf{G}_p)$ if we
-%group contact pairs by patches to define $\mf{G}_p=\text{diag}(\vf{G}_i),
-%\,\forall i\in\mathcal{I}_p$.
+Notice that our definition of \textit{patches} is used to describe sparsity and
+has nothing to do with the actual geometrical topology of the contact surface
+between two trees. That is, the \textit{patches} could in
+general correspond to either a single connected surface or a complex contact area
+formed by a set of disconnected surfaces. Figure (\ref{fig:sparsity_example})
+labels trees and patches and shows the corresponding graph where the nodes are
+the trees and the edges are the contact patches.
 
-%The contact Jacobian is in general sparse since the relative velocity at a
-%contact pair $i$ only involves the generalized velocities of the two trees
-%in contact. For the case in Fig. (\ref{fig:sparsity_example}), the Jacobian looks
-%like\\\\
-\begin{equation}\label{eq:JacobianExample}
+Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} =
+-\nabla_{\mf{v}_c}\bgamma$ is a block diagonal matrix, with $\vf{G}_i =
+\nabla_{\vf{v}_{c,i}}\bgamma_i \in \mathbb{R}^{3\times 3}$ at the $i\text{-th}$
+diagonal block. We can also write this as $\mf{G} = \text{diag}(\mf{G}_p)$ if we
+group contact pairs by patches to define $\mf{G}_p=\text{diag}(\vf{G}_i),
+\,\forall i\in\mathcal{I}_p$.
+
+The contact Jacobian is in general sparse since the relative velocity at a
+contact pair $i$ only involves the generalized velocities of the two trees
+in contact. For the case in Fig. (\ref{fig:sparsity_example}), the Jacobian looks
+like\\\\
+\begin{equation}
 	\mf{J}=\quad
 	\begin{bmatrix}
 		\tikzmark{J_topleft}\mf{0} & 
@@ -323,17 +300,17 @@ $t_i$ with their corresponding set of column indices in the matrix $\mf H$.
   ([yshift=1.5ex,xshift=-3ex]J_topleft) -- ([xshift=-3ex]J_bottomleft)
   node[near end,left] {\scriptsize $p$};}	
 \end{equation}
-%\RedHighlight{Make this equation a Figure instead.}\\
-%where each non-zero block is the Jacobian $\mf{J}_{\rr{p}\cc{t}}$ of size
-%$3r_p\times n_t$.
+\RedHighlight{Make this equation a Figure instead.}\\
+where each non-zero block is the Jacobian $\mf{J}_{\rr{p}\cc{t}}$ of size
+$3r_p\times n_t$.
 
-%We have now the elements to describe the sparsity of the product
-%$\mf{J}^T\mf{G}\mf{J}$. For the example in Fig. \ref{fig:sparsity_example}, the
-%block sparsity of $\mf{J}^T\mf{G}\mf{J}$ is illustrated in Fig.
-%\ref{fig:JTGJ_schematic}. Notice how the sparsity pattern of
-%$\mf{J}^T\mf{G}\mf{J}$ exactly matches the graph from Fig.
-%(\ref{fig:sparsity_example}). Finally, the Hessian has the sparsity
-%structure of $\mf{A} + \mf{J}^T\mf{G}\mf{J}$.
+We have now the elements to describe the sparsity of the product
+$\mf{J}^T\mf{G}\mf{J}$. For the example in Fig. \ref{fig:sparsity_example}, the
+block sparsity of $\mf{J}^T\mf{G}\mf{J}$ is illustrated in Fig.
+\ref{fig:JTGJ_schematic}. Notice how the sparsity pattern of
+$\mf{J}^T\mf{G}\mf{J}$ exactly matches the graph from Fig.
+(\ref{fig:sparsity_example}). Finally, the Hessian has the sparsity
+structure of $\mf{A} + \mf{J}^T\mf{G}\mf{J}$.
 \begin{figure*}[!h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/JTGJ_schematic.png}
@@ -341,6 +318,12 @@ $t_i$ with their corresponding set of column indices in the matrix $\mf H$.
 	Block sparsity of the $\mf{J}^T\mf{G}\mf{J}$ for the example illustrated in
 	Fig. \ref{fig:sparsity_example}.}
 \end{figure*}
+
+Our implementation organizes the blocks of the Jacobian $\mf{J}$ as described in
+this section, i.e. we condense rows by patches and columns by trees, so that the
+supernodal Cholesky factorization can exploit this rich structure. Using this
+block structure, the supernodal solver can take full advantage of specific
+optimizations for dense algebra.
 
 
 
