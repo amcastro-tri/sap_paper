@@ -98,12 +98,11 @@ $\hat{s}^\circ(\vf{y}) > 0$ in the sliding region and $\hat{s}^\circ<0$ when
 there is no contact. 
 
 We note that $\nabla_\vf{y}\ell_R(\vf{y})$ is not differentiable at the
-boundaries of $\mathcal{F}$ and $\mathcal{F}^\circ$. Therefore we define the
-matrix $\vf{H}_R$ that returns the Hessian $\nabla_\vf{y}^2\ell_R(\vf{y})$ at
-points of differentiability and it extends analytically on points of
-non-differentiability as
+boundaries of $\mathcal{F}$ and $\mathcal{F}^\circ$. At points of
+differentiability, the Hessian $\nabla_\vf{y}^2\ell_R(\vf{y})$ is computed by
+taking derivatives of Eq. (\ref{eq:gradient_ell_R_piecewise})
 \begin{align}
-	&\vf{H}_R(\vf{y}) = 
+	&\nabla_\vf{y}^2\ell_R(\vf{y}) = 
 	\label{eq:hessian_ell_R_piecewise}\\
 &\begin{dcases}
 	%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +112,7 @@ non-differentiability as
 	\text{stiction,}\\
 	%
 	%%%%%%%%%%%%%%%%%%%%
-	% Region II, sliding.
+	% Region II, sliding.	
 	\frac{R_n}{1+\tilde\mu^2}
 	\begin{bmatrix}
 		% ∂²ℓ/∂yₜ²:
@@ -131,8 +130,6 @@ non-differentiability as
     \vf{0} & \text{no contact.}
 \end{dcases}\nonumber
 \end{align}
-where the Hessian at differentiable points is computed by taking derivatives of
-Eq. (\ref{eq:gradient_ell_R_piecewise}).
 
 Clearly in the stiction region we have $\vf{H}_R(\vf{y})\succ 0$.
 Since in the stiction region we have $\hat{s}^\circ(\vf{y})>0$, the linear
@@ -158,8 +155,9 @@ which, using Eq. (\ref{eq:gradient_ell_R_piecewise}), can be written as
 	\label{eq:ell_velocity_gradient_simplified}
 \end{equation}
 
-We obtain the Hessian of the regularizer $\ell_R(\mf{v})$ from the
-gradients of $\bgamma(\mf{v})$ in Eq. \eqref{eq:ell_velocity_gradient_simplified}
+At points of differentiability, we obtain the Hessian of the regularizer
+$\ell_R(\mf{v})$ from the gradients of $\bgamma(\mf{v})$ in Eq.
+\eqref{eq:ell_velocity_gradient_simplified}
 \begin{eqnarray}
 	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
 	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
@@ -177,10 +175,14 @@ Alternatively, taking the gradient of Eq. \eqref{eq:ell_velocity_gradient} leads
 and since we already showed $\nabla_\mf{y}^2\ell_R\succeq 0$, it follows that
 $\nabla_\mf{v}^2\ell_R\succeq 0$.
 
+Finally, we define the matrix $\vf{H}_R \succeq 0$ that returns the Hessian
+$\nabla_\vf{v}^2\ell_R(\vf{v})$ at points where $\nabla_\vf{v}\ell_R(\vf{v})$ is
+differentiable. Otherwise, $\vf{H}_R$ is evaluated by extending the analytical
+expressions of $\nabla_\vf{v}^2\ell_R(\vf{y})$ to points of
+non-differentiability.
 
 \subsection{Gradients of the Primal Cost}
-With these results, we can now write the gradient and Hessian of the primal cost
-$\ell_p(\mf{v})$ in Eq. (\ref{eq:primal_unconstrained}). For the gradient we
+With these results, we can now write the gradient $\nabla_\vf{v}\ell_p$ and weighting matrix $\mf{H}$ in Algorithm \ref{alg:sap}. For the gradient we
 have
 \begin{equation}
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
@@ -194,11 +196,11 @@ can be written as
 and since the unconstrained minimization looks for $\nabla_\mf{v}\ell_p=\mf{0}$,
 we essentially recover the balance of momentum, as expected.
 
-Similarly, we can write the Hessian as
+Similarly, we can write the weighting matrix $\mf{H}$ as
 \begin{equation}
-	\mf{H} = \nabla_\mf{v}^2\ell_p(\mf{v}) = \mf{A} + \nabla_\mf{v}^2\ell_R
+	\mf{H} = \mf{A} + \mf{H}_R
 \end{equation}
-and since we already proved that $\nabla_\mf{v}^2\ell_R\succeq 0$, we find that
- $\mf{H}\succ 0$. Finally, we observe we are using the same analytical
- extensions used to defined $\nabla_\mf{v}^2\ell_R$ at points of
- non-differentiability.
+which returns the Hessian of $\ell_p(\vf{v})$ when the gradient is
+differentiable and extends the analytical expressions at points of
+non-differentiability. Since $\mf{A}\succ 0$ and $\mf{H}_R \succeq 0$, we have
+$\mf{H}\succ 0$.

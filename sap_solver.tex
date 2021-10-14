@@ -71,10 +71,11 @@ P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$. This gradient can be computed analytica
 where $\bgamma(\mf{v})=P_\mathcal{F}(\vf{y}(\mf{v}))$ is defined by the analytical inverse
 dynamics in Eq. \eqref{eq:analytical_y_projection}. 
 The map $P_\mathcal{F}(\mf{y}(\mf{v}))$ is differentiable
-when $\mf{y}$ is not on the boundary of $\mathcal{F}$.
-At these points, we obtain the Hessian of $\nabla_\mf{v}^2\ell_R$  by differentiating $\bgamma(\mf{v})$ and extend the analytical expressions to points of non-differentiability. The result is
+when $\mf{y}$ is not on the boundary of $\mathcal{F}$. At these points, we
+obtain the Hessian of $\nabla_\mf{v}^2\ell_R$  by differentiating
+$\bgamma(\mf{v})$ and extend the analytical expressions at points of non-differentiability to define $\mf{H}_R$
 \begin{eqnarray}
-	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
+	\mf{H}_R &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
 	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
 	\label{eq:ellR_hessian}
 \end{eqnarray}
@@ -84,8 +85,7 @@ for the $i\text{-th}$ contact. As shown in Appendix
 \ref{app:gradients_derivation}, $\nabla_{\mf{v}_c}\bgamma\succeq 0$ and thus
 $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
 
-In total, when $\nabla_\mf{v}^2\ell_R$ is well-defined,
-we evaluate $\mf{H}$ via: 
+In total, we evaluate $\mf{H}$ via
 \begin{equation}
 	\mf{H} = \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
 	\label{eq:ell_hessian}

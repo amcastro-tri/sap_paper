@@ -32,11 +32,11 @@ where $P_{\tilde{\mathcal{F}}} : \mathbb{R}^3 \rightarrow \mathbb{R}^3$ denotes 
 
 A simple piecewise formula for evaluating $P_{\tilde{\mathcal{F}}}$ is obtained
 by partitioning its domain  into three regions, shown in Fig. \ref{fig:cone_regions}. This partition consists of the
-cone $\tilde{\mathcal{F}}$, which we call \textit{Region I}, the interior of the
-polar $\tilde{\mathcal{F}}^\circ$, which we call \textit{Region III}, and the
-remaining area, which we call \textit{Region II}. In Region I, we simply have
-that $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \tilde{\vf{y}}$. In Region III,
-$P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \vf{0}$. Finally, in Region II, we
+closed cone $\tilde{\mathcal{F}}$, denoted with $\mathcal{R}_I$, the interior of the
+polar $\tilde{\mathcal{F}}^\circ$, denoted with $\mathcal{R}_{III}$, and the
+remaining area, which we denote with $\mathcal{R}_{II}$. For $\tilde{\vf{y}}\in\mathcal{R}_I$ we simply have
+that $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \tilde{\vf{y}}$. When $\tilde{\vf{y}}\in\mathcal{R}_{III}$,
+$P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \vf{0}$. Finally, when $\tilde{\vf{y}}\in\mathcal{R}_{II}$, we
 evaluate $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})$ via Euclidean projection onto
 the boundary of $\tilde{\mathcal{F}}$, which admits a simple formula. We define
 $\hat{\vf{f}}=[\tilde{\mu}\hat{\vf{t}}, 1]/\sqrt{1+\tilde{\mu}^2}$ the unit
@@ -53,8 +53,7 @@ where
 \end{aligned}
 \end{align}
 where $\tilde{y}_r=\Vert\tilde{\vf{y}}_t\Vert$. Note that this formula is
-well-defined on Region II, since $\vf{y}_t = \vf{0}$ only if $\vf{y}$ is lies in
-Regions I or III.
+well-defined on $\mathcal{R}_{II}$, since $\vf{y}_t = \vf{0}$ only if $\vf{y}$ is lies in regions $\mathcal{R}_{I}$ or $\mathcal{R}_{III}$.
 \begin{figure}[!h]
     \centering
     %\vspace{6pt}
