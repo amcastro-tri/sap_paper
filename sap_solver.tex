@@ -189,33 +189,19 @@ the block diagonal structure of $\nabla_{\mf{v}_c}\bgamma$.
 \label{sec:problem_sparsity}
 
 
+
+
 Each iteration of SAP requires the solution of the linear system
-$\mf{H}(\mf{v}^m)\Delta\mf{v}^{m} = -\nabla_\mf{v}\ell_p(\mf{v}^m)$.  Though
-the matrix $\mf{H}$ changes at each iteration, it has a fixed block-sparsity
-pattern inherited from $\mf{J}$ and $\mf{A}$.  
-Hence, to exploit sparsity, we only need to extract the relevant
-sparsity information once before the first SAP iteration.
+$\mf{H}(\mf{v}^m)\Delta\mf{v}^{m} = -\nabla_\mf{v}\ell_p(\mf{v}^m)$.
+The matrix $\mf{H}(\mf{v}^m)$ inherits a block sparse structure from
+the specific contact configuration of the problem. 
+We exploit this structure using a supernodal Cholesky factorization \cite[\S
+9]{bib:davis2016survey}. Implementing this factorization requires construction
+of a \emph{junction tree}.  For this we apply the algorithm in
+\cite{bib:smail2017junction}, using cliques of $\mf{H}$ as input. We
+use the implementation from the Conex solver \cite{bib:permenter2020}.
 
-The information needed for sparsity exploitation depends on the 
-specific algorithm used for linear equation solving.
-We employ the supernodal Cholesky factorization \cite[\S
-9]{bib:davis2016survey},
-which stores sparse matrices as a collection
-of dense sub-blocks; hence it is well-matched for problems with block-sparsity.
-Indeed, for block-diagonal matrices, this factorization
-reduces to Cholesky factorizations of each individual block.
-
-
-%The Hessian in Eq. (\ref{eq:ell_hessian}) inherits a block sparse structure from
-%the specific contact configuration of the problem. We seek to exploit this
-%structure when solving Line~\ref{op:Newton_iteration} at each iteration of Algorithm \ref{alg:sap}.
-%To that end, we use a supernodal Cholesky factorization \cite[\S
-%9]{bib:davis2016survey}. Implementing this factorization requires construction
-%of a \emph{junction tree}.  For this we apply the algorithm in
-%\cite{bib:smail2017junction}, using cliques of $\mf{J}\mf{J}^T$ as input. We
-%use the implementation from the Conex solver \cite{bib:permenter2020}.
-
-The block sparsity of the Hessian is best described with an example. We organize
+The block sparsity of $\mf{H}$  is best described with an example. We organize
 our multibody systems as a collection of articulated \emph{tree structures}, or
 a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
 \begin{figure}[!h]
