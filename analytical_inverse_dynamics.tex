@@ -1,68 +1,71 @@
-\textit{Inverse dynamics} refers to the computation of the impulses given known
-velocities of the system. It is shown in \cite{bib:todorov2014} that contact
-impulses are solution to the convex program stated in Eq.
-(\ref{eq:y_projection}). This problem can be solved analytically using simple
-geometry. By noticing that the change of variables
-$\tilde\bgamma=\vf{R}^{1/2}\bgamma$ (and respectively
-$\tilde{\vf{y}}=\vf{R}^{1/2}\vf{y}$) leads to a projection with Euclidean norm
-on a cone $\tilde{\mathcal{F}}$ with friction coefficient
-$\tilde\mu=\mu\,(R_t/R_n)^{1/2}$
+% Dummy comment so that files shows up in Reviewable.
+Recall that in Section~\ref{sec:unconstrained_convex_formulation}
+we defined \emph{Inverse Dynamics}
+as the construction of the optimal dual impulses
+from the optimal primal velocities.  As shown in~\cite{bib:todorov2014},
+these impulses have formula $\bgamma = P_{\mathcal{F}}(\vf{y})$, 
+where $P_{\mathcal{F}}$ denotes projection
+with respect to the weighted norm $\|\cdot\|_{\mf R}$, i.e.,
+\[
+P_{\mathcal{F}}(\mf{y}) = \argmin_{\bgamma\in\mathcal{F}} \quad \frac{1}{2}(\bgamma-\mf{y})^T\vf{R}(\bgamma-\mf{y}).
+\]
+We next show this projection is easily computed
+if one first applies a change of variables and works with the usual Euclidean norm $\|\cdot\|$.
+
+Given the separable structure of the problem, projection of $\mf{y}$ onto $\mathcal{F} =
+\mathcal{F}_{1} \times \mathcal{F}_{2} \cdots
+\mathcal{F}_{{n-1}}\times\mathcal{F}_{n}$ can be done by projecting $\vf{y}_i$ onto each
+cone $\mathcal{F}_{i}$ individually. To ease notation, we drop the contact subindex $i$ and we consider a diagonal regularization of the form $\vf{R} = \text{diag}([R_t, R_t, R_n])$.
+
+To begin, we let $\tilde{\bgamma}=\vf{R}^{1/2}\bgamma$ and
+$\tilde{\vf{y}}=\vf{R}^{1/2}\vf{y}$ to rewrite $P_{\mathcal{F}}(\vf{y})$ as
+\[
+  P_{\mathcal{F}}(\vf{y}) = \mf{R}^{-1/2} \argmin_{\tilde \bgamma\in \mf{R}^{1/2} \mathcal{F}} \frac{1}{2}\Vert\tilde\bgamma-\tilde{\vf{y}} \Vert_2^2
+\]                                                                               
+Observing that $\mf{R}^{1/2} \mathcal{F} = \tilde{\mathcal{F}}$ for $\tilde \mu =\mu\,(R_t/R_n)^{1/2}$,
+we conclude that
 \begin{eqnarray}
-	P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}})&=&\argmin_{\tilde\bgamma\in\mathcal{F_{\tilde\mu}}}
-		\quad \frac{1}{2}\Vert\tilde\bgamma-\tilde{\vf{y}}\Vert_2^2\nonumber\\
-	P_\mathcal{F}(\vf{y}) &=&
-	\vf{R}^{-1/2}P_\mathcal{F_{\tilde\mu}}(\tilde{\vf{y}})
+  P_\mathcal{F}(\vf{y})=\vf{R}^{-1/2} P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})
 	\label{eq:local_optimization_problem_tilde}
 \end{eqnarray}
+where $P_{\tilde{\mathcal{F}}} : \mathbb{R}^3 \rightarrow \mathbb{R}^3$ denotes Euclidean projection onto $\tilde{\mathcal{F}}$.
 
-The optimization problem in the Euclidean norm given by Eq.
-(\ref{eq:local_optimization_problem_tilde}) can be solved by inspection. If
-$\tilde{\vf{y}}\in\tilde{\mathcal{F}}$, then we simply have $\tilde{\bgamma}
-= \tilde{\vf{y}}$, we call this \textit{Region I}. If however $\tilde{\vf{y}}$
-is inside the polar cone $\tilde{\mathcal{F}}^\circ$, the closest point to
-$\tilde{\vf{y}}_i$ within the (tilde) friction cone is zero, i.e.
-$\tilde{\bgamma} =\vf{0}$. We call this \textit{Region III}. Finally, if
-$\tilde{\vf{y}}$ is in the region outside both $\tilde{\mathcal{F}}$ and its
-polar $\tilde{\mathcal{F}}^\circ$, then the closest point is it's Euclidean
-projection on the boundary of $\tilde{\mathcal{F}}$. We call this
-\textit{Region II}. To be more precise, we define the Region I as the closed set
-including the interior of the friction cone and its boundary. We define Region
-III as the open set only including the interior of the polar cone. Finally
-Region II is the open set that consists all points in $\mathbb{R}^3$ except
-those in Regions I and III.
-
-Figure \ref{fig:cone_regions} shows a schematic of
-$\tilde{\mathcal{F}}$, $\tilde{\mathcal{F}}^\circ$ and labels the three
-different regions. From Fig. \ref{fig:cone_regions}, for a cone forming an angle
-$\theta$ with the z axis, we have $\tan(\theta)=\tilde\mu$ and
-$\cos(\theta)=1/(1+\tilde\mu^2)$. Then the projection of a point
-$\tilde{\vf{y}}$ in Region II can be written as
-\begin{eqnarray}
-	\tilde{\bgamma}_t &=& \tilde{\mu}\tilde{\gamma}_n\hat{\vf{t}}\nonumber\\
-	\tilde{\gamma}_n &=& \frac{1}{1+\tilde{\mu}^2}\left(\tilde{y}_n +
-	\tilde{\mu}\tilde{y}_r\right)\nonumber		
-\end{eqnarray}
-where the tangent vector is defined as
-$\hat{\vf{t}}=\vf{y}_t/\Vert\vf{y}_t\Vert=-\vf{v}_t/\Vert\vf{v}_t\Vert$. 
+A simple piecewise formula for evaluating $P_{\tilde{\mathcal{F}}}$ is obtained
+by partitioning its domain  into three regions, shown in Fig. \ref{fig:cone_regions}. This partition consists of the
+closed cone $\tilde{\mathcal{F}}$, denoted with $\mathcal{R}_I$, the interior of the
+polar $\tilde{\mathcal{F}}^\circ$, denoted with $\mathcal{R}_{III}$, and the
+remaining area, which we denote with $\mathcal{R}_{II}$. For $\tilde{\vf{y}}\in\mathcal{R}_I$ we simply have
+that $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \tilde{\vf{y}}$. When $\tilde{\vf{y}}\in\mathcal{R}_{III}$,
+$P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = \vf{0}$. Finally, when $\tilde{\vf{y}}\in\mathcal{R}_{II}$, we
+evaluate $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})$ via Euclidean projection onto
+the boundary of $\tilde{\mathcal{F}}$, which admits a simple formula. We define
+$\hat{\vf{f}}=[\tilde{\mu}\hat{\vf{t}}, 1]/\sqrt{1+\tilde{\mu}^2}$ the unit
+vector along the wall of the cone shown in Fig. \ref{fig:cone_regions}, with
+$\hat{\vf{t}}=\tilde{\vf{y}}_t/\Vert\tilde{\vf{y}}_t\Vert=\vf{y}_t/\Vert\vf{y}_t\Vert$. Then the projection is computed as
+$\tilde{\bgamma}=(\tilde{\vf{y}}\cdot\hat{\vf{f}})\hat{\vf{f}}$. After some algebraic manipulation we have that 
+$P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = [\tilde{\bgamma}_t, \tilde{\gamma}_n]$,
+where
+\begin{align}\label{eq:ProjectionFormula}
+\begin{aligned}
+  \tilde{\bgamma}_t       &= \tilde{\mu}\tilde{\gamma}_n\hat{\vf{t}}\\
+        \tilde{\gamma}_n  &= \frac{1}{1+\tilde{\mu}^2}\left(\tilde{y}_n +
+	\tilde{\mu}\tilde{y}_r\right)
+\end{aligned}
+\end{align}
+where $\tilde{y}_r=\Vert\tilde{\vf{y}}_t\Vert$. Note that this formula is
+well-defined on $\mathcal{R}_{II}$, since $\vf{y}_t = \vf{0}$ only if $\vf{y}$ is lies in regions $\mathcal{R}_{I}$ or $\mathcal{R}_{III}$.
 \begin{figure}[!h]
     \centering
     %\vspace{6pt}
     \includegraphics[width=0.45\columnwidth]{figures/cone_regions.png}
     \caption{Geometry of $\tilde{\mathcal{F}}$ and regions in the
-    $\tilde{\vf{y}}$ space.}
+    $\tilde{\vf{y}}$ space.\RedHighlight{No need to define $\theta$, the text does not use it.}}
     \label{fig:cone_regions}
 \end{figure}
 
-Finally, we obtain Eq. (\ref{eq:analytical_y_projection}) by applying the transformation
-$\bgamma=\mf{R}^{-1/2}\tilde\bgamma$ to recover the impulses projected onto the
-friction cone $\mathcal{F}$ using the norm in $\vf{R}$.
+Finally, we apply the inverse transformation
+$\bgamma=\mf{R}^{-1/2}P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})$ and after some
+algebraic manipulation we recover the projection $\bgamma =
+P_\mathcal{F}(\vf{y})$ in Eq. \eqref{eq:analytical_y_projection}.
 
-Though the tangent vector $\hat{\vf{t}}$ is not defined for $\vf{y}=\vf{0}$, the
-projection still is, $P_\mathcal{F}(\vf{0})=\vf{0}$. In practice however, we
-introduce a smooth \emph{soft-norm} defined as
-$\|\vf{x}\|_s=\sqrt{\|\vf{x}\|^2+\varepsilon_s^2}$ and we define the tangent
-vector as $\hat{\vf{t}}=\vf{y}_t/\Vert\vf{y}_t\Vert_s$. This newly defined tangent vector is smooth and has the desired property that it leads to the right
-projection result in the limit to $\vf{y}\rightarrow 0$. In addition, not only
-the projection is well defined, but also its gradients in Appendix
-\ref{app:gradients_derivation}. In practice we use $\varepsilon_s=10^{-8}$.
 
