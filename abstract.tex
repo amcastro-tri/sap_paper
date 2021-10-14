@@ -1,22 +1,27 @@
-We present a convex formulation of compliant contact along with a robust
-iterative method to solve it in practice. Our formulation eliminates contact
-constraints analytically to write an unconstrained convex problem of
-frictional contact on velocities only. Our method has proven convergence and
-warms-starts effectively, enabling the simulation of complex multibody systems
-with frictional contact at interactive rates. We show our model can be described
-in clear physical terms, rather than in optimization specific terminology that
-might be elusive to non optimization experts. This allows us to incorporate not
-only point contact models of compliance, but also more sophisticated models of
-compliant surface patches. Accurate physical modeling of contact is critical for
-meaningful sim-to-real transfer. Moreover, we provide explicit analytical
-expressions for the contact forces as a function of state, which allow us to
+% Dummy comment to make this show in Reviewable.
+
+We present a convex formulation of compliant frictional contact and a robust, 
+performant method to solve it in practice. By analytically eliminating contact
+constraints, we obtain an unconstrained convex problem over just velocities
+for which we prove our solver has global convergence. Specified by physical parameters, our model can be described in clear
+physical terms, rather than in abstract optimization-specific terminology. This permits not only the modeling of compliant point-contact, but also more sophisticated models of compliant surface patches 
+that are often needed for high-fidelity simulation. 
+Moreover, we provide explicit analytical
+expressions for contact forces as a function of state, which allows us to
 characterize artifacts introduced by the convex approximation in a novel and
-transparent way. Based on the $\theta\text{-method}$, our time stepping scheme
-includes not only the popular symplectic Euler method but also the second order
+transparent way.
+Our time stepping scheme
+is based on the $\theta\text{-method}$, a common generalization
+of the popular symplectic Euler method and the second order
 midpoint rule. We demonstrate that the midpoint rule can achieve second order
-accuracy even in simulation through frictional contact. We introduce a number of
-accuracy metrics and show that our method outperforms existing commercial and
-open source alternatives without sacrificing accuracy. Finally, with the
-simulation of relevant robotic systems for manipulation, we demonstrate our
-approach can accurately resolve stiction, is robust and performs at interactive
-rates. Our method is implemented in the open source Drake robotics toolkit.
+accuracy even with frictional contact. We introduce a number of accuracy metrics
+and show that our method outperforms existing commercial and open source
+alternatives without sacrificing accuracy.
+Effective warm-starting
+enables simulation at interactive rates of complex robotic manipulation systems
+with frictional contact among rigid and compliant objects. 
+Finally, we demonstrate robust
+simulation of robotic manipulation tasks at interactive rates, with accurately
+resolved stiction and contact transitions, as required for meaningful
+sim-to-real transfer. Our method is implemented in the open source robotics
+toolkit Drake.

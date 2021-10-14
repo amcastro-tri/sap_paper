@@ -1,3 +1,5 @@
+% Dummy commit so that this file shows in Reviewable.
+
 \section{Test Cases}
 \label{sec:test_cases}
 
@@ -34,6 +36,12 @@ same algebra for SAP and Geodesic IPM allows us to perform a fair comparison bet
 the two solvers; performance differences can be attributed to the properties
 inherent to the optimization method instead of the differences in the linear
 algebra operations.
+
+For performance comparisons, we use the steady clock from the STL
+\verb+std::chrono+ library to measure wall-clock time for SAP and Geodesic IPM.
+For Gurobi we access the \verb+Runtime+ property reported by Gurobi. Notice this
+is somewhat unfair to SAP and Geodesic IPM since Gurobi's reported time does not
+include the cost of the initial setup.
 
 \subsection{Spring-Cylinder}
 \label{sec:spring_cylinder}

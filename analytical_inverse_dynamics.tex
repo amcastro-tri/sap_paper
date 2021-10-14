@@ -62,15 +62,11 @@ Which is correct?}. Also
 note that this formula is well-defined on Region III,
 since $\vf{y}_t = 0$ only if $\vf{y}$ is
 lies in Regions I or II.
-
-
-
-
 \begin{figure}[!h]
     \centering
     %\vspace{6pt}
     \includegraphics[width=0.45\columnwidth]{figures/cone_regions.png}
-    \caption{Geometry of $\mathcal{F}_{\tilde\mu}$ and regions in the
+    \caption{Geometry of $\tilde{\mathcal{F}}$ and regions in the
     $\tilde{\vf{y}}$ space.}
     \label{fig:cone_regions}
 \end{figure}
@@ -79,14 +75,3 @@ $\tilde{\vf{y}} = \mf{R}^{1/2} \tilde{\vf{y}}$, computing $\tilde\bgamma$ from
 the formula~\eqref{eq:ProjectionFormula} and applying the inverse transformation $\bgamma=\mf{R}^{-1/2}\tilde\bgamma$.
 %to recover the impulses projected onto the
 %friction cone ${\mathcal{F}}_{\mu}$ using the norm in $\vf{R}$.
-
-% Not sure that these adds anything
-%Though the tangent vector $\hat{\vf{t}}$ is not defined for $\vf{y}=\vf{0}$, the
-%projection still is, $P_\mathcal{F}(\vf{0})=\vf{0}$. In practice however, we
-%introduce a smooth \emph{soft-norm} defined as
-%$\|\vf{x}\|_s=\sqrt{\|\vf{x}\|^2+\varepsilon_s^2}$ and we define the tangent
-%vector as $\hat{\vf{t}}=\vf{y}_t/\Vert\vf{y}_t\Vert_s$. This newly defined tangent vector is smooth and has the desired property that it leads to the right
-%projection result in the limit to $\vf{y}\rightarrow 0$. In addition, not only
-%the projection is well defined, but also its gradients in Appendix
-%\ref{app:gradients_derivation}. In practice we use $\varepsilon_s=10^{-8}$.
-

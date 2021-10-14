@@ -69,7 +69,7 @@ midpoint rule take $10$ minutes of simulated time and about $1000$ oscillations
 to dissipate 10\% of the total energy (see Fig. \ref{fig:spring_cylinder_energy}
 right). This level of numerical dissipation is remarkably low when compared to a
 real mechanical system with friction, considering that energy is also dissipated
-through other intrinsic.
+through other means in real life.
 \begin{figure}[!h]
     \centering
     %trim={<left> <lower> <right> <upper>}
@@ -86,13 +86,13 @@ We also study the order of accuracy of our approach. We define the position erro
 \end{equation*}
 where $x_e(t)$ is the known exact solution. We simulate for $T=5\text{
 s}$, about 10 periods of oscillation. Figure \ref{fig:spring_cylinder_position_error} shows the position error as
-a function of time step. We see that even with frictional contact, the two
-stages approach with the midpoint rule achieves second order of accuracy. Both the implicit Euler and the symplectic Euler schemes are first order,
+a function of the time step. We see that even with frictional contact, the two-stage approach
+with the midpoint rule achieves second order of accuracy. Both the implicit Euler and the symplectic Euler schemes are first order,
 though the error is significantly smaller when using the symplectic Euler
 scheme.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.6\columnwidth]{figures/spring_cylinder/position_error.png}
+	\includegraphics[width=0.7\columnwidth]{figures/spring_cylinder/position_error.png}
 	\caption{\label{fig:spring_cylinder_position_error} 
 	Position error as a function of time step for the spring-cylinder system
 	with friction. First and second order references are shown with dashed

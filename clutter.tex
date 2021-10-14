@@ -58,11 +58,7 @@ step 60 during the initial transient for which SAP requires 21 iterations to
 converge, we observe that the algorithm reaches quadratic convergence after an
 initial linear convergence transient. At step 520, past the initial energetic
 transient, SAP exhibits linear convergence and satisfies the convergence
-criteria within 5 iterations. We observed this convergence behavior for other
-time steps as well. For time steps requiring about 10 iterations or more, SAP
-exhibits linear convergence followed by quadratic convergence. For time steps
-requiring less than about 10 iterations, the linear convergence regime is enough
-to reach convergence.
+criteria within 5 iterations.
 \begin{figure}[!h]
 	\centering
     \includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step60_21its_wwalls_latex_labels.png}
@@ -89,7 +85,7 @@ Therefore, in the case with 200 bodies, the problem involves 1200 DOFs and about
 2700 contact unknowns for a total of about 3000 unknowns.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.6\columnwidth]{figures/clutter/number_of_contacts.png}
+	\includegraphics[width=0.7\columnwidth]{figures/clutter/number_of_contacts.png}
 	\caption{\label{fig:clutter_num_contats} 
 	Total number of contacts with objects in steady state at the end of the
 	simulation for setup with and without walls.}
@@ -126,14 +122,16 @@ It could be argued that these speedup results depend on the accuracy settings of
 each solver. For a fair comparison, we define the dimensionless momentum error
 as
 \begin{equation}
-	e_m = \frac{\Vert\tilde{\nabla}\ell_p\Vert}{\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)},\nonumber
+	e_m = \frac{\Vert\tilde{\nabla}\ell_p\Vert}{\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)},
+	\label{eq:momentum_error}
 \end{equation}
 using the scaled generalized momentum quantities in Eq.
-(\ref{eq:scaled_momentum_quantities}). We assess the accuracy of the
-complementarity slackness with the dimensionless quantity
-\begin{eqnarray*}
+(\ref{eq:scaled_momentum_quantities}). We also define the dimensionless
+complementarity slackness error as
+\begin{equation}
 	e_\mu = \frac{1/n_c\sum_i|\bm{g}_i\cdot\bgamma_i|}{\ell_p}.
-\end{eqnarray*}
+	\label{eq:slackness_error}
+\end{equation}
 
 Figure \ref{fig:clutter_errors_w_wall} shows average values of $e_m$ and $e_\mu$
 over all time steps. Since SAP satisfies the complementarity slackness exactly,
@@ -186,7 +184,7 @@ Finally, we observe that when using $\sigma=10^{-3}$, the amount of slip is
 negligible for robotic applications.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.6\columnwidth]{figures/clutter/sigma_vt.png}
+	\includegraphics[width=0.7\columnwidth]{figures/clutter/sigma_vt.png}
 	\caption{\label{fig:clutter_sigma_vt} 
 	Mean slip velocity at the end of the simulation with objects at rest as a
 	function of the slip parameter. The estimated slip $v_s = \sigma\mu\delta t g$ is shown in dashed lines.}

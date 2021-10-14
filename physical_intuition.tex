@@ -1,3 +1,5 @@
+% Dummy commit so that this file shows in Reviewable.
+
 \section{Compliant Contact, Principle of Maximum Dissipation and Artifacts}
 \label{sec:physical_intuition}
 
@@ -33,7 +35,7 @@ The solution to  Eq. (\ref{eq:y_projection}) can be written as
 	% Region I, stiction
 	\vf{y} 
 	% When we  have:
-	& \text{stiction, } y_r < \mu y_n\\
+	& \text{stiction, } y_r \le \mu y_n\\
 	%
 	%
 	% Region II, sliding.
@@ -47,7 +49,7 @@ The solution to  Eq. (\ref{eq:y_projection}) can be written as
 	%
 	%
 	% Region III, no contact.
-    \vf{0} & \text{no contact, } y_n \leq -\hat\mu y_r
+    \vf{0} & \text{no contact, } y_n < -\hat\mu y_r
 \end{dcases}\nonumber	
 \end{eqnarray}
 where $\vf{y}_t$ and $y_n$ are the tangential and normal components of $\vf{y}$,
@@ -70,10 +72,10 @@ regularization parameters in Eq. (\ref{eq:Rk}) is taken as $R_n^{-1} = \delta t
 k(\delta t+\tau_d)$. To gain physical insight into our model, we substitute
 $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 (\ref{eq:analytical_y_projection}) to obtain
-\begin{eqnarray}
-	&&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))
+\begin{align}
+	&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))
     \label{eq:gamma_analytical_from_vc}\\
-&&\begin{dcases}
+&=\begin{dcases}
 	% Region I, stiction
 	\begin{bmatrix}
 		-\vf{v}_t/R_t\\
@@ -95,7 +97,7 @@ $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 	%
 	% Region III, no contact.  y_n \leq -\mu \frac{R_t}{R_n} y_r
     \vf{0} & \text{no contact, } \end{dcases}\nonumber	
-\end{eqnarray}
+\end{align}
 where $\phi= \phi_0 + \delta t\,v_n$. Let us now analyze the resulting forces
 from this model.
 
@@ -116,7 +118,7 @@ Since $\hat{\vf{t}} = \vf{y}_t/\Vert\vf{y}_t\Vert =
 satisfy the principle of maximum dissipation as desired.
 
 \subsection{Normal Forces}
-We observe that in stiction normal forces model compliance with linear
+We observe that in stiction, normal forces model compliance with linear
 stiffness $k$ and linear dissipation $c = \tau_d k$. That is
 \begin{equation}
     \gamma_n/ \delta t = -k\phi - c v_n.
