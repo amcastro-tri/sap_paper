@@ -44,10 +44,7 @@ about $9$ iterations per time step in both the initial transient and the steady 
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 0 0},clip]{figures/clutter/iterations_nb40.png}
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 0 0},clip]{figures/clutter/wall_clock_nb40.png}    
 	\caption{\label{fig:clutter_w_walls_nb40} 
-	Iterations and wall-clock time per time step for SAP, Geodesic IPM, and
-	Gurobi for the clutter case with 40 bodies and with walls. Most of the
-	energy is lost during the first $\sim300$ time steps as the objects pile up
-	at the bottom of the box.}
+	Iterations and wall-clock time per time step for the clutter case with 40 bodies and with walls.}
 \end{figure}
 
 Figure \ref{fig:clutter_line_search} shows two examples of convergence history
@@ -64,7 +61,7 @@ criteria within 5 iterations.
     \includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step60_21its_wwalls_latex_labels.png}
 	\includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step520_5its_wwalls_latex_labels.png}    
 	\caption{\label{fig:clutter_line_search} 
-	Normalized cost as a function of Newton iterations for step 60 (left) and for step 520 (right). SAP ensures that the cost decreases with each newt iteration. Reference lines are shown for linear convergence (dotted) and quadratic convergence (dashed).}
+	Cost as a function of Newton iterations for step 60 (left) and for step 520 (right) using SAP. The cost decreases monotonically. Reference lines are shown for linear convergence (dotted) and quadratic convergence (dashed).}
 \end{figure}
 
 \subsubsection{Scalability}
@@ -88,7 +85,7 @@ Therefore, in the case with 200 bodies, the problem involves 1200 DOFs and about
 	\includegraphics[width=0.7\columnwidth]{figures/clutter/number_of_contacts.png}
 	\caption{\label{fig:clutter_num_contats} 
 	Total number of contacts with objects in steady state at the end of the
-	simulation for setup with and without walls.}
+	simulation for setups with and without walls.}
 \end{figure}
 
 We measure the total time spent by each solver and define the \emph{speedup}
@@ -115,7 +112,8 @@ small problems with 8 bodies or less.
     \adjincludegraphics[width=0.49\columnwidth,trim={{0.02\width} 0 {0.05\width} 0},clip]{figures/clutter/speedup_w_walls.png}
     \adjincludegraphics[width=0.49\columnwidth,trim={{0.02\width} 0 {0.05\width} 0},clip]{figures/clutter/speedup_no_walls.png}
 	\caption{\label{fig:clutter_speedup} 
-	Speedup against Gurobi for both SAP and Geodesic IPM for the configuration with walls (left) and without walls (right).}
+	Speedup against Gurobi for the configuration with walls (left) and without
+	walls (right).}
 \end{figure}
 
 It could be argued that these speedup results depend on the accuracy settings of
@@ -187,7 +185,7 @@ negligible for robotic applications.
 	\includegraphics[width=0.7\columnwidth]{figures/clutter/sigma_vt.png}
 	\caption{\label{fig:clutter_sigma_vt} 
 	Mean slip velocity at the end of the simulation with objects at rest as a
-	function of the slip parameter. The estimated slip $v_s = \sigma\mu\delta t g$ is shown in dashed lines.}
+	function of the slip parameter. The estimated bound $v_s = \sigma\mu\delta t g$ is shown in dashed lines.}
 \end{figure}
 
 We conclude by examining the effect of $\sigma$ on the conditioning of the
@@ -203,5 +201,5 @@ middle, in a log scale, of the range of values examined in this study.
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/sigma_iterations.png}
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/sigma_condition_number.png}
 	\caption{\label{fig:clutter_sigma} 
-	Effect of the slip parameter on the conditioning of the system. Mean Newton iterations per step (left) and mean condition number (right).}
+	Effect of the slip parameter on the mean Newton iterations per step (left) and mean condition number (right).}
 \end{figure}
