@@ -137,7 +137,7 @@ conclude that
       f(\vx+t\vd) \le  f(\vx + \bar t\vd ) \le f(\vx) - \frac{1}{2}(\frac{\lambda^{2}_{\min}}{\lambda^2_{\max} L} 
       \|\nabla f(\vx)\|^2),
     \]
-where the first inequality follows from the exact line-search
+where the first inequality follows from the exact line search
 used to select $t$.
 Since  $\sigma^2 \ge \lambda^{2}_{\max}/\lambda^2_{\min}$,
 we conclude that
@@ -190,7 +190,7 @@ the optimum $\vx_*$.
   To prove the second, we show that $B(\vx_*, r)$
     contains a sublevel set $\Omega_{\beta} = \{ \vx : f(\vx) \le \beta\}$ for some
   $\beta > 0$,  implying that SAP 
-  reduces to Newton's method with exact line-search for some $m > M$,
+  reduces to Newton's method with exact line search for some $m > M$,
  given that sublevel sets are invariant. 
 
   To begin, we have, by strong convexity, that
@@ -209,7 +209,7 @@ the optimum $\vx_*$.
     by Lemma~\ref{lem:GlobalConv}.
 
     Next, we prove that Newton iterations are quadratically convergent
-  with exact line-search. Indeed, using once more the strong convexity result in Eq.~\eqref{eq:strong_convexity_at_differentiable_optimal}
+  with exact line search. Indeed, using once more the strong convexity result in Eq.~\eqref{eq:strong_convexity_at_differentiable_optimal}
   \begin{align*}
     \|\vx_{m+1} - \vx_*\|^2&\le \frac{2}{\mu} ( f(\vx_{m+1}) - f(\vx_*)) \\
                     &= \frac{2}{\mu} ( f(\vx_m + t_m \vd_m   ) - f(\vx_*)) \\
