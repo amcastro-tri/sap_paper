@@ -4,31 +4,16 @@ notice that we can write this term as
 	\ell_R = \frac{1}{2}\Vert\bgamma\Vert_{R}^2 = 
 	\sum_i \ell_{R_i},
 \end{equation*}
-with $\ell_{R_i}=1/2\Vert\bgamma_i\Vert_{R_i}^2$. Therefore computing
-derivatives of $\ell_R$ can be performed by taking derivatives of each
-$\ell_{R_i}$ separately. Dropping contact subindex $i$ for simplicity, we write the regularization as
+with $\ell_{R_i}=1/2\Vert\bgamma_i\Vert_{R_i}^2$. Since
+$\nabla_{\vf{y}_j}\ell_{R_i}=\vf{0}$ for $i\neq j$, we only need to compute the
+gradients of $\ell_{R_i}(\mf{y})$ with respect to the contact point variable
+$\vf{y}_i\in\mathbb{R}^3$. Dropping contact subindex $i$ for simplicity, we
+write the regularization as
 \begin{eqnarray*}
 	\ell_R = \frac{1}{2}\Vert\bgamma\Vert_R^2=\frac{1}{2}(R_t\Vert\bgamma_t\Vert^2+R_n\gamma_n^2).
 \end{eqnarray*}
 
-In \textbf{stiction} $\bgamma=\vf{y}$ and the cost can be written as
-\begin{eqnarray*}
-	\ell_R(\vf{y}) = \frac{1}{2}(R_t y_r^2+R_n y_n^2).
-\end{eqnarray*}
-
-During \textbf{sliding} Eq. (\ref{eq:analytical_y_projection}) states that Coulomb's law applies and we can write
-\begin{align*}
-	\ell_R(\vf{y})
-	&=\frac{1}{2}\gamma_n^2(R_t\mu^2+R_n)\\
-	&=\frac{R_n}{2}(1+\tilde\mu^2)\gamma_n^2\\
-	&=\frac{R_n}{2(1+\tilde\mu^2)}\left(y_n + \hat\mu y_r\right)^2,
-\end{align*}
-with $\tilde{\mu}=\mu (R_t/R_n)^{1/2}$ and $\hat{\mu}=\mu R_t/R_n$. Finally when there is \textbf{no contact}
-\begin{eqnarray*}
-	\ell_R(\vf{y}) = 0
-\end{eqnarray*}
-
-In total, $\ell_R$ is the piecewise function
+We use Eq.~(\ref{eq:analytical_y_projection}) to write the cost in terms of $\vf{y}$ as
 \begin{align}
 	&\ell_R(\vf{y}) = 
 	\label{eq:ell_R_piecewise}\\	
@@ -43,29 +28,19 @@ In total, $\ell_R$ is the piecewise function
 \end{align}
 
 \subsection{Gradients per Contact Point}
-Since $\nabla_{\vf{y}_j}\ell_{R_i}=\vf{0}$ for $i\neq j$, we only need to
-compute the gradients of $\ell_{R_i}(\mf{y})$ with respect to the contact point
-variable $\vf{y}_i\in\mathbb{R}^3$. Unless otherwise stated, we'll drop the
-subindex $i$. Therefore $\nabla_\vf{y}\ell_R\in\mathbb{R}^3$ and
-$\nabla_\vf{y}^2\ell_R\in\mathbb{R}^{3\times 3}$ (notice that as per our
-notation, we consistently use a bold italic font for 3D vectors and only bold,
-not italic, for $n\text{-dimensional}$ vectors.) The full gradient
-$\nabla_\mf{y}\ell_R$ concatenates the three-dimensional gradients
-$\nabla_\vf{y}\ell_R$ while the full Hessian matrix is block-diagonal with each
-$3\times 3$ block containing the local $i\text{-th}$ point Hessian.
-
 We use the following identities to simplify expressions
-\begin{align*}
-	\frac{\partial y_r}{\partial\vf{y}_t} &= \hat{\vf{t}}\nonumber,\\
-	\frac{\partial \hat{\vf{t}}}{\partial\vf{y}_t} &=
+\begin{equation*}
+	\frac{\partial y_r}{\partial\vf{y}_t} = \hat{\vf{t}}\nonumber,
+	\quad
+	\frac{\partial \hat{\vf{t}}}{\partial\vf{y}_t} =
 	\frac{\vf{P}^\perp(\hat{\vf{t}})}{y_r},
-\end{align*}
-where the $2\times 2$ projection matrices along and perpendicular to
-$\hat{\vf{t}}$ are defined as
-\begin{align*}
-	\vf{P}(\hat{\vf{t}}) &= \hat{\vf{t}}\otimes\hat{\vf{t}}\nonumber,\\
-	\vf{P}^\perp(\hat{\vf{t}})&=\vf{I}_2 - \vf{P}(\hat{\vf{t}}).
-\end{align*}
+\end{equation*}
+where the $2\times 2$ projection matrix is
+\begin{equation*}
+	\vf{P}^\perp(\hat{\vf{t}})=\vf{I}_2 - \vf{P}(\hat{\vf{t}}),
+	\quad\text{with }
+	\vf{P}(\hat{\vf{t}}) = \hat{\vf{t}}\otimes\hat{\vf{t}}\nonumber.
+\end{equation*}
 
 Taking the gradient of Eq. (\ref{eq:ell_R_piecewise}) results in
 \begin{align}
@@ -90,12 +65,7 @@ Taking the gradient of Eq. (\ref{eq:ell_R_piecewise}) results in
     \vf{0} & \text{no contact, } y_n < -\hat\mu y_r
 \end{dcases}\nonumber
 \end{align}
-with $\hat{s}^\circ(\vf{y}) = \hat{\mu}y_r+y_n$. $\hat{s}^\circ(\vf{y})$, a
-measure of how close the solution is to the polar cone $\mathcal{F}^\circ$.
-$\hat{s}^\circ(\vf{y}) > 0$ in the sliding region and $\hat{s}^\circ<0$ when
-there is no contact. 
-
-We note that $\nabla_\vf{y}\ell_R(\vf{y})$ is not differentiable at the
+with $\hat{s}^\circ(\vf{y}) = \hat{\mu}y_r+y_n$ positive in the sliding region. We note that $\nabla_\vf{y}\ell_R(\vf{y})$ is not differentiable at the
 boundaries of $\mathcal{F}$ and $\mathcal{F}^\circ$. At points of
 differentiability, the Hessian $\nabla_\vf{y}^2\ell_R(\vf{y})$ is computed by
 taking derivatives of Eq. (\ref{eq:gradient_ell_R_piecewise})
@@ -129,54 +99,53 @@ taking derivatives of Eq. (\ref{eq:gradient_ell_R_piecewise})
 \end{dcases}\nonumber
 \end{align}
 
-Clearly in the stiction region we have $\vf{H}_R(\vf{y})\succ 0$.
+Clearly in the stiction region we have $\nabla_\vf{y}^2\ell_R(\vf{y})\succ 0$.
 Since in the stiction region we have $\hat{s}^\circ(\vf{y})>0$, the linear
 combination of $\vf{P}(\hat{\vf{t}})$ and $\vf{P}(\hat{\vf{t}})^\perp$ in Eq.
 (\ref{eq:hessian_ell_R_piecewise}) is PSD (since both projection matrices are
-PSD). Therefore, in the sliding region we find out that
-$\vf{H}_R(\vf{y})\succeq 0$.
+PSD). Therefore $\nabla_\vf{y}^2\ell_R(\vf{y})\succeq 0$.
 
 \subsection{Gradients with Respect to Velocities}
-These gradients are computed using the chain rule and the definition of $\mf{y}$
-\begin{equation*}
-	\mf{y}=-\mf{R}^{-1}(\mf{J}\mf{v} - \hat{\mf{v}}_c).
-\end{equation*}
-
-Therefore the gradient in terms of velocities is
+Recall we use bold italics for vectors in $\mathbb{R}^3$ and non-italics bold
+for their stacked counterpart. With $\mf{y}=-\mf{R}^{-1}(\mf{J}\mf{v} -
+\hat{\mf{v}}_c)$ we use the chain rule to compute the gradient in terms of
+velocities 
 \begin{equation}
 	\nabla_\mf{v}\ell_R = -\mf{J}^T\mf{R}^{-1}\nabla_\mf{y}\ell_R,
 	\label{eq:ell_velocity_gradient}
 \end{equation}
-which, using Eq. (\ref{eq:gradient_ell_R_piecewise}), can be written as
+which, using Eq. (\ref{eq:gradient_ell_R_piecewise}), can be shown to equal
 \begin{equation}
 	\nabla_\mf{v}\ell_R = -\mf{J}^T\bgamma,
 	\label{eq:ell_velocity_gradient_simplified}
 \end{equation}
 
 At points of differentiability, we obtain the Hessian of the regularizer
-$\ell_R(\mf{v})$ from the gradients of $\bgamma(\mf{v})$ in Eq.
+$\ell_R(\mf{v})$ from the gradient of $\bgamma(\mf{v})$ in Eq.
 \eqref{eq:ell_velocity_gradient_simplified}
-\begin{eqnarray}
-	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber,\\
-	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1},
-	\label{eq:ellR_hessian}
-\end{eqnarray}
+\begin{align*}
+	\nabla_\mf{v}^2\ell_R(\mf{v}) &= -\mf{J}^T \nabla_{\mf{v}_c}\bgamma\,\mf{J}\nonumber,\\
+	\nabla_{\mf{v}_c}\bgamma &= -\nabla_\mf{y}\bgamma \mf{R}^{-1},
+\end{align*}
 where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
 diagonal block is the $3\times 3$ matrix $\nabla_{\mf{v}_{c,i}}\!\bgamma_i$
-for the $i\text{-th}$ contact.
-
-Alternatively, taking the gradient of Eq. \eqref{eq:ell_velocity_gradient} leads to the equivalent result
+for the $i\text{-th}$ contact. Alternatively, taking the gradient of Eq. \eqref{eq:ell_velocity_gradient} leads to the equivalent result
 \begin{equation*}
 	\nabla_\mf{v}^2\ell_R = \mf{J}^T\mf{R}^{-1}\nabla_\mf{y}^2\ell_R\mf{R}^{-1}\mf{J},
 \end{equation*}
-and since we already showed $\nabla_\mf{y}^2\ell_R\succeq 0$, it follows that
-$\nabla_\mf{v}^2\ell_R\succeq 0$.
+where we can verify indeed that
+$-\nabla_{\mf{v}_c}\bgamma=\mf{R}^{-1}\nabla_\mf{y}^2\ell_R\mf{R}^{-1}$. Since
+$\nabla_\mf{y}^2\ell_R\succeq 0$, it follows that
+$-\nabla_{\mf{v}_c}\bgamma\succeq 0$.
 
-Finally, we define the matrix $\vf{H}_R \succeq 0$ that returns the Hessian
-$\nabla_\vf{v}^2\ell_R(\vf{v})$ at points where $\nabla_\vf{v}\ell_R(\vf{v})$ is
-differentiable. Otherwise, $\vf{H}_R$ is evaluated by extending the analytical
-expressions of $\nabla_\vf{v}^2\ell_R(\vf{y})$ to points of
-non-differentiability.
+We define $\vf{G}_i\in\mathbb{R}^{3\times 3}$ the matrix that evaluates to
+$-\nabla_{\mf{v}_{c,i}}\!\bgamma_i$ within regions $\mathcal{R}_I$,
+$\mathcal{R}_{II}$ and $\mathcal{R}_{III}$ where the projection is
+differentiable. At the boundary of $\mathcal{F}$ we use the analytical
+expression from $\mathcal{R}_I$. At the boundary of $\mathcal{F}^\circ$ we use
+the analytical expression from $\mathcal{R}_{II}$. This extension fully
+specifies $\vf{G}_i$ for all $\vf{y}_i\in\mathbb{R}^3$. Finally, we define the
+${3n_c\times 3n_c}$ matrix $\mf{G}=\text{diag}(\vf{G}_i)\succeq 0$.
 
 \subsection{Gradients of the Primal Cost}
 With these results, we can now write the gradient $\nabla_\vf{v}\ell_p$ and weighting matrix $\mf{H}$ in Algorithm \ref{alg:sap}. For the gradient we
@@ -184,20 +153,18 @@ have
 \begin{equation*}
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R.
 \end{equation*}
-
-Notice that, using Eq. (\ref{eq:ell_velocity_gradient_simplified}), the gradient
-can be written as
+which using Eq. (\ref{eq:ell_velocity_gradient_simplified}) can be written as
 \begin{equation*}
 	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma,
 \end{equation*}
-and since the unconstrained minimization looks for $\nabla_\mf{v}\ell_p=\mf{0}$,
-we essentially recover the balance of momentum, as expected.
+and since the unconstrained minimization seeks to satisfy the optimality
+condition $\nabla_\mf{v}\ell_p=\mf{0}$, we recover the balance of momentum.
 
-Similarly, we can write the weighting matrix $\mf{H}$ as
+Finally, we define the weighting matrix $\mf{H}$ as
 \begin{equation*}
-	\mf{H} = \mf{A} + \mf{H}_R,
+	\mf{H} = \mf{A} + \mf{J}^T\mf{G}\,\mf{J},
 \end{equation*}
-which returns the Hessian of $\ell_p(\vf{v})$ when the gradient is
-differentiable and extends the analytical expressions at points of
-non-differentiability. Since $\mf{A}\succ 0$ and $\mf{H}_R \succeq 0$, we have
-$\mf{H}\succ 0$.
+which, given the definition of $\mf{G}$, returns the Hessian of $\ell_p(\vf{v})$
+when the gradient is differentiable and extends the analytical expressions at
+points of non-differentiability. Since $\mf{A}\succ 0$ and $\mf{G} \succeq 0$,
+we have $\mf{H}\succ 0$.
