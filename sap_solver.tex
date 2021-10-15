@@ -17,7 +17,7 @@ using line-search.  When $\nabla \ell_p(\mf{v})$ is differentiable,
 $\mf{H}(\mf{v})$ returns the Hessian matrix $\nabla^2 \ell_p(\mf{v})$.
 Otherwise, $\mf{H}(\mf{v})$ is evaluated by extending
 analytical expressions for $\nabla^2 \ell_p$ to points
-of non-differentiability, see Appendix \ref{app:gradients_derivation}.  As we show \RedHighlight{TODO: reference to Frank's proofs}, SAP 
+of non-differentiability, see Section{sec:NonDifferentiability} for more information.  As we show \RedHighlight{TODO: reference to Frank's proofs}, SAP 
 globally convergences at least at a linear-rate.
 Further, SAP exhibits quadratic convergence when
 $\nabla^2 \ell_p$ exists in a neighborhood of the
@@ -183,6 +183,19 @@ can be precomputed before the line search, and
 $\frac{d^2\ell_R}{d\alpha^2}$ only involves $\mathcal{O}(n_c)$ operations given
 the block diagonal structure of $\nabla_{\mf{v}_c}\bgamma$.
 
+
+\subsection{Handling Non-differentiable gradients}~\label{sec:NonDifferentiability}
+The SAP iterations require a positive definite matrix $\mf{H}(\mf v)$ at all iterations.  At
+points of differentiability, $\mf{H}(\mf v)$ is simply set equal to the Hessian of
+the cost function. In general, $\mf{H}(\mf v)$ is evaluated using a partition
+of its domain.  For each set in the partition, the gradient is differentiable on the
+interior, and the Hessian admits a simple formula. Outside the interior, we
+evaluate $H(\mf v)$ by simply using the Hessian formula derived for the interior. By
+our choice of partition, this provides a globally valid definition for $\mf{H}(\mf
+v)$.  Details of the partition are given in Section{}.  The Hessian formula are
+give in Section{}. Our convergence analysis, given in Section{}, also
+accounts for this definition.
+\RedHighlight{TODO: Add Section references.}
 \subsection{Problem Sparsity}
 \label{sec:problem_sparsity}
 
