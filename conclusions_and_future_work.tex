@@ -2,38 +2,42 @@
 \label{sec:future_directions}
 
 We presented a formulation of compliant contact with a novel physics-based
-parameterization. We show that forces can be succinctly described by analytical
+parameterization. We showed that forces can be succinctly described by analytical
 expressions with a clear physical intuition. This allowed us to incorporate not
-only point contact but also more complex models of surface patches. We then show
+only point contact but also more complex models of surface patches. We then showed
 that when these forces are used in the momentum equations, we obtain the
-optimality conditions for an unconstrained convex formulation. We make a
+optimality conditions for an unconstrained convex formulation. We made a
 rigorous presentation of the numerical approximations and a novel
 characterization of the artifacts introduced by the convex approximation of
 contact; the approximation is exact for sticking contact and introduces an
 $\mathcal{O}(\delta t\|\vf{v}_t\|)$ \emph{gliding} effect for sliding contact.
 
-We developed a two-stages time stepping approach based on the
-$\theta\text{-method}$ and we show that with the midpoint rule it can achieve
+We developed a two-stage time stepping approach based on the
+$\theta\text{-method}$ and we showed that with the midpoint rule it can achieve
 second order accuracy even in problems with frictional contact. Our formulation
 does not linearize the friction cone but it works with the second order cone
 constraints directly.
 
-We presented SAP, a robust and performant solver for this formulation that
-warm-starts very effectively in practice. We provide global converge guarantees
-from any initial guess and show: worst case linear convergence, and quadratic
-convergence when additional smoothness conditions are satisfied. We show SAP
-exhibits these two converge regimes in simulations of practical relevance. Our
-work includes thorough details for implementation, including analytical
+We presented SAP, a robust and performant open source solver for this formulation that
+warm-starts very effectively in practice. SAP provides global convergence guarantees
+from any initial guess with worst case linear convergence and quadratic
+convergence when additional smoothness conditions are satisfied. We showed that SAP
+exhibits these two convergence regimes in simulations of practical relevance. We
+provided thorough details for implementation, including analytical
 formulae for gradients and Hessian, sparsity analysis and custom line-search.
 
-We compare the performance of SAP against commercial and open source
-optimization solvers. Using quantitative accuracy metrics we show that SAP
+We compared the performance of SAP against commercial and open source
+optimization solvers. Using quantitative accuracy metrics we showed that SAP
 outperforms the alternatives not only without sacrificing accuracy, but even at
-a higher accuracy and added robustness. SAP can be up to 50 times faster than
+higher accuracy and added robustness. SAP can be up to 50 times faster than
 Gurobi in small problems with up to a dozen objects and up to 10 times faster in
 medium sized problems with about 100 objects. Even though SAP uses the
 supernodal algebra implemented for Geodesic IPM, it performs at least two times
-faster given how effectively it warms-starts from the previous time-step
-solution. Moreover, SAP exhibits significantly more robustness in practice given
+faster due to its effective warm-starts from the previous time-step
+solution. Moreover, SAP is significantly more robust in practice given
 that it guarantees a hard bound on the error in momentum, effectively providing
 a certificate of accuracy.
+
+We have incorporated SAP into the open source robotics toolkit Drake
+\cite{bib:drake}, and hope that the simulation and robotics communities can
+benefit from our contribution.
