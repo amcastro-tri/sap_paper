@@ -30,12 +30,11 @@ where we form $\mf{y}$ by stacking together each
 $\vf{y}_i$ from all contact pairs.  In this notation,
 the optimal impulse $\bgamma$ of~\eqref{eq:dual_regularized} 
 and the optimal velocities $\mf{v}$ of~\eqref{eq:primal_regularized} 
-satisfy  $\bgamma = P_{\mathcal{F}}(y(\mf{v}))$.
+satisfy  $\bgamma = P_{\mathcal{F}}(\mf{y}(\mf{v}))$.
 
 
-The inverse dynamics formula $\bgamma = P_{\mathcal{F}}(y(\mf{v}))$  and the optimality
-condition $\sigma = \bgamma$ from Theorem~\ref{th:primal_dual}
-allow us to eliminate both $\sigma$ and the constraints from the primal
+We use $\bgamma = P_{\mathcal{F}}(y(\mf{v}))$  and the optimality
+condition $\sigma = \bgamma$ from Theorem~\ref{th:primal_dual} to eliminate both $\sigma$ and the constraints from the primal
 formulation. In total, we obtain the following unconstrained problem
 in velocities only
 \begin{eqnarray}
