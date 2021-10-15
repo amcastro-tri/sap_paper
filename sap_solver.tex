@@ -17,7 +17,7 @@ using line-search.  When $\nabla \ell_p(\mf{v})$ is differentiable,
 $\mf{H}(\mf{v})$ returns the Hessian matrix $\nabla^2 \ell_p(\mf{v})$.
 Otherwise, $\mf{H}(\mf{v})$ is evaluated by extending
 analytical expressions for $\nabla^2 \ell_p$ to points
-of non-differentiability, see Section{sec:NonDifferentiability} for more information.  As we show in Appendix \ref{app:sap_converge}, SAP 
+of non-differentiability, see \RedHighlight{Section{sec:NonDifferentiability}} for more information.  As we show in Appendix \ref{app:sap_converge}, SAP 
 globally convergences at least at a linear-rate.
 Further, SAP exhibits quadratic convergence when
 $\nabla^2 \ell_p$ exists in a neighborhood of the
@@ -64,21 +64,19 @@ primal cost $\ell_p$ is
 \end{equation*}
 where we define the regularizer cost as $\ell_R(\mf{v})=\frac{1}{2}\Vert
 P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$. This gradient can be computed analytically as
-\begin{equation}
-	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v})
-	\label{eq:primal_gradient}
-\end{equation}
+\begin{equation*}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v}),
+\end{equation*}
 where $\bgamma(\mf{v})=P_\mathcal{F}(\vf{y}(\mf{v}))$ is defined by the analytical inverse
 dynamics in Eq. \eqref{eq:analytical_y_projection}. 
 The map $P_\mathcal{F}(\mf{y}(\mf{v}))$ is differentiable
 when $\mf{y}$ is not on the boundary of $\mathcal{F}$. At these points, we
 obtain the Hessian of $\nabla_\mf{v}^2\ell_R$  by differentiating
 $\bgamma(\mf{v})$ and extend the analytical expressions at points of non-differentiability to define $\mf{H}_R$
-\begin{eqnarray}
-	\mf{H}_R &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
-	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
-	\label{eq:ellR_hessian}
-\end{eqnarray}
+\begin{eqnarray*}
+	\mf{H}_R &=& \mf{J}^T\mf{G}\,\mf{J},\nonumber\\
+	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1},
+\end{eqnarray*}
 where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
 diagonal block is the $3\times 3$ matrix $\nabla_{\mf{v}_{c,i}}\!\bgamma_i$
 for the $i\text{-th}$ contact. As shown in Appendix
@@ -87,8 +85,7 @@ $\nabla_\mf{v}^2\ell_R(\mf{v})\succeq 0$.
 
 In total, we evaluate $\mf{H}$ via
 \begin{equation}
-	\mf{H} = \mf{A} + \mf{J}^T\mf{G}\,\mf{J}
-	\label{eq:ell_hessian}
+	\mf{H} = \mf{A} + \mf{J}^T\mf{G}\,\mf{J},
 \end{equation}
 which, since $\mf{A}\succ 0$, is strictly positive definite. Notice
 that to compute the required gradient and Hessian, we need analytical expressions
@@ -145,10 +142,10 @@ that $\nabla^2 \ell_p(\mf{v})$ exists so that the second-derivative is well-defi
 
 Defining $\ell(\alpha) = \ell_p(\mf{v}+\alpha\Delta\mf{v})$, we can compute first
 and second derivatives with respect to $\alpha$ using the gradient and Hessian
-\begin{eqnarray}
-	\frac{d\ell}{d\alpha}&=&\Delta\mf{v}^T\nabla_\mf{v}\ell(\alpha)\nonumber\\
-	\frac{d^2\ell}{d\alpha^2}&=&\Delta\mf{v}^T\nabla_\mf{v}^2\ell(\alpha)\Delta\mf{v}\nonumber
-\end{eqnarray}
+\begin{align*}
+	\frac{d\ell}{d\alpha}&=\Delta\mf{v}^T\nabla_\mf{v}\ell(\alpha),\\
+	\frac{d^2\ell}{d\alpha^2}&=\Delta\mf{v}^T\nabla_\mf{v}^2\ell(\alpha)\Delta\mf{v}.
+\end{align*}
 
 These derivatives are expensive to compute for general non-linear functions, and
 most line search variations in practice are approximations that avoid their
@@ -156,27 +153,27 @@ computation altogether. For $\ell_p$, we  show they can be
 computed efficiently.
 
 Using the gradients from Section \ref{sec:gradients}, we can write
-\begin{eqnarray}
-	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{v}^T\mf{A}(\mf{v}(\alpha)-\mf{v}^*)\\
-	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}^T\mf{J}^T\bgamma.
-\end{eqnarray}
+\begin{align*}
+	\frac{d\ell_M}{d\alpha}(\alpha)&=\Delta\mf{v}^T\mf{A}(\mf{v}(\alpha)-\mf{v}^*),\\
+	\frac{d\ell_R}{d\alpha}(\alpha)&=-\Delta\mf{v}^T\mf{J}^T\bgamma.
+\end{align*}
 These are computed efficiently by first calculating the change in velocity
 $\Delta\mf{v}_c:=\mf{J}\Delta\mf{v}$ and change of momentum $\Delta\mf{p} :=
 \mf{A}\Delta\mf{v}$. The calculation is then completed via 
-\begin{eqnarray}
-	\frac{d\ell_M}{d\alpha}(\alpha)&=&\Delta\mf{p}^T(\mf{v}(\alpha)-\mf{v}^*)\\
-	\frac{d\ell_R}{d\alpha}(\alpha)&=&-\Delta\mf{v}_c^T\bgamma(\alpha)
-\end{eqnarray}
+\begin{align*}
+	\frac{d\ell_M}{d\alpha}(\alpha)&=\Delta\mf{p}^T(\mf{v}(\alpha)-\mf{v}^*),\\
+	\frac{d\ell_R}{d\alpha}(\alpha)&=-\Delta\mf{v}_c^T\bgamma(\alpha),
+\end{align*}
 which only require dot products that can be computed in $\mathcal{O}(n_v)$ and
 $\mathcal{O}(n_c)$ respectively.
 
 Using the same definitions, we can write simple expressions for the second
 derivatives as well
-\begin{eqnarray}
-	\frac{d^2\ell_M}{d\alpha^2}(\alpha)&=&\Delta\mf{v}^T\mf{A}\Delta\mf{v}=\Delta\mf{v}^T\Delta\mf{p}\\
-	\frac{d^2\ell_R}{d\alpha^2}(\alpha)&=&-\Delta\mf{v}_c^T
+\begin{align*}
+	\frac{d^2\ell_M}{d\alpha^2}(\alpha)&=\Delta\mf{v}^T\mf{A}\Delta\mf{v}=\Delta\mf{v}^T\Delta\mf{p},\\
+	\frac{d^2\ell_R}{d\alpha^2}(\alpha)&=-\Delta\mf{v}_c^T
 	\nabla_{\mf{v}_c}\bgamma\Delta\mf{v}_c.
-\end{eqnarray}
+\end{align*}
 Notice that $\frac{d^2\ell_M}{d\alpha^2}$ is independent of $\alpha$ and
 can be precomputed before the line search, and
 $\frac{d^2\ell_R}{d\alpha^2}$ only involves $\mathcal{O}(n_c)$ operations given
@@ -265,7 +262,7 @@ formed by a set of disconnected surfaces. Figure (\ref{fig:sparsity_example})
 labels trees and patches and shows the corresponding graph where the nodes are
 the trees and the edges are the contact patches.
 
-Recall from Eq. (\ref{eq:ellR_hessian}) that $\mf{G} =
+Recall that $\mf{G} =
 -\nabla_{\mf{v}_c}\bgamma$ is a block diagonal matrix, with $\vf{G}_i =
 \nabla_{\vf{v}_{c,i}}\bgamma_i \in \mathbb{R}^{3\times 3}$ at the $i\text{-th}$
 diagonal block. We can also write this as $\mf{G} = \text{diag}(\mf{G}_p)$ if we
@@ -326,12 +323,11 @@ optimizations for dense algebra.
 \subsection{Stopping Criteria}
 \label{sec:stopping_criteria}
 
-To assess convergence, we monitor the optimality condition for the unconstrained
-problem in Eq. (\ref{eq:primal_unconstrained}) by evaluating the norm of the
-momentum balance in Eq. (\ref{eq:primal_gradient})
-\begin{equation}
+To assess convergence, we monitor the norm of optimality condition for the
+unconstrained problem (\ref{eq:primal_unconstrained})
+\begin{equation*}
 	\nabla\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma.
-\end{equation}
+\end{equation*}
 
 Notice that the components of $\nabla\ell_p$ have units of generalized momentum
 $\mf{p}=\mf{M}\mf{v}$. Depending on the choice of generalized coordinates, the

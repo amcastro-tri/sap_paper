@@ -23,20 +23,18 @@ using scalar parameters $\theta_q$, $\theta_v$, and $\theta_{vq}$
 \begin{align}
 	\mf{q}^{\theta_q} &= \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
 	\mf{v}^{\theta_v} &= \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
-	\mf{v}^{\theta_{vq}} &= \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0.
+	\mf{v}^{\theta_{vq}} &= \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0,
 	\label{eq:theta_method}
 \end{align}
 where, to simplify notation, we use $(\mf{q}_0, \mf{v}_0)$ to denote the state
 at $t^n$ and $(\mf{q}, \mf{v})$ to denote the state at $t^{n+1}$.
-\RedHighlight{TODO: make a pass to eliminate equation numbers for unreferenced
-equations.}
 
 Using these mid-step quantities, we write an approximation for the mean
 generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as
-\begin{equation}
+\begin{equation*}
 	\bar{\vf{\tau}} = \mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))+
 	\mf{G}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
-\end{equation}
+\end{equation*}
 where we split the forces into two contributions $\mf{F}$ and $\mf{G}$ so that
 the Jacobians $\partial \mf{F}/\partial\mf{q}$ and $\partial
 \mf{F}/\partial\mf{v}$ are negative definite matrices while the same is
@@ -136,9 +134,9 @@ order as shown by the following result, proved in Appendix
 \begin{prop}	
 Matrix $\mf{A}$ is a first order approximation to the Jacobian of $\mf{m}$,
 i.e.,
-\begin{align}
+\begin{align*}
 	\left. \frac{\partial \mf{m}}{\partial \mf{v}} \right|_{\mf{v}=\mf{v}^*} = \mf{A} + \mathcal{O}(\delta t).
-\end{align}
+\end{align*}
 Therefore, Eq. (\ref{eq:momentum_linearized}) is a second order approximation of
 the discrete balance of momentum in Eq. (\ref{eq:v_update}). Moreover, $\mf{A}
 \succ 0$.

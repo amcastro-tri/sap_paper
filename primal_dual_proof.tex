@@ -1,12 +1,10 @@
 The Lagrangian of the primal formulation in Eq. (\ref{eq:primal_regularized}) is
 \begin{equation}
     \mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = 
-\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g}
-    \label{eq:primal_lagrangian}
+\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g},
 \end{equation}
 with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
-$\vf{g}\in \mathcal{F}^*$. Minimizing the Lagrangian in
-\eqref{eq:primal_lagrangian} jointly in variables $\mf{v}$ and $\bsigma$ leads
+$\vf{g}\in \mathcal{F}^*$. Minimizing the Lagrangian jointly in variables $\mf{v}$ and $\bsigma$ leads
 to the optimality conditions
 \begin{subequations}\label{eq:primal_optimality_conditions}
 \begin{align}
@@ -18,12 +16,12 @@ The optimality condition \eqref{eq:momentum_optimality} reveals that the
 multipliers $\bgamma$ are indeed the contact impulses, and we recover the
 balance of momentum. The optimality condition \eqref{eq:sigma_equal_gamma}
 allows us to eliminate $\vf{\sigma}$. We then substitute these results back into
-the Lagrangian in \eqref{eq:primal_lagrangian} to recover the dual in
+the Lagrangian to recover the dual in
 \eqref{eq:dual_regularized}
 \begin{align*}
     \min_{\bgamma\in \mathcal{F}} \ell_d(\bgamma) =
     \frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
-    \bgamma
+    \bgamma,
 \end{align*}
 where, in contrast to previous work, our Delassus operator
 $\mf{W}=\mf{J}\mf{A}^{-1}\mf{J}^T$ now also contains the contribution of

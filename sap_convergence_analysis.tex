@@ -22,7 +22,7 @@ provided by the positive definite matrix $\mf{A}$ in Eq. \eqref{eq:primal_uncons
  and the Lipschitz continuity of its gradient map (Theorems 5.3-i 6.1-i of~\cite{bib:delfour2011shapes})
  combined with the identity
 \[
-  \dist^2_{\coneName^\circ}(x) = \|P_{\coneName}(x)\|_{\mf{R}}^2
+  \dist^2_{\coneName^\circ}(x) = \|P_{\coneName}(x)\|_{\mf{R}}^2,
 \] 
 for any closed, convex cone $\coneName$. Here 
 the distance and projection functions are with respect to the
@@ -119,7 +119,7 @@ and $S(\vx_0)$ denote the sub-level set $\{ \vx \in \mathbb{R}^n: f(\vx) \le f(\
   \begin{proof}
     Dropping the subscript $m$ from $(\vx_m, t_m, \vd_m)$, we first observe that
 \[
-f(\vx+t\vd) \le f(\vx) + \langle \nabla f(\vx), \vd \rangle t + \frac{L}{2}\|\vd\|^2 t^2
+f(\vx+t\vd) \le f(\vx) + \langle \nabla f(\vx), \vd \rangle t + \frac{L}{2}\|\vd\|^2 t^2,
 \]
 by Lipschitz continuity.  Substituting $\vd =- \mf{H}^{-1}  \nabla  f(\vx)$ gives
 \[
@@ -155,11 +155,11 @@ Hence,
 \]
 Subtracting $f_*$ from both sides and factoring shows
 \[
-  f(\vx + t \vd)  - f_* \le  (1-\frac{\mu}{\sigma^2 L})(f(\vx) - f_*)
+  f(\vx + t \vd)  - f_* \le  (1-\frac{\mu}{\sigma^2 L})(f(\vx) - f_*).
 \]
 It follows that each iteration $m$ satisfies
 \[
-  f(\vx_{m+1}) - f_* \le  (1-\frac{\mu}{\sigma^2 L})^{m}(f(\vx_{0}) - f_*)
+  f(\vx_{m+1}) - f_* \le  (1-\frac{\mu}{\sigma^2 L})^{m}(f(\vx_{0}) - f_*).
 \]
 Since $\sigma \ge 1$ and $L \ge \mu$, the iterations converge, and the proof is completed.
   \end{proof}
@@ -195,7 +195,7 @@ the optimum $\vx_*$.
 
   To begin, we have, by strong convexity, that
   \begin{equation}
-    \beta \ge f(\vx) \ge f(\vx_*)  + \frac{\mu}{2} \|\vx-\vx_*\|^2
+    \beta \ge f(\vx) \ge f(\vx_*)  + \frac{\mu}{2} \|\vx-\vx_*\|^2,
     \label{eq:strong_convexity_at_differentiable_optimal}
   \end{equation}
     for all $\vx \in \Omega_{\beta}$.
@@ -214,7 +214,7 @@ the optimum $\vx_*$.
     \|\vx_{m+1} - \vx_*\|^2&\le \frac{2}{\mu} ( f(\vx_{m+1}) - f(\vx_*)) \\
                     &= \frac{2}{\mu} ( f(\vx_m + t_m \vd_m   ) - f(\vx_*)) \\
                     &\le \frac{2}{\mu} ( f(\vx_m + \vd_m   ) - f(\vx_*)) \\
-                    &\le \frac{2}{\mu} L \|\vx_m + \vd_m - \vx_*\|^2
+                    &\le \frac{2}{\mu} L \|\vx_m + \vd_m - \vx_*\|^2,
   \end{align*}
     where the first line uses strong convexity,
     the third exact line search, and the last

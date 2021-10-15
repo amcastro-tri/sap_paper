@@ -41,24 +41,24 @@ done in \cite{bib:todorov2011}. Choosing the time scale of the contact to be
 $T_n = \beta \delta t$ with $\beta \le 1$, we model inelastic contact with a dissipation
 that leads to a critically damped oscillator, or $\zeta=1$. This dissipation is
 $\tau_d=2\zeta/\omega_n$, or in terms of the time step,
-\begin{equation}
+\begin{equation*}
     \tau_d=\frac{\beta}{\pi}\delta t.
-\end{equation}
+\end{equation*}
 
 Using the harmonic oscillator equations, we can estimate the value of stiffness
 from the frequency $\omega_n$ as $k=4\pi^2 m/(\beta^2 \delta t^2)$. Since
 $\tau_d\approx\delta t$, $R_n^{-1} = \delta t k(\delta t+\tau_d) \approx \delta
 t^2k$, and we estimate the regularization parameter as
-\begin{equation}
+\begin{equation*}
 	R_n = \frac{\beta^2}{4\pi^2}\text{w},
-\end{equation}
+\end{equation*}
 where we defined $\text{w}=1/m$.
 
 It is useful to estimate the amount of penetration for a point mass resting on
 the ground. In this case we have
 \begin{align*}
-	\phi &= \frac{mg}{k} \\
-	&= \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2\\
+	\phi &= \frac{mg}{k}, \\
+	&= \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2,\\
 	&= \frac{\beta^2}{4\pi^2}g\delta t^2.
 \end{align*}
 Taking $\beta=1.0$ and Earth's gravitational constant, a typical simulation
@@ -95,8 +95,8 @@ $\beta$. In all of our simulations, we use $\beta=1.0$.
 Given that our model regularizes friction, we are interested in estimating a bound on
 the slip velocity at stiction. We propose the following regularization for friction
 \begin{equation}
-    R_t = \sigma \text{w}
-    \label{eq:slip_time_scale}
+    R_t = \sigma \text{w},
+    \label{eq:tangential_regularization}
 \end{equation}
 where $\sigma$ is a dimensionless parameter.
 
@@ -105,10 +105,10 @@ consider once again a point of mass $m$ in contact with the ground under gravity
 for which $\text{w}\approx 1/m$. We push the particle with a horizontal force of magnitude
 $F=\mu\gamma_n$ so that friction is right at the boundary of the friction cone and
 the slip velocity due to regularization, $v_s$, is maximized. Then in stiction, we have
-\begin{equation}
-    \|\bgamma_t\| = \frac{v_s}{R_t} = \mu m g \delta t
-\end{equation}
-Using our proposed regularization in Eq. (\ref{eq:slip_time_scale}), we find
+\begin{equation*}
+    \|\bgamma_t\| = \frac{v_s}{R_t} = \mu m g \delta t.
+\end{equation*}
+Using our proposed regularization in Eq. (\ref{eq:tangential_regularization}), we find
 the maximum slip velocity
 \begin{equation}
     v_s \approx \mu\sigma g \delta t.
@@ -139,12 +139,11 @@ and avoid constraint drift. Therefore, we only need to verify this condition in
 the \emph{soft contact} regime, when time step $\delta t$ can properly resolve
 the contact dynamics, i.e. according to our criteria, when $\delta t < T_n$. In
 this regime, $R_n^{-1}\approx \delta t^2k$, and using Eq.
-(\ref{eq:slip_time_scale}) we have
-\begin{equation}
+(\ref{eq:tangential_regularization}) we have
+\begin{equation*}
     \frac{R_t}{R_n}\approx \sigma \delta t^2 \omega_n^2=4\pi^2\sigma\left(\frac{\delta t}{T_n}\right)^2
     \lesssim 4\pi^2\sigma
-    \label{eq:rtrn_ratio}
-\end{equation}
+\end{equation*}
 where in the last inequality we used the assumption that we are in the soft
 regime where $\delta t < T_n$. Since $\sigma \ll 1$ and in particular we
 use $\sigma=10^{-3}$ in all of our simulations, we see that $R_t/R_n \ll

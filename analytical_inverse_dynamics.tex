@@ -19,14 +19,13 @@ cone $\mathcal{F}_{i}$ individually. To ease notation, we drop the contact subin
 To begin, we let $\tilde{\bgamma}=\vf{R}^{1/2}\bgamma$ and
 $\tilde{\vf{y}}=\vf{R}^{1/2}\vf{y}$ to rewrite $P_{\mathcal{F}}(\vf{y})$ as
 \[
-  P_{\mathcal{F}}(\vf{y}) = \mf{R}^{-1/2} \argmin_{\tilde \bgamma\in \mf{R}^{1/2} \mathcal{F}} \frac{1}{2}\Vert\tilde\bgamma-\tilde{\vf{y}} \Vert_2^2
+  P_{\mathcal{F}}(\vf{y}) = \mf{R}^{-1/2} \argmin_{\tilde \bgamma\in \mf{R}^{1/2} \mathcal{F}} \frac{1}{2}\Vert\tilde\bgamma-\tilde{\vf{y}} \Vert_2^2.
 \]                                                                               
 Observing that $\mf{R}^{1/2} \mathcal{F} = \tilde{\mathcal{F}}$ for $\tilde \mu =\mu\,(R_t/R_n)^{1/2}$,
 we conclude that
-\begin{eqnarray}
-  P_\mathcal{F}(\vf{y})=\vf{R}^{-1/2} P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}})
-	\label{eq:local_optimization_problem_tilde}
-\end{eqnarray}
+\begin{eqnarray*}
+  P_\mathcal{F}(\vf{y})=\vf{R}^{-1/2} P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}),
+\end{eqnarray*}
 where $P_{\tilde{\mathcal{F}}} : \mathbb{R}^3 \rightarrow \mathbb{R}^3$ denotes Euclidean projection onto $\tilde{\mathcal{F}}$.
 
 A simple piecewise formula for evaluating $P_{\tilde{\mathcal{F}}}$ is obtained
@@ -44,13 +43,11 @@ $\hat{\vf{t}}=\tilde{\vf{y}}_t/\Vert\tilde{\vf{y}}_t\Vert=\vf{y}_t/\Vert\vf{y}_t
 $\tilde{\bgamma}=(\tilde{\vf{y}}\cdot\hat{\vf{f}})\hat{\vf{f}}$. After some algebraic manipulation we have that 
 $P_{\tilde{\mathcal{F}}}(\tilde{\vf{y}}) = [\tilde{\bgamma}_t, \tilde{\gamma}_n]$,
 where
-\begin{align}\label{eq:ProjectionFormula}
-\begin{aligned}
-  \tilde{\bgamma}_t       &= \tilde{\mu}\tilde{\gamma}_n\hat{\vf{t}}\\
+\begin{align*}
+  \tilde{\bgamma}_t       &= \tilde{\mu}\tilde{\gamma}_n\hat{\vf{t}},\\
         \tilde{\gamma}_n  &= \frac{1}{1+\tilde{\mu}^2}\left(\tilde{y}_n +
-	\tilde{\mu}\tilde{y}_r\right)
-\end{aligned}
-\end{align}
+	\tilde{\mu}\tilde{y}_r\right),
+\end{align*}
 where $\tilde{y}_r=\Vert\tilde{\vf{y}}_t\Vert$. Note that this formula is
 well-defined on $\mathcal{R}_{II}$, since $\vf{y}_t = \vf{0}$ only if $\vf{y}$ is lies in regions $\mathcal{R}_{I}$ or $\mathcal{R}_{III}$.
 \begin{figure}[!h]

@@ -15,15 +15,14 @@ Dropping subscript $i$ for simplicity, we solve the projection problem in Eq.
 (\ref{eq:y_projection}) analytically in Appendix
 \ref{app:analytical_inverse_dynamics_derivations} for a regularization matrix of
 the form
-\begin{align}	
+\begin{align*}	
 	\vf{R} = \text{diag}([R_t, R_t, R_n]) = 
 	\begin{bmatrix}
 		R_t &   0 & 0\\
 		  0 & R_t & 0\\
 		  0 &   0 & R_n
 	\end{bmatrix}.
-    \label{eq:Rk}
-\end{align} 
+\end{align*} 
 
 The solution to  Eq. (\ref{eq:y_projection}) can be written as
 \begin{eqnarray}
@@ -57,22 +56,21 @@ $\tilde\mu=\mu\,(R_t/R_n)^{1/2}$ and $\hat\mu=\mu\,R_t/R_n$ that
 result from the \textit{warping} introduced by the metric $\vf{R}$.
 
 Our compliant model of contact is defined by
-\begin{eqnarray}
+\begin{eqnarray*}
 	\hat{\vf{v}}_c &=&
 	\begin{bmatrix}
 		0\\
 		0\\
-		\hat{v}_n \end{bmatrix}\nonumber\\
-	\hat{v}_n &=& -\frac{\phi_0}{\delta t+\tau_d}
-\end{eqnarray}
+		\hat{v}_n \end{bmatrix}\nonumber,\\
+	\hat{v}_n &=& -\frac{\phi_0}{\delta t+\tau_d},
+\end{eqnarray*}
 where $\phi_0$ is the previous step signed distance. The normal direction
-regularization parameters in Eq. (\ref{eq:Rk}) is taken as $R_n^{-1} = \delta t
+regularization parameters is taken as $R_n^{-1} = \delta t
 k(\delta t+\tau_d)$. To gain physical insight into our model, we substitute
 $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 (\ref{eq:analytical_y_projection}) to obtain
-\begin{align}
-	&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))
-    \label{eq:gamma_analytical_from_vc}\\
+\begin{align*}
+	&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))\\
 &=\begin{dcases}
 	% Region I, stiction
 	\begin{bmatrix}
@@ -95,16 +93,16 @@ $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 	%
 	% Region III, no contact.  y_n \leq -\mu \frac{R_t}{R_n} y_r
     \vf{0} & \text{no contact, } \end{dcases}\nonumber	
-\end{align}
+\end{align*}
 where $\phi= \phi_0 + \delta t\,v_n$. Let us now analyze the resulting forces
 from this model.
 
 \subsection{Friction Forces}
-From Eq. (\ref{eq:gamma_analytical_from_vc}) we see that friction forces behave
+We see that friction forces behave
 exactly as a model of regularized friction
-\begin{equation}
-	\bgamma_t = \min\left(\frac{\Vert\vf{v}_t\Vert}{R_t}, \mu\gamma_n\right)\hat{\vf{t}}
-\end{equation}
+\begin{equation*}
+	\bgamma_t = \min\left(\frac{\Vert\vf{v}_t\Vert}{R_t}, \mu\gamma_n\right)\hat{\vf{t}},
+\end{equation*}
 with $\bgamma_t$ linear to the (very small) slip velocity during stiction and
 with a maximum value given by $\mu\gamma_n$, effectively modeling Coulomb
 friction. Notice that to better model stiction, we are interested in small
@@ -118,9 +116,9 @@ satisfy the principle of maximum dissipation as desired.
 \subsection{Normal Forces}
 We observe that in stiction, normal forces model compliance with linear
 stiffness $k$ and linear dissipation $c = \tau_d k$. That is
-\begin{equation}
+\begin{equation*}
     \gamma_n/ \delta t = -k\phi - c v_n.
-\end{equation}
+\end{equation*}
 
 In the sliding region, however, we see that the convex approximation introduces
 unphysical artifacts. 
@@ -137,9 +135,9 @@ Secondly, while we'd like to recover $\gamma_n = -\delta t(k\phi + c v_n)$ as in
 stiction, we instead see that the slip velocity $\vf{v}_t$
 unphysically couples into the normal forces as $\gamma_n=-\delta
 t(k(\phi-(\delta t+\tau_d)\mu\Vert\vf{v}_t\Vert) + cv_n)$. We can write this as
-\begin{equation}
-  \gamma_n/\delta t=-(k\phi_\text{eff} + c v_n)
-\end{equation}
+\begin{equation*}
+  \gamma_n/\delta t=-(k\phi_\text{eff} + c v_n),
+\end{equation*}
 with an \textit{effective} signed distance $\phi_\text{eff} = \phi-(\delta
 t+\tau_d)\mu\Vert\vf{v}_t\Vert$. That is, we recover the dynamics of compliant
 contact but with a spurious drift of magnitude 

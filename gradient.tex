@@ -2,7 +2,7 @@ We will start by taking derivatives of the regularizer term $\ell_R$. First we
 notice that we can write this term as
 \begin{equation*}
 	\ell_R = \frac{1}{2}\Vert\bgamma\Vert_{R}^2 = 
-	\sum_i \ell_{R_i}
+	\sum_i \ell_{R_i},
 \end{equation*}
 with $\ell_{R_i}=1/2\Vert\bgamma_i\Vert_{R_i}^2$. Therefore computing
 derivatives of $\ell_R$ can be performed by taking derivatives of each
@@ -55,19 +55,17 @@ $\nabla_\vf{y}\ell_R$ while the full Hessian matrix is block-diagonal with each
 $3\times 3$ block containing the local $i\text{-th}$ point Hessian.
 
 We use the following identities to simplify expressions
-\begin{eqnarray}
-	\frac{\partial y_r}{\partial\vf{y}_t} &=& \hat{\vf{t}}\nonumber\\
-	\frac{\partial \hat{\vf{t}}}{\partial\vf{y}_t} &=&
-	\frac{\vf{P}^\perp(\hat{\vf{t}})}{y_r}
-	\label{eq:yt_derivatives}
-\end{eqnarray}
+\begin{align*}
+	\frac{\partial y_r}{\partial\vf{y}_t} &= \hat{\vf{t}}\nonumber,\\
+	\frac{\partial \hat{\vf{t}}}{\partial\vf{y}_t} &=
+	\frac{\vf{P}^\perp(\hat{\vf{t}})}{y_r},
+\end{align*}
 where the $2\times 2$ projection matrices along and perpendicular to
 $\hat{\vf{t}}$ are defined as
-\begin{eqnarray}
-	\vf{P}(\hat{\vf{t}}) &=& \hat{\vf{t}}\otimes\hat{\vf{t}}\nonumber\\
-	\vf{P}^\perp(\hat{\vf{t}})&=&\vf{I}_2 - \vf{P}(\hat{\vf{t}})
-	\label{eq:tangential_projections}
-\end{eqnarray}
+\begin{align*}
+	\vf{P}(\hat{\vf{t}}) &= \hat{\vf{t}}\otimes\hat{\vf{t}}\nonumber,\\
+	\vf{P}^\perp(\hat{\vf{t}})&=\vf{I}_2 - \vf{P}(\hat{\vf{t}}).
+\end{align*}
 
 Taking the gradient of Eq. (\ref{eq:ell_R_piecewise}) results in
 \begin{align}
@@ -141,17 +139,17 @@ $\vf{H}_R(\vf{y})\succeq 0$.
 \subsection{Gradients with Respect to Velocities}
 These gradients are computed using the chain rule and the definition of $\mf{y}$
 \begin{equation*}
-	\mf{y}=-\mf{R}^{-1}(\mf{J}\mf{v} - \hat{\mf{v}}_c)
+	\mf{y}=-\mf{R}^{-1}(\mf{J}\mf{v} - \hat{\mf{v}}_c).
 \end{equation*}
 
 Therefore the gradient in terms of velocities is
 \begin{equation}
-	\nabla_\mf{v}\ell_R = -\mf{J}^T\mf{R}^{-1}\nabla_\mf{y}\ell_R
+	\nabla_\mf{v}\ell_R = -\mf{J}^T\mf{R}^{-1}\nabla_\mf{y}\ell_R,
 	\label{eq:ell_velocity_gradient}
 \end{equation}
 which, using Eq. (\ref{eq:gradient_ell_R_piecewise}), can be written as
 \begin{equation}
-	\nabla_\mf{v}\ell_R = -\mf{J}^T\bgamma
+	\nabla_\mf{v}\ell_R = -\mf{J}^T\bgamma,
 	\label{eq:ell_velocity_gradient_simplified}
 \end{equation}
 
@@ -159,8 +157,8 @@ At points of differentiability, we obtain the Hessian of the regularizer
 $\ell_R(\mf{v})$ from the gradients of $\bgamma(\mf{v})$ in Eq.
 \eqref{eq:ell_velocity_gradient_simplified}
 \begin{eqnarray}
-	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber\\
-	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1}
+	\nabla_\mf{v}^2\ell_R(\mf{v}) &=& \mf{J}^T\mf{G}\,\mf{J}\nonumber,\\
+	\mf{G} &=&-\nabla_{\mf{v}_c}\bgamma = \nabla_\mf{y}\bgamma \mf{R}^{-1},
 	\label{eq:ellR_hessian}
 \end{eqnarray}
 where $\nabla_{\mf{v}_c}\!\bgamma$ is a block diagonal matrix where each
@@ -168,10 +166,9 @@ diagonal block is the $3\times 3$ matrix $\nabla_{\mf{v}_{c,i}}\!\bgamma_i$
 for the $i\text{-th}$ contact.
 
 Alternatively, taking the gradient of Eq. \eqref{eq:ell_velocity_gradient} leads to the equivalent result
-\begin{equation}
-	\nabla_\mf{v}^2\ell_R = \mf{J}^T\mf{R}^{-1}\nabla_\mf{y}^2\ell_R\mf{R}^{-1}\mf{J}
-	\label{eq:ell_velocity_hessian}
-\end{equation}
+\begin{equation*}
+	\nabla_\mf{v}^2\ell_R = \mf{J}^T\mf{R}^{-1}\nabla_\mf{y}^2\ell_R\mf{R}^{-1}\mf{J},
+\end{equation*}
 and since we already showed $\nabla_\mf{y}^2\ell_R\succeq 0$, it follows that
 $\nabla_\mf{v}^2\ell_R\succeq 0$.
 
@@ -184,22 +181,22 @@ non-differentiability.
 \subsection{Gradients of the Primal Cost}
 With these results, we can now write the gradient $\nabla_\vf{v}\ell_p$ and weighting matrix $\mf{H}$ in Algorithm \ref{alg:sap}. For the gradient we
 have
-\begin{equation}
-	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R
-\end{equation}
+\begin{equation*}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) + \nabla_\mf{v}\ell_R.
+\end{equation*}
 
 Notice that, using Eq. (\ref{eq:ell_velocity_gradient_simplified}), the gradient
 can be written as
-\begin{equation}
-	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma
-\end{equation}
+\begin{equation*}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma,
+\end{equation*}
 and since the unconstrained minimization looks for $\nabla_\mf{v}\ell_p=\mf{0}$,
 we essentially recover the balance of momentum, as expected.
 
 Similarly, we can write the weighting matrix $\mf{H}$ as
-\begin{equation}
-	\mf{H} = \mf{A} + \mf{H}_R
-\end{equation}
+\begin{equation*}
+	\mf{H} = \mf{A} + \mf{H}_R,
+\end{equation*}
 which returns the Hessian of $\ell_p(\vf{v})$ when the gradient is
 differentiable and extends the analytical expressions at points of
 non-differentiability. Since $\mf{A}\succ 0$ and $\mf{H}_R \succeq 0$, we have

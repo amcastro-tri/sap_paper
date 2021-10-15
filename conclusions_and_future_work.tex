@@ -19,9 +19,8 @@ does not linearize the friction cone but it works with the second order cone
 constraints directly.
 
 We presented SAP, a robust and performant open source solver for this formulation that
-warm-starts very effectively in practice. SAP provides global convergence guarantees
-from any initial guess with worst case linear convergence and quadratic
-convergence when additional smoothness conditions are satisfied. We showed that SAP
+warm-starts very effectively in practice. SAP 
+globally convergences at least at a linear-rate and exhibits quadratic convergence when when additional smoothness conditions are satisfied. We showed that SAP
 exhibits these two convergence regimes in simulations of practical relevance. We
 provided thorough details for implementation, including analytical
 formulae for gradients and Hessian, sparsity analysis and custom line-search.

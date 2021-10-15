@@ -13,7 +13,7 @@ these projections take the form
   \begin{aligned}
 	\bgamma_i(\vf{v}_{c,i})&= P_{\mathcal{F}_i}(\vf{y}_i(\vf{v}_{c,i}))\\
 	&= \argmin_{\bgamma\in\mathcal{F}_i} \quad 
-		\frac{1}{2}(\bgamma-\vf{y}_i)^T\vf{R}_i(\bgamma-\vf{y}_i)\\
+		\frac{1}{2}(\bgamma-\vf{y}_i)^T\vf{R}_i(\bgamma-\vf{y}_i),\\
 	\end{aligned}
 	\label{eq:y_projection}
 \end{equation}
@@ -40,7 +40,7 @@ formulation. In total, we obtain the following unconstrained problem
 in velocities only
 \begin{eqnarray}
 	\min_{\mf{v}} \ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
-	\frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2
+	\frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2.
 	\label{eq:primal_unconstrained}
 \end{eqnarray}
 Correctness of this reformulation is asserted by the following theorem, 
