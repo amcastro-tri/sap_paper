@@ -138,7 +138,7 @@ our multibody systems as a collection of articulated \emph{tree structures}, or
 a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{figures/sparsity_example.png}
+	\includegraphics[width=0.9\columnwidth]{figures/schematics/sparsity_example.png}
 	\caption{\label{fig:sparsity_example} 
 	An example of a sparsity pattern commonly encountered in the
 	simulation of robotic mechanical systems. The graph on the right puts
@@ -159,32 +159,10 @@ correspond to trees and edges correspond to patches.
 
 Generally, the Jacobian is sparse since the relative contact velocity only
 involves velocities of two trees in contact. When rows are condensed by patches
-and columns by trees, the Jacobian exhibits a sparse block structure. For the
-example in Fig.~\ref{fig:sparsity_example}, the Jacobian looks
-like\\\\
-\begin{equation}
-	\mf{J}=\quad
-	\begin{bmatrix}
-		\tikzmark{J_topleft}\mf{0} & 
-		\mf{0} & \mf{0} & \mf{J}_{\rr{1}\cc{4}}\tikzmark{J_topright}\\		
-		\mf{0} & \mf{J}_{\rr{2}\cc{2}} & \mf{0} & \mf{0}\\
-		\mf{J}_{\rr{3}\cc{1}} & \mf{0} & \mf{0} & \mf{0}\\
-		\mf{J}_{\rr{4}\cc{1}} & \mf{0} & \mf{J}_{\rr{4}\cc{3}} & \mf{0}\\
-		\tikzmark{J_bottomleft}
-		\mf{0} & \mf{J}_{\rr{5}\cc{2}} & \mf{J}_{\rr{5}\cc{3}} & \mf{0}		
-	\end{bmatrix}
-% Draw lil arrows on top and to the left.
-\tikz[overlay,remember picture] {
-	\draw[->,thick,color=cyan]
-  ([yshift=3ex]J_topleft) -- ([yshift=3ex]J_topright) node[midway,above]
-  {\scriptsize $t$}; 
-  \draw[->,thick,color=red]
-  ([yshift=1.5ex,xshift=-3ex]J_topleft) -- ([xshift=-3ex]J_bottomleft)
-  node[near end,left] {\scriptsize $p$};}	
-\end{equation}
-\RedHighlight{Consider making this part of Fig. \ref{fig:sparsity_example}}\\
-where each non-zero block is the Jacobian $\mf{J}_{\rr{p}\cc{t}}$ of size
-$3r_p\times n_t$.
+and columns by trees, the Jacobian exhibits a sparse block structure. Figure
+\ref{fig:JTGJ_schematic} illustrates the Jacobian sparsity for the example in
+Fig.~\ref{fig:sparsity_example}, where each non-zero block is the Jacobian
+$\mf{J}_{pt}$ of size $3r_p\times n_t$.
 
 Finally, since $\mf{A}$ is block diagonal, $\mf{H}$ inherits the sparsity
 structure of $\mf{J}^T\mf{G}\mf{J}$. For our example, this is sketched in
@@ -195,10 +173,11 @@ factorization can take full advantage of specific optimizations for dense
 algebra.
 \begin{figure*}[!h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figures/JTGJ_schematic.png}
+	\includegraphics[width=0.9\textwidth]{figures/schematics/jacobian_and_JTGJ.png}
 	\caption{\label{fig:JTGJ_schematic} 
-	Block sparsity of the $\mf{J}^T\mf{G}\mf{J}$ for the example illustrated in
-	Fig. \ref{fig:sparsity_example}.}
+	Block sparsity of the contact Jacobian $\mf{J}$ and the Hessian term
+	$\mf{J}^T\mf{G}\mf{J}$, for the example illustrated in Fig.
+	\ref{fig:sparsity_example}.}
 \end{figure*}
 
 \subsection{Stopping Criteria}
