@@ -12,10 +12,9 @@
 \renewcommand\qedsymbol{$\IEEEQED$}
 
 Convergence of SAP is established
-by first showing crucial properties
-of the objective function 
-$\ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 + P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$.
-namely, it is  \emph{strongly convex},
+by first showing that the objective function 
+$\ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 + P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2$
+is \emph{strongly convex}
 and differentiable with \emph{Lipschitz continuous} gradients.  The
 former property is inherited from the positive-definite quadratic term 
 provided by the positive definite matrix $\mf{A}$ in Eq. \eqref{eq:primal_unconstrained}.  The latter is shown using differentiability of the squared-distance function
@@ -145,7 +144,8 @@ we conclude that
    f(\vx + t \vd) \le f(\vx) - \frac{1}{2\sigma^2 L}\| \nabla f(\vx) \|^2.
 \]
     On the other hand, letting $f_* = f(\vx_*)$ 
-    we have from strong convexity that
+    we have from strong convexity that the Polyak-Lojasiewicz
+    inequality holds:
     \[
   \|\nabla f(\vx)\|^2 \ge 2\mu (f(\vx)-f_* ).
     \]
@@ -176,9 +176,9 @@ the optimum $\vx_*$.
     \item SAP globally converges from all initial conditions.
     \item If $\nabla f(\vx)$  is differentiable on the ball $B(\vx_*, r) := \{ \vx :  \|\vx-\vx_*\| \le r\}$
   for some $r > 0$, then SAP exhibits quadratic convergence, i.e., for some finite
-  $M$ and $\beta > 0$
+  $M$ and $\zeta > 0$
   \[
-    \|\vx_m - \vx_*\| \le \beta \|\vx_{m+1} - \vx_*\|^2
+    \|\vx_m - \vx_*\| \le \zeta \|\vx_{m+1} - \vx_*\|^2
   \]
   for all $m > M$.
   \end{itemize}
