@@ -4,11 +4,13 @@ constraints, we obtain an unconstrained convex problem. Our solver has proven
 global convergence and warm-starts effectively, enabling simulation at
 interactive rates. We develop compact analytical expressions of contact forces
 allowing us to describe our model in clear physical terms and to rigorously
-characterize our approximations. Our time stepping scheme includes the midpoint
-rule, which we demonstrate achieves second order accuracy even with frictional
-contact. We introduce a number of accuracy metrics and show our method
-outperforms existing commercial and open source alternatives without sacrificing
-accuracy. Finally, we demonstrate robust simulation of robotic manipulation
-tasks at interactive rates, with accurately resolved stiction and contact
-transitions, as required for meaningful sim-to-real transfer. Our method is
-implemented in the open source robotics toolkit Drake.
+characterize our approximations. Moreover, this enables us not only to model
+point contact, but also to incorporate sophisticated models of compliant contact
+patches. Our time stepping scheme includes the midpoint rule, which we
+demonstrate achieves second order accuracy even with frictional contact. We
+introduce a number of accuracy metrics and show our method outperforms existing
+commercial and open source alternatives without sacrificing accuracy. Finally,
+we demonstrate robust simulation of robotic manipulation tasks at interactive
+rates, with accurately resolved stiction and contact transitions, as required
+for meaningful sim-to-real transfer. Our method is implemented in the open
+source robotics toolkit Drake.
