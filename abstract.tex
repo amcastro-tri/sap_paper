@@ -1,25 +1,14 @@
-We present a convex formulation of compliant frictional contact and a robust, 
+We present a convex formulation of compliant frictional contact and a robust,
 performant method to solve it in practice. By analytically eliminating contact
-constraints, we obtain an unconstrained convex problem over just velocities
-for which we prove our solver has global convergence. Specified by physical parameters, our model can be described in clear
-physical terms, rather than in abstract optimization-specific terminology. This permits not only the modeling of compliant point-contact, but also more sophisticated models of compliant surface patches 
-that are often needed for high-fidelity simulation. 
-Moreover, we provide explicit analytical
-expressions for contact forces as a function of state, which allows us to
-characterize artifacts introduced by the convex approximation in a novel and
-transparent way.
-Our time stepping scheme
-is based on the $\theta\text{-method}$, a common generalization
-of the popular symplectic Euler method and the second order
-midpoint rule. We demonstrate that the midpoint rule can achieve second order
-accuracy even with frictional contact. We introduce a number of accuracy metrics
-and show that our method outperforms existing commercial and open source
-alternatives without sacrificing accuracy.
-Effective warm-starting
-enables simulation at interactive rates of complex robotic manipulation systems
-with frictional contact among rigid and compliant objects. 
-Finally, we demonstrate robust
-simulation of robotic manipulation tasks at interactive rates, with accurately
-resolved stiction and contact transitions, as required for meaningful
-sim-to-real transfer. Our method is implemented in the open source robotics
-toolkit Drake.
+constraints, we obtain an unconstrained convex problem. Our solver has proven
+global convergence and warm-starts effectively, enabling simulation at
+interactive rates. We develop compact analytical expressions of contact forces
+allowing us to describe our model in clear physical terms and to rigorously
+characterize our approximations. Our time stepping scheme includes the midpoint
+rule, which we demonstrate achieves second order accuracy even with frictional
+contact. We introduce a number of accuracy metrics and show our method
+outperforms existing commercial and open source alternatives without sacrificing
+accuracy. Finally, we demonstrate robust simulation of robotic manipulation
+tasks at interactive rates, with accurately resolved stiction and contact
+transitions, as required for meaningful sim-to-real transfer. Our method is
+implemented in the open source robotics toolkit Drake.
