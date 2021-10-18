@@ -1,8 +1,4 @@
-We are interested in evaluating the properties of the schemes presented in
-Section \ref{sec:discrete_time_formulation} when used to simulate a mechanical
-system with frictional contact.
-
-To this end, we use the setup shown in Fig. \ref{fig:spring_cylinder}, consisting
+We model the setup shown in Fig. \ref{fig:spring_cylinder}, consisting
 of a cylinder of radius $R=0.05\text{ m}$ and mass $m=0.5\text{ kg}$ connected
 to a wall to its left by a spring of stiffness $k_s=100\text{ N}/\text{m}$.
 While the cylinder is free to rotate and translate in the plane, the contact
@@ -31,8 +27,7 @@ introduced by the implicit Euler scheme dissipates the initial energy in just a
 few periods of oscillation. For the symplectic Euler scheme, we observe in Fig.
 \ref{fig:frictionless_spring_cylinder_energy} that, while the energy is not
 conserved, it stays bounded, within a band 28\% peak-to-peak wide. The figure
-also confirms that the second order midpoint scheme conserves energy exactly for
-the spring-mass system. These are well known theoretical properties of these
+also confirms that the second order midpoint scheme conserves energy exactly. These are well known theoretical properties of these
 integration schemes when applied to the spring-mass system.
 \begin{figure}[!h]
     \centering
@@ -51,24 +46,20 @@ a periodic motion. Since now kinetic energy is split into translational and
 rotational components, the rolling cylinder behaves as a spring-mass system with
 an effective mass $m_\text{eff}=m+I_o/R^2$, with $I_o$ the rotational inertia of
 the cylinder about its center. Therefore the frequency of oscillation is slower
-and the same time step $\delta t=0.02\text{ s}$ as before now discretizes one
+and the same time step, $\delta t=0.02\text{ s}$, now discretizes one
 period of oscillation with about 27 steps.
 
-Total energy is shown in Fig. \ref{fig:spring_cylinder_energy}. As before, the
-implicit Euler scheme quickly dissipates the energy of the system. The
-symplectic Euler scheme now exhibits a smaller a peak-to-peak variation of 24\%.
-This is expected since now one one period of oscillation is resolved with 27
-steps instead of 22. With friction, the midpoint rule does not conserve energy
-exactly, but it does significantly better with a peak-to-peak variation of only
-0.16\%. While the ideal rolling contact does not dissipate energy, the
-regularized model of friction does dissipate energy given the slip velocity is
-never exactly zero, though small in the order of $\sim\sigma\mu\delta t g$ as shown
-in Section \ref{sec:physical_intuition}. The symplectic Euler scheme and the
-midpoint rule take $10$ minutes of simulated time and about $1000$ oscillations
-to dissipate 10\% of the total energy (see Fig. \ref{fig:spring_cylinder_energy}
-right). This level of numerical dissipation is remarkably low when compared to a
-real mechanical system with friction, considering that energy is also dissipated
-through other means in real life.
+Total energy is shown in Fig. \ref{fig:spring_cylinder_energy}. Solutions computed with the implicit
+Euler and the symplectic Euler schemes show similar trends to those in the frictionless
+case. The midpoint rule does not conserve energy exactly, but it does
+significantly better with a peak-to-peak variation of only 0.16\%. While the
+ideal rolling contact does not dissipate energy, the regularized model of
+friction does dissipate energy given the slip velocity is never exactly zero,
+though small in the order of $\sim\sigma\mu\delta t g$ as shown in Section
+\ref{sec:physical_intuition}. The symplectic Euler scheme and the midpoint rule
+take $10$ minutes of simulated time and about $1000$ oscillations to dissipate
+10\% of the total energy (Fig. \ref{fig:spring_cylinder_energy}, right). This
+level of numerical dissipation is remarkably low, considering that real mechanical systems often introduce several sources of dissipation.
 \begin{figure}[!h]
     \centering
     %trim={<left> <lower> <right> <upper>}
@@ -79,7 +70,7 @@ through other means in real life.
     in the first few periods of oscillation (left) and long term (right).}
 \end{figure}
 
-We also study the order of accuracy of our approach. We define the position error as the $L^2$-norm
+To study the order of accuracy of our approach, we define the $L^2$-norm position error as
 \begin{equation*}
     e_q = \left(\frac{1}{T}\int_0^T dt(x(t)-x_e(t))^2\right)^{1/2}
 \end{equation*}

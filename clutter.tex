@@ -1,14 +1,11 @@
-The purpose of this case is to evaluate robustness, convergence properties, and
-scalability of our SAP solver when compared against other existing methods.
 
-The setup consists of an open container with a square base of size
-$80~\text{cm}\times80~\text{cm}$ and $80~\text{cm}$ in height. Bodies are
-dropped into this container in four different columns with the same number of
-bodies each (see Fig. \ref{fig:clutter_snapshots}). Each column consists of an
+Objects are
+dropped into an $80~\text{cm}\times80~\text{cm}\times80~\text{cm}$ container in four different columns with the same number of
+objects each (see Fig. \ref{fig:clutter_snapshots}). Each column consists of an
 arbitrary assortment of spheres of radius $5~\text{cm}$ and boxes with sides of
-$10~\text{cm}$ in length. All bodies have density $1000\text{
-kg}/\text{m}^3$ and therefore each sphere has a mass of approximately
-$0.524\text{ kg}$ and each box has a mass of $1.0\text{ kg}$. We set a very high
+$10~\text{cm}$ in length. With a density of $1000\text{
+kg}/\text{m}^3$, spheres have a mass of
+$0.524\text{ kg}$ and boxes have a mass of $1.0\text{ kg}$. We set a very high
 contact stiffness of $k=10^{12}\text{ N}/\text{m}$ so that the model is in the
 \emph{near-rigid} regime. The dissipation time scale is set to equal the time
 step and the friction coefficient of all surfaces is $\mu=1.0$.
@@ -30,13 +27,12 @@ step and the friction coefficient of all surfaces is $\mu=1.0$.
 We first run our simulations with 10 bodies per column for a total of 40 bodies.
 We simulate 10 seconds using time steps of size $\delta t = 10\text{ ms}$.
 Number of solver iterations and wall-clock time per time step are reported in
-Fig. \ref{fig:clutter_w_walls_nb40} for the three solvers. We observe that SAP
+Fig. \ref{fig:clutter_w_walls_nb40}. We observe that SAP
 needs to perform a larger number of iterations during the very energetic initial
 transient. As the system reaches a steady state, however, SAP warm starts very
 effectively, performing only about $3$ iterations per time step. Even though
 SAP necessities a larger number of iterations to converge than Geodesic IPM during this initial transient, the wall-clock time per time step is very
-similar. This tells us that SAP's cost per iteration is lower than that of
-Geodesic IPM, even when they both use the same supernodal algebra. Unlike SAP and Geodesic IPM that benefit from warm start, we see that Gurobi performs
+similar. Unlike SAP and Geodesic IPM that benefit from warm start, we see that Gurobi performs
 about $9$ iterations per time step in both the initial transient and the steady state.
 \begin{figure}[!h]
 	\centering
@@ -47,8 +43,7 @@ about $9$ iterations per time step in both the initial transient and the steady 
 	Iterations and wall-clock time per time step for the clutter case with 40 bodies and with walls.}
 \end{figure}
 
-Figure \ref{fig:clutter_line_search} shows two examples of convergence history
-for the case with walls. We denote with $\ell^0$ to the cost evaluated at the
+Figure \ref{fig:clutter_line_search} shows two examples of convergence history. We denote with $\ell^0$ to the cost evaluated at the
 initial guess, the previous time step velocity. With $\ell_*$ we denote the
 optimal cost, which we approximate with its value from the last iteration. At
 step 60 during the initial transient for which SAP requires 21 iterations to
@@ -66,20 +61,17 @@ criteria within 5 iterations.
 
 \subsubsection{Scalability}
 
-We evaluate the performance of SAP with different problem sizes by varying the
-number of objects in the clutter with all other parameters held constant. We
-study scalability of the test case both with and without walls (see
-Fig. \ref{fig:clutter_snapshots}) as the variation in the setup leads to very
-different sequences of contact configuration. The size of the problems can be
+We evaluate the scalability of SAP by varying the
+number of objects in the clutter. We
+study the case with and without walls (see
+Fig. \ref{fig:clutter_snapshots}) as this variation leads to very
+different contact configurations and sparsity patterns. The size of the problems can be
 appreciated in Fig. \ref{fig:clutter_num_contats} showing the number of contact
 constraints at the end of the simulation when objects are in steady state
 against the number of objects. We observe a larger number of contacts for the
 configuration without walls since in this configuration many of the boxes spread
-over the ground and lay flat on one of their faces, leading to a multi-contact
-configuration (see Fig. \ref{fig:clutter_snapshots} for instance). Notice that
-each body contributes 6 DOFs and each contact constraint contributes 3 unknowns.
-Therefore, in the case with 200 bodies, the problem involves 1200 DOFs and about
-2700 contact unknowns for a total of about 3000 unknowns.
+over the ground and lay flat on one of their faces, leading to multi-contact
+configurations (see Fig. \ref{fig:clutter_snapshots}).
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/clutter/number_of_contacts.png}
@@ -88,8 +80,7 @@ Therefore, in the case with 200 bodies, the problem involves 1200 DOFs and about
 	simulation for setups with and without walls.}
 \end{figure}
 
-We measure the total time spent by each solver and define the \emph{speedup}
-against Gurobi. Figure \ref{fig:clutter_speedup} shows the speedup for both
+We define the \emph{speedup} against Gurobi as the ratio of the wall-clock time spent by a solver to the wall-clock time reported by Gurobi. Figure \ref{fig:clutter_speedup} shows the speedup for both
 SAP and Geodesic IPM in the configuration with and without walls.
 The setup with walls is particularly difficult given that objects are
 constrained to pile up, leading to a configuration in which almost all objects
@@ -143,14 +134,14 @@ condition. Gurobi does a good job at satisfying the complementarity slackness.
 However, it is the solver with the largest error in the momentum equations, even
 though both SAP and Geodesic IPM outperform Gurobi in most of the test cases.
 These metrics demonstrate that when SAP and Geodesic IPM outperform Gurobi, it
-is not at the cost of losing accuracy.
+is not at the expense of accuracy.
 \begin{figure}[!h]
 	\centering
     %trim={<left> <lower> <right> <upper>}
-    \adjincludegraphics[height=0.40\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_w_walls.png}
-	\adjincludegraphics[height=0.40\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_no_walls.png}\\
-    \adjincludegraphics[height=0.40\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_w_walls.png}
-    \adjincludegraphics[height=0.40\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_no_walls.png}
+    \adjincludegraphics[height=0.39\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_w_walls.png}
+	\adjincludegraphics[height=0.39\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_no_walls.png}\\
+    \adjincludegraphics[height=0.39\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_w_walls.png}
+    \adjincludegraphics[height=0.39\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_no_walls.png}
 	\caption{\label{fig:clutter_errors_w_wall} 
 	Momentum balance error $e_m$ (top) and complementarity condition error
 	$e_\mu$ (bottom) for the clutter case with walls (left) and without walls
@@ -158,14 +149,12 @@ is not at the cost of losing accuracy.
 \end{figure}
 
 \subsubsection{Slip Parameter}
-
 We study the effect of the slip parameter $\sigma$ in Eq.
-(\ref{eq:tangential_regularization}). As before, we use $\delta t = 10\text{ ms}$ and
-simulate 40 objects for 10 seconds to a steady state configuration. At this
-steady state at the end of the simulation, we compute the mean slip velocity
-among all contacts. Figure \ref{fig:clutter_sigma_vt} shows this mean slip
-velocity along with the estimated slip in Eq. (\ref{eq:slip_estimation}), $v_s
-\approx\sigma\mu\delta t g$, shown in dashed lines. We see that the mean slip
+(\ref{eq:tangential_regularization}). We use $\delta t = 10\text{ ms}$ and
+simulate with SAP 40 objects for 10 seconds to a steady state configuration. At this
+steady state, we compute the mean slip velocity
+among all contacts, shown in Fig. \ref{fig:clutter_sigma_vt} along with the estimated slip in Eq. (\ref{eq:slip_estimation}), $v_s
+\approx\sigma\mu\delta t g$. We see that the mean slip
 velocity remains below the estimated slip as expected in a static configuration
 with objects in stiction. In the case with walls where stiction helps to hold
 the steady state static configuration, we see that the mean slip velocity
@@ -178,8 +167,6 @@ slip velocity bound $v_s$ and objects in the configuration without walls can
 slowly drift into a configuration leading to more contacts. In particular, boxes
 are more likely to slowly drift until one of their faces lies flat
 on the ground, a configuration with zero slip once steady state is reached.
-Finally, we observe that when using $\sigma=10^{-3}$, the amount of slip is
-negligible for robotic applications.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/clutter/sigma_vt.png}
@@ -193,8 +180,7 @@ system. Figure \ref{fig:clutter_sigma} shows the condition number of the Hessian
 in the final configuration and the mean number of Newton iterations throughout
 the simulation. We see that the condition number scales as $\sigma^{-1}$ while
 the mean number of Newton iterations is roughly proportional to  $\ln(\sigma)$.
-Notice that our choice $\sigma=10^{-3}$ for this paper is placed right in the
-middle, in a log scale, of the range of values examined in this study.
+Our default choice $\sigma=10^{-3}$ is a good compromise between accurate stiction, performance and conditioning.
 \begin{figure}[!h]
 	\centering
     %trim={<left> <lower> <right> <upper>}

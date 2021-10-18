@@ -2,37 +2,30 @@
 \label{sec:test_cases}
 
 We evaluate the robustness, accuracy, and performance of our method in a number
-of simulation tests. All simulations are carried out in a system with 24 2.2
-GHz Intel Xeon cores (E5-2650 v4) and 128 GB of RAM, running Linux. For all
-solvers below however, all tests are run in a single thread.
+of simulation tests. All simulations are carried out in a system with 24 2.2 GHz
+Intel Xeon cores (E5-2650 v4) and 128 GB of RAM, running Linux. However, all of
+our tests are run in a single thread.
 
 For all of our simulations, unless otherwise specified, our model uses
-$\beta=1.0$ and $\sigma=10^{-3}$ for the regularization parameters in Eq. (\ref{eq:normal_regularization}) and Eq. (\ref{eq:tangential_regularization}), respectively.
-
-For SAP, tolerances for the stopping criteria are set to
-$\varepsilon_a=10^{-16}$ and $\varepsilon_r=10^{-5}$. While the other solvers we use below use different stopping criteria, we use the same performance and accuracy metrics for all of them in order to perform a fair comparison.
+$\beta=1.0$ and $\sigma=10^{-3}$ for the regularization parameters in Eq.
+(\ref{eq:normal_regularization}) and Eq. (\ref{eq:tangential_regularization}),
+respectively.
 
 \subsection{Performance Comparisons Against Other Solvers}
 \label{sec:about_solvers}
 
-We evaluate commercial software Gurobi and Mosek to solve our convex
-formulation of contact. Both solvers can solve a large variety of optimization
-problems and are considered the industry standard. However, Mosek is not robust
-for these problems and does not always find a solution. Therefore, we only present
-comparison results with Gurobi.
-
-As an open source option, we evaluate the Geodesic interior-point methods (IPM)
+We evaluate commercial software Gurobi, considered an industry standard, to
+solve our primal formulation \eqref{eq:primal_regularized}. As an open source option, we evaluate the Geodesic interior-point method (IPM)
 from \cite{bib:permenter2020}. Geodesic IPMs, in contrast with primal-dual
 IPMs, do not apply Newton's method to the central-path conditions directly.
 Instead, they use geodesic curves that satisfy the complementarity slackness
-condition. This method has proven to warm start effectively when applied to
-Model Predictive Control Problems \cite{bib:permenter2020} and therefore we are
-interested in evaluating its performance for solving our convex formulation of
-contact. Moreover, we use the Geodesic IPM solver's supernodal algebra described
-in Section \ref{sec:problem_sparsity} in our implementation of SAP. Using the
-same algebra for SAP and Geodesic IPM allows us to perform a fair comparison between
-the two solvers; performance differences can be attributed to the properties
-inherent to the optimization method instead of the differences in the linear
+condition. Geodesic IPM is an interesting alternative shown to be very effective
+in the solution of Model Predictive Control Problems \cite{bib:permenter2020}.
+Moreover, we use Geodesic IPM's supernodal algebra in our implementation of SAP,
+see Section \ref{sec:problem_sparsity}. Using the same
+algebra for SAP and Geodesic IPM allows us to perform a fair comparison between
+the two solvers; performance differences can be attributed to properties
+inherent to the optimization method rather than to differences in the linear
 algebra operations.
 
 For performance comparisons, we use the steady clock from the STL
