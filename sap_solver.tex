@@ -20,9 +20,10 @@ Inspired by Newton's method, our Semi-Analytic Primal Solver (SAP) seeks to mono
 \end{algorithm}
 
 The SAP iterations require $\mf{H}(\mf v)\succ 0$ at all iterations.  At points
-of differentiability, $\mf{H}(\mf v)$ is simply set equal to the Hessian of the
+where $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable, $\mf{H}(\mf v)$ is
+simply set equal to the Hessian of the
 cost function. In general, $\mf{H}(\mf v)$ is evaluated using a partition of its
-domain. For each set in the partition, the gradient is differentiable on the
+domain. For each set in the partition, $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable on the
 interior, and the Hessian admits a simple formula. Outside the interior, we
 evaluate $\mf{H}(\mf v)$ by using the Hessian formula derived for the interior.
 This procedure provides a globally valid definition for $\mf{H}(\mf v)$. The
@@ -77,7 +78,7 @@ c\,\alpha\,d\ell_p/d\alpha(\mf{v}^m)$. Typical parameters we use are
 $\rho=0.8$, $c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
 
 For the exact line search we use the method \verb;rtsafe; \cite[\S
-9.4]{bib:numerical_recipes} to find the unique root of $d\ell/d\alpha$. \verb;rtsafe; is a one-dimensional
+9.4]{bib:numerical_recipes} to find the unique root of $d\ell/d\alpha$. This is a one-dimensional
 root finder that uses the Newton-Raphson method and switches to bisection
 when an iterate falls outside a search bracket or
 when convergence is slow. The fast computation of derivatives we show next
