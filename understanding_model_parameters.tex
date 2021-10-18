@@ -69,13 +69,15 @@ within acceptable bounds to consider a body rigid for typical robotics
 applications.
 
 For a general multibody system, we define the per-contact effective mass as
-$\text{w}_i=\Vert\mathbf{W}_{ii}\Vert_\text{rms}=\Vert\mathbf{W}_{ii}\Vert/3$ where
-$\mathbf{W}_{ii}$ is the $3\times 3$ diagonal block of the Delassus operator
-$\mathbf{W}=\mf{J}\mf{M}^{-1}\mf{J}^T$ for the $i$-th contact. Explicitly forming the Delassus
-operator is an expensive operation. Refer to Appendix \RedHighlight{[O(n)
-Approximation of W]} for a diagonal approximation of $\mathbf{W}$ that can be
-computed in $\mathcal{O}(n)$ operations. Using this approximation, we estimate the
-frequency of the contact dynamics as $\omega_n=\sqrt{k\text{w}_i}$.
+$\text{w}_i=\Vert\mathbf{W}_{ii}\Vert_\text{rms}=\Vert\mathbf{W}_{ii}\Vert/3$
+where $\mathbf{W}_{ii}$ is the $3\times 3$ diagonal block of the Delassus
+operator $\mathbf{W}=\mf{J}\mf{M}^{-1}\mf{J}^T$ for the $i$-th contact.
+Explicitly forming the Delassus operator is an expensive operation. Instead we
+use an $\mathcal{O}(n)$ approximation. Given contact $i$ involving trees $t_1$
+and $t_2$, we form the approximation $\mathbf{W}_{ii}\approx\mf{J}_{i
+t_1}\mf{M}_{t_1}^{-1}\mf{J}_{i t_1}^T+\mf{J}_{i t_2}\mf{M}_{t_2}^{-1}\mf{J}_{i
+t_2}^T$. Using this approximation, we estimate the frequency of the contact
+dynamics as $\omega_n=\sqrt{k\text{w}_i}$.
 
 Finally, we compute the regularization parameter in the normal direction as
 \begin{eqnarray}
