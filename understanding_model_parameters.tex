@@ -59,9 +59,9 @@ the ground. In this case we have
 \begin{align*}
 	\phi &= \frac{mg}{k}, \\
 	&= \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2,\\
-	&= \frac{\beta^2}{4\pi^2}g\delta t^2.
+	&= \frac{\beta^2}{4\pi^2}g\delta t^2,
 \end{align*}
-Taking $\beta=1.0$ and Earth's gravitational constant, a typical simulation
+independent of mass. Taking $\beta=1.0$ and Earth's gravitational constant, a typical simulation
 time step of $\delta t=10^{-3}~\text{s}$ leads to $\phi\approx 2.5\times
 10^{-7}~\text{m}$, and a large simulation time step of $\delta
 t=10^{-2}~\text{s}$ leads to $\phi\approx 2.5\times 10^{-5}~\text{m}$, well
@@ -113,11 +113,10 @@ the slip velocity due to regularization, $v_s$, is maximized. Then in stiction, 
 Using our proposed regularization in Eq. (\ref{eq:tangential_regularization}), we find
 the maximum slip velocity
 \begin{equation}
-    v_s \approx \mu\sigma g \delta t.
+    v_s \approx \mu\sigma g \delta t,
     \label{eq:slip_estimation}
 \end{equation}
-
-We see that this maximum slip velocity is independent of the mass and linear
+independent of the mass and linear
 with the time step size. Even though the friction coefficient $\mu$ can take any
 non-negative value, most often in practical applications $\mu < 1$. Values in the
 order of 1 are in fact considered as large friction values. Therefore, for this

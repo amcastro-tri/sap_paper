@@ -1,8 +1,7 @@
 We model the setup shown in Fig. \ref{fig:spring_cylinder}, consisting
 of a cylinder of radius $R=0.05\text{ m}$ and mass $m=0.5\text{ kg}$ connected
 to a wall to its left by a spring of stiffness $k_s=100\text{ N}/\text{m}$.
-While the cylinder is free to rotate and translate in the plane, the contact
-force between the cylinder and the ground constrains the cylinder's motion in
+While the cylinder is free to rotate and translate in the plane, the ground constrains the cylinder's motion in
 the vertical direction. The contact stiffness is $k=10^{4}\text{ N}/\text{m}$
 and the dissipation time scale is $\tau_d=0.02\text{ s}$. The cylinder is
 initially placed with zero velocity at $x_0=0.1\text{ m}$ to the right of the
@@ -41,8 +40,7 @@ integration schemes when applied to the spring-mass system.
 
 We now focus our attention to a case with frictional contact using $\mu=1$. As
 we release the cylinder from its initial position at $x_0=0.1\text{ m}$,
-friction with the ground establishes a rolling contact, and the system sets into
-a periodic motion. Since now kinetic energy is split into translational and
+friction with the ground establishes a rolling contact, and the system sets into periodic motion. Since now kinetic energy is split into translational and
 rotational components, the rolling cylinder behaves as a spring-mass system with
 an effective mass $m_\text{eff}=m+I_o/R^2$, with $I_o$ the rotational inertia of
 the cylinder about its center. Therefore the frequency of oscillation is slower
@@ -51,8 +49,8 @@ period of oscillation with about 27 steps.
 
 Total energy is shown in Fig. \ref{fig:spring_cylinder_energy}. Solutions computed with the implicit
 Euler and the symplectic Euler schemes show similar trends to those in the frictionless
-case. The midpoint rule does not conserve energy exactly, but it does
-significantly better with a peak-to-peak variation of only 0.16\%. While the
+case. The midpoint rule does not conserve energy exactly but it does
+significantly better, with a peak-to-peak variation of only 0.16\%. While the
 ideal rolling contact does not dissipate energy, the regularized model of
 friction does dissipate energy given the slip velocity is never exactly zero,
 though small in the order of $\sim\sigma\mu\delta t g$ as shown in Section

@@ -54,7 +54,7 @@ $\mf{G}\succeq 0$ that evaluates to $-\nabla_{\mf{v}_c}\bgamma$ where
 $P_\mathcal{F}(\mf{y}(\mf{v}))$ is differentiable. Otherwise $\mf{G}$ extends
 our analytical expressions as outlined in Appendix
 \ref{app:gradients_derivation}. Matrix $\mf{G}$ is a block diagonal matrix where
-each the diagonal block for the $i\text{-th}$ contact is a $3\times 3$ matrix.
+each diagonal block for the $i\text{-th}$ contact is a $3\times 3$ matrix.
 
 In total, we evaluate $\mf{H}$ via
 \begin{equation*}
@@ -126,7 +126,7 @@ Notice the first term on the right can be precomputed before the line search
 \subsection{Problem Sparsity}
 \label{sec:problem_sparsity}
 
-The matrix $\mf{H}(\mf{v}^m)$ inherits a block sparse structure from
+The matrix $\mf{H}$ inherits a block sparse structure from
 the specific contact configuration of the problem. 
 We exploit this structure using a supernodal Cholesky factorization \cite[\S
 9]{bib:davis2016survey}. Implementing this factorization requires construction

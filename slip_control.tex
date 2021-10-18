@@ -1,7 +1,7 @@
 While previous work on convex approximations model rigid contact
-\cite{bib:anitescu2006,bib:mazhar2014} or uses regularization as a means of
+\cite{bib:anitescu2006,bib:mazhar2014} or use regularization as a means of
 constraint stabilization \cite{bib:todorov2014}, our work is novel in that we
-incorporate physical compliance. This allow us not only to model compliant point
+incorporate physical compliance. This allows us not only to model compliant point
 contact, but also to incorporate sophisticated models of surfaces patches. We
 incorporate the pressure field model \cite{bib:elandt2019pressure} implemented
 as part of Drake's \cite{bib:drake} \emph{hydroelastic contact} model. We use
@@ -14,10 +14,9 @@ To demonstrate this capability, we reproduce the test in \cite{bib:masterjohn202
 with air filled compliant surfaces. The aforementioned gripper is simulated
 anchored to the world holding a spatula by the handle horizontally. We use $\delta t=5\times 10^{-3}\text{ s}$. The grasp
 force is commanded to vary between 1 N and 16 N with square wave having a 6
-second period and a 75\% duty cycle, left on Fig.
-\ref{fig:slip_control_history}. This results in a periodic transition from a
+second period and a 75\% duty cycle, left on Fig.~\ref{fig:slip_control_history}. This results in a periodic transition from a
 secure grip to a loose grip allowing the spatula to pitch in a controlled manner
-within grasp, see the accompanying video. We observe that stiction during the
+within grasp, see Fig.~\ref{fig:slip_control_history} and the accompanying video. We observe that stiction during the
 secure grip is properly resolved with the tight bounds for the slip due to
 regularization discussed in Section \ref{sec:stiction_parameterization}. While
 this case only has 8 degrees of freedom, it generates about 60 contact

@@ -21,30 +21,30 @@ where we defined
 Note that by combining Eqs. (\ref{eq:theta_method}) and (\ref{eq:q_update}), the
 mid-step configuration $\mf{q}^{\theta_q}$ can be written as
 \begin{align*}
-	\mf{q}^{\theta_q}(\mf{v}) &= \mf{q}_0 + dt \theta_q \dot{\mf{q}}^{\theta_{vq}} \\
-	                          &= \mf{q}_0 + dt \theta_q \mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}).
+	\mf{q}^{\theta_q}(\mf{v}) &= \mf{q}_0 + \delta t \theta_q \dot{\mf{q}}^{\theta_{vq}} \\
+	                          &= \mf{q}_0 + \delta t \theta_q \mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}).
 \end{align*}
 Hence by the chain rule, $\mf{E}$ can be further calculated as
 \begin{align*}
-	\mf{E} = dt\theta_q\frac{\partial \mf{M}(\mf{q}^{\theta_{q}}) }{\partial\mf{q}}
+	\mf{E} = \delta t\theta_q\frac{\partial \mf{M}(\mf{q}^{\theta_{q}}) }{\partial\mf{q}}
              \frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}
 			 (\mf{v}^*-\mf{v}_0).
 \end{align*}
 Notice that 
 \begin{align*}
 		\Vert\mf{E}\Vert 
-		&\le dt\theta_q \left\| \frac{\partial\mf{M}(\mf{q}^{\theta_{q}})}{\partial\mf{q}}  \right\|
+		&\le \delta t\theta_q \left\| \frac{\partial\mf{M}(\mf{q}^{\theta_{q}})}{\partial\mf{q}}  \right\|
 			\left\| \frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}  \right\|
 		    \left\| \mf{v}^*-\mf{v}_0 \right\| \\
-		&= \mathcal{O}(dt^2),
+		&= \mathcal{O}(\delta t^2),
 \end{align*}
-since $\Vert\mf{v}^*-\mf{v}_0\Vert = \mathcal{O}(dt)$.
+since $\Vert\mf{v}^*-\mf{v}_0\Vert = \mathcal{O}(\delta t)$.
 
 We proceed similarly to expand the Jacobian of
-$\mf{F}(\mf{v})=\mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))$
+$\mf{F}_1(\mf{v})=\mf{F}_1(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))$
 as
 \begin{align*}
-	\frac{\partial\mf{F}}{\partial \mf{v}} = -dt\,\theta_q\theta_{vq}\mf{K}(\mf{q}^{\theta_q},
+	\frac{\partial\mf{F}_1}{\partial \mf{v}} = -\delta t\,\theta_q\theta_{vq}\mf{K}(\mf{q}^{\theta_q},
 	\mf{v}^{\theta_v})-\theta_v\mf{D}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v}),
 \end{align*}
 with $\mf{K}$ and $\mf{D}$ the stiffness and damping matrices defined by Eqs.
@@ -53,30 +53,30 @@ with $\mf{K}$ and $\mf{D}$ the stiffness and damping matrices defined by Eqs.
 We can now write the Jacobian of $\mf{m}(\mf{v})$ in Eq.
 (\ref{eq:m_taylor_expansion}) as
 \begin{align*}
-	\frac{\partial \mf{m}}{\partial \mf{v}} = \mf{A} + \mf{E} - dt\frac{\partial \mf{G}}{\partial \mf{v}},
+	\frac{\partial \mf{m}}{\partial \mf{v}} = \mf{A} + \mf{E} - \delta t\frac{\partial \mf{F}_2}{\partial \mf{v}},
 \end{align*}
 where we defined
 \begin{align*}
-	\mf{A}=\mf{M}+ dt^2\theta_q\theta_{qv}\mf{K}+dt\theta_v\mf{D}.
+	\mf{A}=\mf{M}+ \delta t^2\theta_q\theta_{qv}\mf{K}+\delta t\theta_v\mf{D}.
 \end{align*}
 With these definitions the Taylor expansion in Eq. (\ref{eq:m_taylor_expansion})
 becomes
 \begin{align*}
 	\frac{\partial\mf{m}}{\partial\mf{v}}(\mf{v}-\mf{v}^*) &= \mf{A}(\mf{v}-\mf{v}^*) + \mf{E}(\mf{v}-\mf{v}^*) \\
-	&- dt\frac{\partial\mf{G}}{\partial\mf{v}}(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2).
+	&- \delta t\frac{\partial\mf{F}_2}{\partial\mf{v}}(\mf{v}-\mf{v}^*) + \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2).
 \end{align*}
 
 Since contact is compliant, forces are finite within the finite interval $\delta
-t$ and therefore $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(dt)$. Thus
+t$ and therefore $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(\delta t)$. Thus
 \begin{align*}
-	\mf{E}(\mf{v}-\mf{v}^*)=\mathcal{O}_E(dt^3), \\
-    dt\frac{\partial \mf{G}}{\partial \mf{v}}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(dt^2), \\ 
-    \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2) = \mathcal{O}_m(dt^2).
+	\mf{E}(\mf{v}-\mf{v}^*)=\mathcal{O}_E(\delta t^3), \\
+    \delta t\frac{\partial \mf{F}_2}{\partial \mf{v}}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(\delta t^2), \\ 
+    \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2) = \mathcal{O}_m(\delta t^2).
 \end{align*}
 Therefore, the positive definite linearization
 \begin{align*}
-	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(dt^3) + \mathcal{O}_G(dt^2) +
-	\mathcal{O}_m(dt^2) = \mf{J}^T\mf{\bgamma},
+	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(\delta t^3) + \mathcal{O}_G(\delta t^2) +
+	\mathcal{O}_m(\delta t^2) = \mf{J}^T\mf{\bgamma},
 \end{align*}
 agrees with the original momentum balance in Eq. (\ref{eq:v_update}) to second
 order.

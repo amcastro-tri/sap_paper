@@ -7,9 +7,8 @@ midpoint rule that attains second order accuracy and energy conservation. While
 most of the work in the literature uses first order time-stepping schemes, the
 extension to the second-order midpoint rule is analyzed in
 \cite{bib:potra2006linearly}. In contrast to \cite{bib:potra2006linearly} which
-uses a polyhedral approximation of the friction cone that leads to an LCP
-formulation, our approach does not approximate the friction cone but introduces
-the convex approximation of contact from \cite{bib:anitescu2006} instead. We
+uses a polyhedral approximation of the friction cone, our approach does not approximate the friction cone but introduces
+the convex approximation of contact from \cite{bib:anitescu2006}. We
 remark that combining the $\theta\text{-method}$ with the convex approximation
 of contact is novel to our work. 
 
@@ -32,17 +31,17 @@ at $t^n$ and $(\mf{q}, \mf{v})$ to denote the state at $t^{n+1}$.
 Using these mid-step quantities, we write an approximation for the mean
 generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as
 \begin{equation*}
-	\bar{\vf{\tau}} = \mf{F}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))+
-	\mf{G}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
+	\bar{\vf{\tau}} = \mf{F}_1(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))+
+	\mf{F}_2(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
 \end{equation*}
-where we split the forces into two contributions $\mf{F}$ and $\mf{G}$ so that
-the Jacobians $\partial \mf{F}/\partial\mf{q}$ and $\partial
-\mf{F}/\partial\mf{v}$ are negative definite matrices while the same is
-generally not true for the Jacobians of $\mf{G}$. The term $\mf{F}(\mf{q},
+where we split the forces into two contributions $\mf{F}_1$ and $\mf{F}_2$ so that
+the Jacobians $\partial \mf{F}_1/\partial\mf{q}$ and $\partial
+\mf{F}_1/\partial\mf{v}$ are negative definite matrices while the same is
+generally not true for the Jacobians of $\mf{F}_2$. The term $\mf{F}_1(\mf{q},
 \mf{v})$ can include forces from modeling elements such as spring and dampers and even
 internal forces for the modeling of soft-body deformation. The term
-$\mf{G}(\mf{q}, \mf{v})$ includes all other contributions that cannot guarantee
-positive definiteness of their Jacobians, such as Coriolis and gyroscopic forces
+$\mf{F}_2(\mf{q}, \mf{v})$ includes all other contributions that cannot guarantee
+negative definiteness of their Jacobians, such as Coriolis and gyroscopic forces
 arising in multibody dynamics with generalized coordinates.
 
 Using the above definitions, we write our discrete update in the following form
@@ -106,10 +105,10 @@ of $\mf{m}(\mf{v})$ with
 \begin{align}
 	\mf{A}&=\mf{M}+\delta t^2\,\theta_q\theta_{qv}\mf{K}+\delta t\,\theta_v\mf{D},
 	\label{eq:expression_for_A}\\
-	\mf{K}(\mf{q}, \mf{v})&=-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial
+	\mf{K}(\mf{q}, \mf{v})&=-\frac{\partial \mf{F}_1(\mf{q}, \mf{v})}{\partial
 	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},
 	\label{eq:stiffness_matrix}\\
-	\mf{D}(\mf{q}, \mf{v})&=-\frac{\partial \mf{F}(\mf{q}, \mf{v})}{\partial
+	\mf{D}(\mf{q}, \mf{v})&=-\frac{\partial \mf{F}_1(\mf{q}, \mf{v})}{\partial
 	\mf{v}},
 	\label{eq:dissipation_matrix}
 \end{align}
@@ -155,7 +154,7 @@ We summarize our discrete time stepping strategy as follows
 	\item Update the positions according to Eq. (\ref{eq:q_update}).
 \end{enumerate}
 
-The constraint impulses in step \ref{it:solve_for_contact} are the solutions to
+The constraint impulses in step \ref{it:solve_for_contact} are the solution to
 our convex approximation of compliant contact described in the next section.
 
 Notice that, in the absence of constraint impulses, the velocities at the next

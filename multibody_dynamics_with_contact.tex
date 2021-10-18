@@ -66,8 +66,7 @@ satisfied at each contact
 	$\Vert\bgamma_{t,i}\Vert\le \mu_i\gamma_{n,i}$,
     where $\mu_i \in \mathbb{R}$ is the coefficient of friction for the
     $i\text{-th}$ contact, and
-	\item the \emph{maximum dissipation principle}, which states that given the
-	normal impulse, the friction impulse maximizes the rate of energy
+	\item the \emph{maximum dissipation principle}, which states that the friction impulses maximize the rate of energy
 	dissipation. In other words, friction impulses oppose the sliding velocity
 	direction.
 \end{enumerate}
@@ -82,7 +81,7 @@ resulting formulation leads to a very difficult to solve, non-convex, NCP.
 \section{Convex Approximation of Contact Dynamics}
 \label{sec:previous_work}
 
-To ensure existence of a solution and improve computational tractability,
+To improve computational tractability and ensure existence of a solution,
 Anitescu introduces a \textit{convex approximation} of the contact
 problem \cite{bib:anitescu2006}. In this approximation, the contact impulses are
 solutions to the following convex optimization problem
@@ -119,8 +118,7 @@ non-penetration condition
 where $\vf{v}_{t,i}$ is the tangential component of the contact velocity
 $\vf{v}_{c,i} = [\vf{v}_{t,i}\,v_{n,i}]$. Notice that the modified non-penetration
 condition in Eq. (\ref{eq:convex_approximation_complementarity_condition}) 
-introduces coupling with the sliding velocity, a
-result of the convex approximation. We provide a detailed discussion on the
+introduces coupling with the sliding velocity, an artifact of the convex approximation. We provide a detailed discussion on the
 physical validity of this approximation in Section \ref{sec:physical_intuition},
 along with guidelines for determining its applicability to robotic simulation.
 
@@ -134,7 +132,7 @@ obtain the following regularized form of Anitescu's formulation
 	\bgamma,
 	\label{eq:dual_regularized}
 \end{eqnarray}
-where $\mathbf{R}$ is a diagonal positive definite matrix introduced to make
+where $\mathbf{R}$ is a diagonal positive matrix introduced to make
 $\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W} \succeq
 0$. This makes the problem strictly convex and thus a unique solution exists.
 Regularization is used as a means to add constraint

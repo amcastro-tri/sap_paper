@@ -5,7 +5,7 @@ The method presented in this paper can be extended in several ways:
 
 \textbf{Expand the family of constraints:} No doubt contact constraints are the most challenging. However, our method can be extended to include bilateral constraints, PD controllers with force limits and even joint dry friction \cite{bib:todorov2014}.
 
-\textbf{Branch induced sparsity:} In this work we exploit sparsity only at a tree level. However, branch sparsity can lead to additional performance. Consider for instance a walking robot with a floating hip. Since arms and upper torso are not in contact with the ground, they can be eliminated from the computation in terms of degrees of freedom in the legs. Additional performance gains could be attained using specialized algebra for multibody dynamics \cite{bib:carpentier2021}.
+\textbf{Branch induced sparsity:} In this work we exploit sparsity only at a tree level. However, branch sparsity can lead to additional performance. Consider for instance a humanoid robot with a floating hip. Since arms and upper torso are not in contact with the ground, they can be eliminated from the computation in terms of degrees of freedom in the legs. Additional performance gains could be attained using specialized algebra for multibody dynamics \cite{bib:carpentier2021}.
 
 \textbf{Parallelization:} This work focuses on the accuracy, robustness, and convergence properties of the algorithm executed in a single thread. The sparse algebra can be parallelized and, in particular, disjoints \emph{islands} of bodies can be solved separately in different threads.
 

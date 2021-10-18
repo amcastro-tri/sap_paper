@@ -93,7 +93,7 @@ To our knowledge, Chrono \cite{bib:hrono2016} and Mujoco
 of contact. The multi-physics simulation package Chrono implements a variant of
 the PGS method for solving Anitescu's convex formulation \cite{bib:tasora2011}.
 This method is specially targeted to the simulation of very large scale systems
-such as those required for granular flow. Even though some convergence guarantees are
+such as those encountered in granular flow. Even though some convergence guarantees are
 provided in \cite{bib:anitescu2010}, the solver exhibits low convergence rates.
 This is expected for such a first order method. Mujoco is targeted to
 robotics and implements both a PGS solver variant \cite{bib:todorov2014} and a
@@ -113,8 +113,7 @@ impulses that correspond to the optimal velocities of the convex approximation.
 This provides intuition for the approximation, even to those without
 optimization expertise. Moreover, the artifacts introduced by the approximation
 become apparent and can be characterized precisely. In particular,
-\emph{regularization terms} introduced by Todorov \cite{bib:todorov2014} (for
-Baumgarte-like stabilization) are given a clear physical interpretation. Such
+regularization introduced by Todorov \cite{bib:todorov2014} is given a clear physical interpretation. Such
 interpretability  allows us to incorporate not only compliant point contact, but
 also complex models of compliant surface patches \cite{bib:elandt2019pressure},
 as we demonstrate in Section \ref{sec:slip_control}. We introduce in Section
@@ -146,7 +145,7 @@ This is critical for the simulation of demanding robotics tasks such as
 manipulation. We evaluate the accuracy, robustness and performance of SAP
 against available commercial and open-source optimization solvers. In Section
 \ref{sec:test_cases}, we demonstrate the effectiveness of our approach in a
-number of simulation cases, including the simulation of a challenging dual arm
-manipulation task. We discuss extensions and variations in Section
+number of simulation cases, including the simulation of the challenging dual arm
+manipulation task shown in Fig. \ref{fig:dual_arm_frames}. We discuss extensions and variations in Section
 \ref{sec:variations_and_extensions} and conclude with final remarks in Section
 \ref{sec:future_directions}.

@@ -26,7 +26,7 @@ This particular task generates hundreds of contact constraints, as shown in Fig.
     function time. Important events during the task are highlighted.}
 \end{figure}
 
-To assess the accuracy, we evaluate the dimensionless momentum and
+To assess accuracy, we evaluate the dimensionless momentum and
 complementarity slackness errors defined in Eqs. \eqref{eq:momentum_error} and
 \eqref{eq:slackness_error} respectively. We perform the simulation of the same
 task several times using different solver tolerances. The results of these runs
@@ -92,7 +92,7 @@ other hand performs 10.1 iterations on average.
 \begin{figure}[!h]
 	\centering
     \includegraphics[width=0.7\columnwidth]{figures/dual_arm/iterations_per_step.png}
-    \caption{\label{fig:dual_arm_iterations} Average number of iterations per
+    \caption{\label{fig:dual_arm_iterations} Mean number of iterations per
     time-step for the dual arm simulation.}
 \end{figure}
 
@@ -101,5 +101,5 @@ accuracy translates directly to robustness. We observed how the maximum momentum
 error defined in Eq. \eqref{eq:momentum_error} is a good proxy for robustness in
 simulation; simulations with errors larger than about $10\%$ could not complete
 the task successfully. In this regard SAP provides a certificate of accuracy
-that proved useful in practice.
+that proves useful in practice.
 
