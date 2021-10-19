@@ -1,11 +1,12 @@
-We model the setup shown in Fig. \ref{fig:spring_cylinder}, consisting
-of a cylinder of radius $R=0.05\text{ m}$ and mass $m=0.5\text{ kg}$ connected
-to a wall to its left by a spring of stiffness $k_s=100\text{ N}/\text{m}$.
-While the cylinder is free to rotate and translate in the plane, the ground constrains the cylinder's motion in
-the vertical direction. The contact stiffness is $k=10^{4}\text{ N}/\text{m}$
-and the dissipation time scale is $\tau_d=0.02\text{ s}$. The cylinder is
-initially placed with zero velocity at $x_0=0.1\text{ m}$ to the right of the
-spring's resting position, and it is then set free.
+We model the setup shown in Fig. \ref{fig:spring_cylinder}, consisting of a
+cylinder of radius $R=0.05\text{ m}$ and mass $m=0.5\text{ kg}$ connected to a
+wall to its left by a spring of stiffness $k_s=100\text{ N}/\text{m}$. While the
+cylinder is free to rotate and translate in the plane, the ground constrains the
+cylinder's motion in the vertical direction. The contact stiffness is
+$k=10^{4}\text{ N}/\text{m}$ and the dissipation time scale is
+$\tau_d=0.02\text{ s}$. The cylinder is initially placed with zero velocity at
+$x_0=0.1\text{ m}$ to the right of the spring's resting position, and it is then
+set free.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.6\columnwidth]{figures/schematics/spring_cylinder.png}
@@ -15,8 +16,8 @@ spring's resting position, and it is then set free.
 \end{figure}
 
 For reference, we first simulate this setup with frictionless contact, i.e.
-$\mu=0$. Without friction, the cylinder does not rotate and we effectively have a
-spring-mass system with natural frequency $\omega_n=\sqrt{k_s/m}$. We use a
+$\mu=0$. Without friction, the cylinder does not rotate and we effectively have
+a spring-mass system with natural frequency $\omega_n=\sqrt{k_s/m}$. We use a
 rather coarse time step of $\delta t=0.02\text{ s}$, discretizing each period of
 oscillation with about $22$ steps. Figure
 \ref{fig:frictionless_spring_cylinder_energy} shows the total mechanical energy
@@ -26,8 +27,9 @@ introduced by the implicit Euler scheme dissipates the initial energy in just a
 few periods of oscillation. For the symplectic Euler scheme, we observe in Fig.
 \ref{fig:frictionless_spring_cylinder_energy} that, while the energy is not
 conserved, it stays bounded, within a band 28\% peak-to-peak wide. The figure
-also confirms that the second order midpoint scheme conserves energy exactly. These are well known theoretical properties of these
-integration schemes when applied to the spring-mass system.
+also confirms that the second order midpoint scheme conserves energy exactly.
+These are well known theoretical properties of these integration schemes when
+applied to the spring-mass system.
 \begin{figure}[!h]
     \centering
     %trim={<left> <lower> <right> <upper>}
@@ -40,24 +42,27 @@ integration schemes when applied to the spring-mass system.
 
 We now focus our attention to a case with frictional contact using $\mu=1$. As
 we release the cylinder from its initial position at $x_0=0.1\text{ m}$,
-friction with the ground establishes a rolling contact, and the system sets into periodic motion. Since now kinetic energy is split into translational and
+friction with the ground establishes a rolling contact, and the system sets into
+periodic motion. Since now kinetic energy is split into translational and
 rotational components, the rolling cylinder behaves as a spring-mass system with
 an effective mass $m_\text{eff}=m+I_o/R^2$, with $I_o$ the rotational inertia of
 the cylinder about its center. Therefore the frequency of oscillation is slower
-and the same time step, $\delta t=0.02\text{ s}$, now discretizes one
-period of oscillation with about 27 steps.
+and the same time step, $\delta t=0.02\text{ s}$, now discretizes one period of
+oscillation with about 27 steps.
 
-Total energy is shown in Fig. \ref{fig:spring_cylinder_energy}. Solutions computed with the implicit
-Euler and the symplectic Euler schemes show similar trends to those in the frictionless
-case. The midpoint rule does not conserve energy exactly but it does
-significantly better, with a peak-to-peak variation of only 0.16\%. While the
-ideal rolling contact does not dissipate energy, the regularized model of
-friction does dissipate energy given the slip velocity is never exactly zero,
-though small in the order of $\sim\sigma\mu\delta t g$ as shown in Section
-\ref{sec:physical_intuition}. The symplectic Euler scheme and the midpoint rule
-take $10$ minutes of simulated time and about $1000$ oscillations to dissipate
-10\% of the total energy (Fig. \ref{fig:spring_cylinder_energy}, right). This
-level of numerical dissipation is remarkably low, considering that real mechanical systems often introduce several sources of dissipation.
+Total energy is shown in Fig. \ref{fig:spring_cylinder_energy}. Solutions
+computed with the implicit Euler and the symplectic Euler schemes show similar
+trends to those in the frictionless case. The midpoint rule does not conserve
+energy exactly but it does significantly better, with a peak-to-peak variation
+of only 0.16\%. While the ideal rolling contact does not dissipate energy, the
+regularized model of friction does dissipate energy given the slip velocity is
+never exactly zero, though small in the order of $\sim\sigma\mu\delta t g$ as
+shown in Section \ref{sec:physical_intuition}. The symplectic Euler scheme and
+the midpoint rule take $10$ minutes of simulated time and about $1000$
+oscillations to dissipate 10\% of the total energy (Fig.
+\ref{fig:spring_cylinder_energy}, right). This level of numerical dissipation is
+remarkably low, considering that real mechanical systems often introduce several
+sources of dissipation.
 \begin{figure}[!h]
     \centering
     %trim={<left> <lower> <right> <upper>}
@@ -68,16 +73,18 @@ level of numerical dissipation is remarkably low, considering that real mechanic
     in the first few periods of oscillation (left) and long term (right).}
 \end{figure}
 
-To study the order of accuracy of our approach, we define the $L^2$-norm position error as
+To study the order of accuracy of our approach, we define the $L^2$-norm
+position error as
 \begin{equation*}
     e_q = \left(\frac{1}{T}\int_0^T dt(x(t)-x_e(t))^2\right)^{1/2}
 \end{equation*}
-where $x_e(t)$ is the known exact solution. We simulate for $T=5\text{
-s}$, about 10 periods of oscillation. Figure \ref{fig:spring_cylinder_position_error} shows the position error as
-a function of the time step. We see that even with frictional contact, the two-stage approach
-with the midpoint rule achieves second order of accuracy. Both the implicit Euler and the symplectic Euler schemes are first order,
-though the error is significantly smaller when using the symplectic Euler
-scheme.
+where $x_e(t)$ is the known exact solution. We simulate for $T=5\text{s}$, about
+10 periods of oscillation. Figure \ref{fig:spring_cylinder_position_error} shows
+the position error as a function of the time step. We see that even with
+frictional contact, the two-stage approach with the midpoint rule achieves
+second order of accuracy. Both the implicit Euler and the symplectic Euler
+schemes are first order, though the error is significantly smaller when using
+the symplectic Euler scheme.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/spring_cylinder/position_error.png}

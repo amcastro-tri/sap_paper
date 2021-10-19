@@ -7,18 +7,20 @@ midpoint rule that attains second order accuracy and energy conservation. While
 most of the work in the literature uses first order time-stepping schemes, the
 extension to the second-order midpoint rule is analyzed in
 \cite{bib:potra2006linearly}. In contrast to \cite{bib:potra2006linearly} which
-uses a polyhedral approximation of the friction cone, our approach does not approximate the friction cone but introduces
-the convex approximation of contact from \cite{bib:anitescu2006}. We
-remark that combining the $\theta\text{-method}$ with the convex approximation
-of contact is novel to our work. 
+uses a polyhedral approximation of the friction cone, our approach does not
+approximate the friction cone but introduces the convex approximation of contact
+from \cite{bib:anitescu2006}. We remark that combining the
+$\theta\text{-method}$ with the convex approximation of contact is novel to our
+work. 
 
-We discretize time into intervals of fixed size $\delta t$ and seek to advance the
-state of the system from time $t^n$ to the next step at $t^{n+1} = t^n + \delta t$. In
-the $\theta\text{-method}$, variables are evaluated at intermediate time steps
-$t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. We define
-\emph{mid-step quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
-$\mf{v}^{\theta_{vq}}$ in accordance with the standard $\theta\text{-method}$
-using scalar parameters $\theta_q$, $\theta_v$, and $\theta_{vq}$
+We discretize time into intervals of fixed size $\delta t$ and seek to advance
+the state of the system from time $t^n$ to the next step at $t^{n+1} = t^n +
+\delta t$. In the $\theta\text{-method}$, variables are evaluated at
+intermediate time steps $t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with
+$\theta \in [0, 1]$. We define \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$,
+$\mf{v}^{\theta_{v}}$, and $\mf{v}^{\theta_{vq}}$ in accordance with the
+standard $\theta\text{-method}$ using scalar parameters $\theta_q$, $\theta_v$,
+and $\theta_{vq}$
 \begin{align}
 	\mf{q}^{\theta_q} &= \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
 	\mf{v}^{\theta_v} &= \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
@@ -34,15 +36,15 @@ generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as
 	\bar{\vf{\tau}} = \mf{F}_1(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))+
 	\mf{F}_2(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
 \end{equation*}
-where we split the forces into two contributions $\mf{F}_1$ and $\mf{F}_2$ so that
-the Jacobians $\partial \mf{F}_1/\partial\mf{q}$ and $\partial
+where we split the forces into two contributions $\mf{F}_1$ and $\mf{F}_2$ so
+that the Jacobians $\partial \mf{F}_1/\partial\mf{q}$ and $\partial
 \mf{F}_1/\partial\mf{v}$ are negative definite matrices while the same is
 generally not true for the Jacobians of $\mf{F}_2$. The term $\mf{F}_1(\mf{q},
-\mf{v})$ can include forces from modeling elements such as spring and dampers and even
-internal forces for the modeling of soft-body deformation. The term
-$\mf{F}_2(\mf{q}, \mf{v})$ includes all other contributions that cannot guarantee
-negative definiteness of their Jacobians, such as Coriolis and gyroscopic forces
-arising in multibody dynamics with generalized coordinates.
+\mf{v})$ can include forces from modeling elements such as spring and dampers
+and even internal forces for the modeling of soft-body deformation. The term
+$\mf{F}_2(\mf{q}, \mf{v})$ includes all other contributions that cannot
+guarantee negative definiteness of their Jacobians, such as Coriolis and
+gyroscopic forces arising in multibody dynamics with generalized coordinates.
 
 Using the above definitions, we write our discrete update in the following form
 \begin{align}
@@ -100,8 +102,8 @@ $\mathcal{O}(n)$ \emph{Articulated Body Algorithm}
 
 In the second stage, we approximately solve Eq. (\ref{eq:v_update}) by
 linearizing $\mf{m}(\mf{v})$ around $\mf{v}^*$. Our linearization uses a
-symmetric positive definite (SPD) approximation $\mf{A}$ of the Jacobian
-of $\mf{m}(\mf{v})$ with
+symmetric positive definite (SPD) approximation $\mf{A}$ of the Jacobian of
+$\mf{m}(\mf{v})$ with
 \begin{align}
 	\mf{A}&=\mf{M}+\delta t^2\,\theta_q\theta_{qv}\mf{K}+\delta t\,\theta_v\mf{D},
 	\label{eq:expression_for_A}\\
@@ -112,12 +114,12 @@ of $\mf{m}(\mf{v})$ with
 	\mf{v}},
 	\label{eq:dissipation_matrix}
 \end{align}
-where $\mf{K} \succ 0$ and $\mf{D}\succ 0$ are the stiffness and damping matrices of the
-system, respectively. As an example, for joint level spring-dampers models,
-$\mf{K}$ and $\mf{D}$ are constant, diagonal, and positive definite matrices. A
-more complex example arises in the Finite Element Model (FEM) of soft body
-deformations. In this case, $\mf{K}$ and $\mf{D}$ are sparse positive definite
-matrices.
+where $\mf{K} \succ 0$ and $\mf{D}\succ 0$ are the stiffness and damping
+matrices of the system, respectively. As an example, for joint level
+spring-dampers models, $\mf{K}$ and $\mf{D}$ are constant, diagonal, and
+positive definite matrices. A more complex example arises in the Finite Element
+Model (FEM) of soft body deformations. In this case, $\mf{K}$ and $\mf{D}$ are
+sparse positive definite matrices.
 
 As we will see in Section \ref{sec:primal_formulation}, this SPD approximation
 allows us to write a convex formulation of contact satisfying an approximation
@@ -162,10 +164,9 @@ time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
 they are computed with the order of accuracy of the $\theta\text{-method}$.
 Furthermore, we also expect to recover the properties of the
 $\theta\text{-method}$ when contact constraints are not active. As an example,
-for bodies in contact that are under rolling friction,
-the contact constraints behave as bi-lateral constraints that impose zero slip
-velocity. In this case, our two stage method using the midpoint rule to compute
-$\mf{v}^*$ exhibits considerably less numerical dissipation than other methods.
-We demonstrate this in Section \ref{sec:spring_cylinder} with an example of a
-mechanical system with rolling friction.
-
+for bodies in contact that are under rolling friction, the contact constraints
+behave as bi-lateral constraints that impose zero slip velocity. In this case,
+our two stage method using the midpoint rule to compute $\mf{v}^*$ exhibits
+considerably less numerical dissipation than other methods. We demonstrate this
+in Section \ref{sec:spring_cylinder} with an example of a mechanical system with
+rolling friction.

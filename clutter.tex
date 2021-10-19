@@ -1,54 +1,57 @@
-
-Objects are
-dropped into an $80~\text{cm}\times80~\text{cm}\times80~\text{cm}$ container in four different columns with the same number of
-objects each (see Fig. \ref{fig:clutter_snapshots}). Each column consists of an
-arbitrary assortment of spheres of radius $5~\text{cm}$ and boxes with sides of
-$10~\text{cm}$ in length. With a density of $1000\text{
-kg}/\text{m}^3$, spheres have a mass of
-$0.524\text{ kg}$ and boxes have a mass of $1.0\text{ kg}$. We set a very high
-contact stiffness of $k=10^{12}\text{ N}/\text{m}$ so that the model is in the
-\emph{near-rigid} regime. The dissipation time scale is set to equal the time
-step and the friction coefficient of all surfaces is $\mu=1.0$.
+Objects are dropped into an $80~\text{cm}\times80~\text{cm}\times80~\text{cm}$
+container in four different columns with the same number of objects each (see
+Fig. \ref{fig:clutter_snapshots}). Each column consists of an arbitrary
+assortment of spheres of radius $5~\text{cm}$ and boxes with sides of
+$10~\text{cm}$ in length. With a density of $1000\text{kg}/\text{m}^3$, spheres
+have a mass of $0.524\text{ kg}$ and boxes have a mass of $1.0\text{ kg}$. We
+set a very high contact stiffness of $k=10^{12}\text{ N}/\text{m}$ so that the
+model is in the \emph{near-rigid} regime. The dissipation time scale is set to
+equal the time step and the friction coefficient of all surfaces is $\mu=1.0$.
 \begin{figure}[t]
     \centering
     %trim={<left> <lower> <right> <upper>}
     \adjincludegraphics[width=0.45\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_w_walls_t0.png}
-    \adjincludegraphics[width=0.45\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_no_walls_t0.png}\\
+    \adjincludegraphics[width=0.45\columnwidth,trim={0 {0.05\height} 0
+    0},clip]{figures/clutter/clutter_no_walls_t0.png}\\
     \vspace{0.1cm}
     \adjincludegraphics[width=0.45\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_w_walls_t2_zoom.png}
     \adjincludegraphics[width=0.45\columnwidth,trim={0 {0.05\height} 0 0},clip]{figures/clutter/clutter_no_walls_t2_zoom.png}
-    \caption{Initial conditions (top) and an intermediate configuration after $2$ seconds of
-    simulated time (bottom) for the clutter setup with (left) and without
-    (right) walls. Many of the spheres in the configuration with no walls
-	roll outside the frame in the intermediate configuration.}
+    \caption{Initial conditions (top) and an intermediate configuration after
+    $2$ seconds of simulated time (bottom) for the clutter setup with (left) and
+    without (right) walls. Many of the spheres in the configuration with no
+    walls roll outside the frame in the intermediate configuration.}
     \label{fig:clutter_snapshots}
 \end{figure}
 
 We first run our simulations with 10 bodies per column for a total of 40 bodies.
 We simulate 10 seconds using time steps of size $\delta t = 10\text{ ms}$.
 Number of solver iterations and wall-clock time per time step are reported in
-Fig. \ref{fig:clutter_w_walls_nb40}. We observe that SAP
-needs to perform a larger number of iterations during the very energetic initial
-transient. As the system reaches a steady state, however, SAP warm starts very
-effectively, performing only about $3$ iterations per time step. Even though
-SAP necessities a larger number of iterations to converge than Geodesic IPM during this initial transient, the wall-clock time per time step is very
-similar. Unlike SAP and Geodesic IPM that benefit from warm start, we see that Gurobi performs
-about $9$ iterations per time step in both the initial transient and the steady state.
+Fig. \ref{fig:clutter_w_walls_nb40}. We observe that SAP needs to perform a
+larger number of iterations during the very energetic initial transient. As the
+system reaches a steady state, however, SAP warm starts very effectively,
+performing only about $3$ iterations per time step. Even though SAP necessities
+a larger number of iterations to converge than Geodesic IPM during this initial
+transient, the wall-clock time per time step is very similar. Unlike SAP and
+Geodesic IPM that benefit from warm start, we see that Gurobi performs about $9$
+iterations per time step in both the initial transient and the steady state.
 \begin{figure}[!h]
 	\centering
     %trim={<left> <lower> <right> <upper>}
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 0 0},clip]{figures/clutter/iterations_nb40.png}
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 0 0},clip]{figures/clutter/wall_clock_nb40.png}    
 	\caption{\label{fig:clutter_w_walls_nb40} 
-	Iterations and wall-clock time per time step for the clutter case with 40 bodies and with walls.}
+	Iterations and wall-clock time per time step for the clutter case with 40
+	bodies and with walls.}
 \end{figure}
 
-Figure \ref{fig:clutter_line_search} shows two examples of convergence history. We denote with $\ell^0$ to the cost evaluated at the
-initial guess, the previous time step velocity. With $\ell_*$ we denote the
-optimal cost, which we approximate with its value from the last iteration. At
-step 60 during the initial transient for which SAP requires 21 iterations to
-converge, we observe that the algorithm reaches quadratic convergence after an
-initial linear convergence transient, matching theoretical predictions (Appendix~\ref{app:sap_converge}). At step 520, past the initial energetic
+Figure \ref{fig:clutter_line_search} shows two examples of convergence history.
+We denote with $\ell^0$ to the cost evaluated at the initial guess, the previous
+time step velocity. With $\ell_*$ we denote the optimal cost, which we
+approximate with its value from the last iteration. At step 60 during the
+initial transient for which SAP requires 21 iterations to converge, we observe
+that the algorithm reaches quadratic convergence after an initial linear
+convergence transient, matching theoretical predictions
+(Appendix~\ref{app:sap_converge}). At step 520, past the initial energetic
 transient, SAP exhibits linear convergence and satisfies the convergence
 criteria within 5 iterations.
 \begin{figure}[!h]
@@ -56,21 +59,23 @@ criteria within 5 iterations.
     \includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step60_21its_wwalls_latex_labels.png}
 	\includegraphics[height=0.34\columnwidth]{figures/clutter/normalized_cost_step520_5its_wwalls_latex_labels.png}    
 	\caption{\label{fig:clutter_line_search} 
-	Cost as a function of Newton iterations for step 60 (left) and for step 520 (right) using SAP. The cost decreases monotonically. Reference lines are shown for linear convergence (dotted) and quadratic convergence (dashed).}
+	Cost as a function of Newton iterations for step 60 (left) and for step 520
+	(right) using SAP. The cost decreases monotonically. Reference lines are
+	shown for linear convergence (dotted) and quadratic convergence (dashed).}
 \end{figure}
 
 \subsubsection{Scalability}
 
-We evaluate the scalability of SAP by varying the
-number of objects in the clutter. We
-study the case with and without walls (see
-Fig. \ref{fig:clutter_snapshots}) as this variation leads to very
-different contact configurations and sparsity patterns. The size of the problems can be
+We evaluate the scalability of SAP by varying the number of objects in the
+clutter. We study the case with and without walls (see Fig.
+\ref{fig:clutter_snapshots}) as this variation leads to very different contact
+configurations and sparsity patterns. The size of the problems can be
 appreciated in Fig. \ref{fig:clutter_num_contats} showing the number of contact
-constraints at the end of the simulation when objects are in steady state. We observe a larger number of contacts for the
-configuration without walls since in this configuration many of the boxes spread
-over the ground and lay flat on one of their faces, leading to multi-contact
-configurations (see Fig. \ref{fig:clutter_snapshots}).
+constraints at the end of the simulation when objects are in steady state. We
+observe a larger number of contacts for the configuration without walls since in
+this configuration many of the boxes spread over the ground and lay flat on one
+of their faces, leading to multi-contact configurations (see Fig.
+\ref{fig:clutter_snapshots}).
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/clutter/number_of_contacts.png}
@@ -79,15 +84,16 @@ configurations (see Fig. \ref{fig:clutter_snapshots}).
 	simulation for setups with and without walls.}
 \end{figure}
 
-We define the \emph{speedup} against Gurobi as the ratio of the wall-clock time spent by a solver to the wall-clock time reported by Gurobi. Figure \ref{fig:clutter_speedup} shows the speedup for both
-SAP and Geodesic IPM in the configuration with and without walls.
-The setup with walls is particularly difficult given that objects are
-constrained to pile up, leading to a configuration in which almost all objects
-are coupled with every other object by frictional contact
-(see Fig. \ref{fig:clutter_snapshots}). That is, the motion of an object at the
-bottom of the pile can lead to motion of another object far on top of the pile.
-In contrast, the simulation with no walls leads to \emph{islands} of objects
-that do not interact with each other.
+We define the \emph{speedup} against Gurobi as the ratio of the wall-clock time
+spent by a solver to the wall-clock time reported by Gurobi. Figure
+\ref{fig:clutter_speedup} shows the speedup for both SAP and Geodesic IPM in the
+configuration with and without walls. The setup with walls is particularly
+difficult given that objects are constrained to pile up, leading to a
+configuration in which almost all objects are coupled with every other object by
+frictional contact (see Fig. \ref{fig:clutter_snapshots}). That is, the motion
+of an object at the bottom of the pile can lead to motion of another object far
+on top of the pile. In contrast, the simulation with no walls leads to
+\emph{islands} of objects that do not interact with each other.
 
 In general, we observe two regimes. For problems with less than about 40 bodies,
 SAP outperforms Gurobi significantly by up to a factor of 25 in the case with
@@ -138,7 +144,8 @@ is not at the expense of accuracy.
 	\centering
     %trim={<left> <lower> <right> <upper>}
     \adjincludegraphics[height=0.39\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_w_walls.png}
-	\adjincludegraphics[height=0.39\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/momentum_error_no_walls.png}\\
+	\adjincludegraphics[height=0.39\columnwidth,trim={{0.05\width} 0
+	{0.05\width} 0},clip]{figures/clutter/momentum_error_no_walls.png}\\
     \adjincludegraphics[height=0.39\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_w_walls.png}
     \adjincludegraphics[height=0.39\columnwidth,trim={{0.05\width} 0 {0.05\width} 0},clip]{figures/clutter/optimality_condition_error_no_walls.png}
 	\caption{\label{fig:clutter_errors_w_wall} 
@@ -150,28 +157,29 @@ is not at the expense of accuracy.
 \subsubsection{Slip Parameter}
 We study the effect of the slip parameter $\sigma$ in Eq.
 (\ref{eq:tangential_regularization}). We use $\delta t = 10\text{ ms}$ and
-simulate with SAP 40 objects for 10 seconds to a steady state configuration. At this
-steady state, we compute the mean slip velocity
-among all contacts, shown in Fig. \ref{fig:clutter_sigma_vt} along with the estimated slip in Eq. (\ref{eq:slip_estimation}), $v_s
-\approx\sigma\mu\delta t g$. We see that the mean slip
-velocity remains below the estimated slip as expected in a static configuration
-with objects in stiction. In the case with walls where stiction helps to hold
-the steady state static configuration, we see that the mean slip velocity
-closely follows the slope of the slip estimate. Without the walls, objects do
-not pile up in a complex static structure but simply lie on the ground, and
-therefore, the resulting slip velocities are significantly smaller. The sudden
-drop in the slip velocity for $\sigma>10^{-3}$ is caused by the sensitivity of
-the final state on the value of $\sigma$. As $\sigma$ increases, so does the
-slip velocity bound $v_s$ and objects in the configuration without walls can
-slowly drift into a configuration leading to more contacts. In particular, boxes
-are more likely to slowly drift until one of their faces lies flat
-on the ground, a configuration with zero slip once steady state is reached.
+simulate with SAP 40 objects for 10 seconds to a steady state configuration. At
+this steady state, we compute the mean slip velocity among all contacts, shown
+in Fig. \ref{fig:clutter_sigma_vt} along with the estimated slip in Eq.
+(\ref{eq:slip_estimation}), $v_s \approx\sigma\mu\delta t g$. We see that the
+mean slip velocity remains below the estimated slip as expected in a static
+configuration with objects in stiction. In the case with walls where stiction
+helps to hold the steady state static configuration, we see that the mean slip
+velocity closely follows the slope of the slip estimate. Without the walls,
+objects do not pile up in a complex static structure but simply lie on the
+ground, and therefore, the resulting slip velocities are significantly smaller.
+The sudden drop in the slip velocity for $\sigma>10^{-3}$ is caused by the
+sensitivity of the final state on the value of $\sigma$. As $\sigma$ increases,
+so does the slip velocity bound $v_s$ and objects in the configuration without
+walls can slowly drift into a configuration leading to more contacts. In
+particular, boxes are more likely to slowly drift until one of their faces lies
+flat on the ground, a configuration with zero slip once steady state is reached.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/clutter/sigma_vt.png}
 	\caption{\label{fig:clutter_sigma_vt} 
 	Mean slip velocity at the end of the simulation with objects at rest as a
-	function of the slip parameter. The estimated bound $v_s = \sigma\mu\delta t g$ is shown in dashed lines.}
+	function of the slip parameter. The estimated bound $v_s = \sigma\mu\delta t
+	g$ is shown in dashed lines.}
 \end{figure}
 
 We conclude by examining the effect of $\sigma$ on the conditioning of the
@@ -179,12 +187,14 @@ system. Figure \ref{fig:clutter_sigma} shows the condition number of the Hessian
 in the final configuration and the mean number of Newton iterations throughout
 the simulation. We see that the condition number scales as $\sigma^{-1}$ while
 the mean number of Newton iterations is roughly proportional to  $\ln(\sigma)$.
-Our default choice $\sigma=10^{-3}$ is a good compromise between accurate stiction, performance and conditioning.
+Our default choice $\sigma=10^{-3}$ is a good compromise between accurate
+stiction, performance and conditioning.
 \begin{figure}[!h]
 	\centering
     %trim={<left> <lower> <right> <upper>}
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/sigma_iterations.png}
     \adjincludegraphics[width=0.49\columnwidth,trim={0 0 {0.05\width} 0},clip]{figures/clutter/sigma_condition_number.png}
 	\caption{\label{fig:clutter_sigma} 
-	Effect of the slip parameter on the mean Newton iterations per step (left) and mean condition number (right).}
+	Effect of the slip parameter on the mean Newton iterations per step (left)
+	and mean condition number (right).}
 \end{figure}

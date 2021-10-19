@@ -4,33 +4,37 @@
 \section{Semi-Analytic Primal Solver}
 \label{sec:sap_solver}
 
-Inspired by Newton's method, our Semi-Analytic Primal Solver (SAP) seeks to monotonically decrease the primal cost $\ell_p(\mf{v})$ at each iteration, as outlined in Algorithm \ref{alg:sap}
+Inspired by Newton's method, our Semi-Analytic Primal Solver (SAP) seeks to
+monotonically decrease the primal cost $\ell_p(\mf{v})$ at each iteration, as
+outlined in Algorithm \ref{alg:sap}
 \begin{algorithm}[H]
 	\caption{The Semi-Analytic Primal Solver (SAP)}	
 	  \label{alg:sap}
 	  \begin{algorithmic}[1]
-		  \State Initialize $\mf{v}_m \gets \mf{v}_0$
-		  \RepeatUntil $~\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a + \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)$, Eq. \eqref{eq:stopping_criteria}
-			  \State $\Delta\mf{v}_{m} = -\mf{H}^{-1}(\mf{v}_m)\nabla_\mf{v}\ell_p(\mf{v}_m)$ \label{op:Newton_iteration}
-			  \State $\displaystyle \alpha_m = \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}_m + t \Delta\mf{v}_{m})$
-			  \State $\displaystyle \mf{v}_{m+1} = \vf{v}_m + \alpha_{m}\Delta\mf{v}_{m}$
-		  \EndRepeatUntil
-		  \State\Return $\{\mf{v}$, $\bgamma=P_\mathcal{F}(\vf{y}(\mf{v}))\}$
+		  \State Initialize $\mf{v}_m \gets \mf{v}_0$ \RepeatUntil
+		  $~\Vert\tilde{\nabla}\ell_p\Vert < \varepsilon_a +
+		  \varepsilon_r\max(\Vert\tilde{\mf{p}}\Vert,\Vert\tilde{\mf{j}_c}\Vert)$,
+		  Eq. \eqref{eq:stopping_criteria} \State $\Delta\mf{v}_{m} =
+		  -\mf{H}^{-1}(\mf{v}_m)\nabla_\mf{v}\ell_p(\mf{v}_m)$
+		  \label{op:Newton_iteration} \State $\displaystyle \alpha_m =
+		  \argmin_{t\in\mathbb{R}^{++}} \ell_p(\mf{v}_m + t \Delta\mf{v}_{m})$
+		  \State $\displaystyle \mf{v}_{m+1} = \vf{v}_m +
+		  \alpha_{m}\Delta\mf{v}_{m}$ \EndRepeatUntil \State\Return $\{\mf{v}$,
+		  $\bgamma=P_\mathcal{F}(\vf{y}(\mf{v}))\}$
 	  \end{algorithmic}
 \end{algorithm}
 
 The SAP iterations require $\mf{H}(\mf v)\succ 0$ at all iterations.  At points
-where $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable, $\mf{H}(\mf v)$ is
-simply set equal to the Hessian of the
-cost function. In general, $\mf{H}(\mf v)$ is evaluated using a partition of its
-domain. For each set in the partition, $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable on the
-interior, and the Hessian admits a simple formula. Outside the interior, we
-evaluate $\mf{H}(\mf v)$ by using the Hessian formula derived for the interior.
-This procedure provides a globally valid definition for $\mf{H}(\mf v)$. The
-partition is described in Appendix
-\ref{app:analytical_inverse_dynamics_derivations}. The Hessian formula are given
-in Appendix \ref{app:gradients_derivation}. Our convergence analysis in Appendix
-\ref{app:sap_converge} also accounts for this definition.
+where $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable, $\mf{H}(\mf v)$ is simply
+set equal to the Hessian of the cost function. In general, $\mf{H}(\mf v)$ is
+evaluated using a partition of its domain. For each set in the partition,
+$\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable on the interior, and the Hessian
+admits a simple formula. Outside the interior, we evaluate $\mf{H}(\mf v)$ by
+using the Hessian formula derived for the interior. This procedure provides a
+globally valid definition for $\mf{H}(\mf v)$. The partition is described in
+Appendix \ref{app:analytical_inverse_dynamics_derivations}. The Hessian formula
+are given in Appendix \ref{app:gradients_derivation}. Our convergence analysis
+in Appendix \ref{app:sap_converge} also accounts for this definition.
 
 As shown in Appendix \ref{app:sap_converge}, SAP globally convergences at least
 at a linear-rate. Further, SAP exhibits quadratic convergence when $\nabla^2
@@ -70,31 +74,30 @@ two line search algorithms: an approximate backtracking line search with
 Armijo's stopping criteria and an exact (to machine epsilon) line search.
 
 At the $m\text{-th}$ Newton iteration, backtracking line search starts with a
-maximum step length of $\alpha_\text{Max}$ and progressively decreases it
-by a factor $\rho \in (0, 1)$ as $\alpha\gets\rho\alpha$ until Armijo's
-criteria \cite[\S 3.1]{bib:nocedal2006numerical} is satisfied. We write Armijo's
-criteria as $~\ell_p(\mf{v}^m + \alpha \Delta\mf{v}^{m}) < \ell_p(\mf{v}^m) +
-c\,\alpha\,d\ell_p/d\alpha(\mf{v}^m)$. Typical parameters we use are
-$\rho=0.8$, $c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
+maximum step length of $\alpha_\text{Max}$ and progressively decreases it by a
+factor $\rho \in (0, 1)$ as $\alpha\gets\rho\alpha$ until Armijo's criteria
+\cite[\S 3.1]{bib:nocedal2006numerical} is satisfied. We write Armijo's criteria
+as $~\ell_p(\mf{v}^m + \alpha \Delta\mf{v}^{m}) < \ell_p(\mf{v}^m) +
+c\,\alpha\,d\ell_p/d\alpha(\mf{v}^m)$. Typical parameters we use are $\rho=0.8$,
+$c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
 
 For the exact line search we use the method \verb;rtsafe; \cite[\S
-9.4]{bib:numerical_recipes} to find the unique root of $d\ell/d\alpha$. This is a one-dimensional
-root finder that uses the Newton-Raphson method and switches to bisection
-when an iterate falls outside a search bracket or
-when convergence is slow. The fast computation of derivatives we show next
-allows us to iterate $\alpha$ to machine precision at a negligible impact on the
-computational cost. In practice, this is our preferred algorithm since it allows
-us to use very low regularization parameters without having to tune tolerances
-in the line search. Moreover, we observe 15\%-35\% performance improvement when
-compared to the backtracking line search.
+9.4]{bib:numerical_recipes} to find the unique root of $d\ell/d\alpha$. This is
+a one-dimensional root finder that uses the Newton-Raphson method and switches
+to bisection when an iterate falls outside a search bracket or when convergence
+is slow. The fast computation of derivatives we show next allows us to iterate
+$\alpha$ to machine precision at a negligible impact on the computational cost.
+In practice, this is our preferred algorithm since it allows us to use very low
+regularization parameters without having to tune tolerances in the line search.
+Moreover, we observe 15\%-35\% performance improvement when compared to the
+backtracking line search.
 
 \subsection{Efficient Analytical Derivatives For Line Search}
 
 The algorithm \verb;rtsafe; requires the first and second directional
-derivatives of $\ell_p$, while the
-backtracking method only requires the first derivative to verify Armijo's
-stopping criteria. We show how to compute these derivatives efficiently in
-$\mathcal{O}(n)$ operations. Defining $\ell(\alpha) =
+derivatives of $\ell_p$, while the backtracking method only requires the first
+derivative to verify Armijo's stopping criteria. We show how to compute these
+derivatives efficiently in $\mathcal{O}(n)$ operations. Defining $\ell(\alpha) =
 \ell_p(\mf{v}+\alpha\Delta\mf{v})$, we compute first and second derivatives as
 \begin{align*}
 	\frac{d\ell}{d\alpha}&=\Delta\mf{v}^T\nabla_\mf{v}\ell(\alpha),\\
@@ -126,13 +129,13 @@ Notice the first term on the right can be precomputed before the line search
 \subsection{Problem Sparsity}
 \label{sec:problem_sparsity}
 
-The matrix $\mf{H}$ inherits a block sparse structure from
-the specific contact configuration of the problem. 
-We exploit this structure using a supernodal Cholesky factorization \cite[\S
-9]{bib:davis2016survey}. Implementing this factorization requires construction
-of a \emph{junction tree}.  For this we apply the algorithm in
-\cite{bib:smail2017junction}, using cliques of $\mf{H}$ as input. We
-use the implementation from the Conex solver \cite{bib:permenter2020}.
+The matrix $\mf{H}$ inherits a block sparse structure from the specific contact
+configuration of the problem. We exploit this structure using a supernodal
+Cholesky factorization \cite[\S 9]{bib:davis2016survey}. Implementing this
+factorization requires construction of a \emph{junction tree}.  For this we
+apply the algorithm in \cite{bib:smail2017junction}, using cliques of $\mf{H}$
+as input. We use the implementation from the Conex solver
+\cite{bib:permenter2020}.
 
 The block sparsity of $\mf{H}$  is best described with an example. We organize
 our multibody systems as a collection of articulated \emph{tree structures}, or
@@ -141,20 +144,20 @@ a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
 	\centering
 	\includegraphics[width=0.9\columnwidth]{figures/schematics/sparsity_example.png}
 	\caption{\label{fig:sparsity_example} 
-	An example of a sparsity pattern commonly encountered in the
-	simulation of robotic mechanical systems. The graph on the right puts
-	\textit{trees} as nodes and contact \textit{patches} as edges.}
+	An example of a sparsity pattern commonly encountered in the simulation of
+	robotic mechanical systems. The graph on the right puts \textit{trees} as
+	nodes and contact \textit{patches} as edges.}
 \end{figure}
 In this example, a robot arm mounted on a mobile base constitutes its own tree,
 here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
 will be denoted with $n_t$. A free body is the common case of a tree with
-$n_t=6$. In general, matrix $\mf{A}$ has a
-block diagonal structure where each diagonal block corresponds to a tree.
+$n_t=6$. In general, matrix $\mf{A}$ has a block diagonal structure where each
+diagonal block corresponds to a tree.
 
-We define as \textit{patches} a collection of contact pairs between two
-trees. Each contact pair corresponds to a single cone constraint in our
-formulation. The set of constraint indexes that belong to patch $p$ is
-denoted with $\mathcal{I}_p$ of size (cardinality) $|\mathcal{I}_p| = r_p$.
+We define as \textit{patches} a collection of contact pairs between two trees.
+Each contact pair corresponds to a single cone constraint in our formulation.
+The set of constraint indexes that belong to patch $p$ is denoted with
+$\mathcal{I}_p$ of size (cardinality) $|\mathcal{I}_p| = r_p$.
 Figure~\ref{fig:sparsity_example} shows the corresponding graph where nodes
 correspond to trees and edges correspond to patches.
 

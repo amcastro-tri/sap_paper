@@ -1,31 +1,32 @@
 \section{Understanding Model Parameters}
 \label{sec:understanding_model_parameters}
 
-We have provided explicit algebraic expressions for the impulses as a function of
-contact velocities in Eq. \eqref{eq:analytical_y_projection} via the inverse
+We have provided explicit algebraic expressions for the impulses as a function
+of contact velocities in Eq. \eqref{eq:analytical_y_projection} via the inverse
 dynamics. While these expressions are given in terms of regularization $\mf{R}$,
 Section \ref{sec:physical_intuition} describes in detail the resulting physical
 model in terms of contact stiffness $k$, dissipation time constant $\tau_d$ and
 friction coefficient $\mu$. Therefore, users of this model only need to provide
 these physical parameters and regularization is computed from them.
 
-Regularization parameters not only determine the physical model, but
-also affect the robustness and performance of the SAP solver. Modeling near-rigid
-objects and avoiding viscous drift during stiction require very small values of
-$R_t$ and $R_n$ that can lead to badly ill-conditioned problems. Under these
+Regularization parameters not only determine the physical model, but also affect
+the robustness and performance of the SAP solver. Modeling near-rigid objects
+and avoiding viscous drift during stiction require very small values of $R_t$
+and $R_n$ that can lead to badly ill-conditioned problems. Under these
 conditions, the Hessian of the system exhibits a large condition number, and
-round-off errors can render the search direction of Newton iterations
-useless. We show in this section how a judicious choice of the regularization
-parameters leads to much better conditioned system of equations, without
-sacrificing accuracy.
+round-off errors can render the search direction of Newton iterations useless.
+We show in this section how a judicious choice of the regularization parameters
+leads to much better conditioned system of equations, without sacrificing
+accuracy.
 
 \subsection{Near-Rigid Contact}
 
-With the formulation presented in this work, all bodies are modeled as compliant.
-Therefore, rigid objects must be modeled as \emph{near-rigid} bodies with large
-stiffness. However, as mentioned above, blindly choosing large values of stiffness can
-lead to ill-conditioned systems of equations. Here, we propose a principled way
-to choose the stiffness parameter when modeling near-rigid contact.
+With the formulation presented in this work, all bodies are modeled as
+compliant. Therefore, rigid objects must be modeled as \emph{near-rigid} bodies
+with large stiffness. However, as mentioned above, blindly choosing large values
+of stiffness can lead to ill-conditioned systems of equations. Here, we propose
+a principled way to choose the stiffness parameter when modeling near-rigid
+contact.
 
 Consider the dynamics of a mass particle $m$ laying on the ground, with contact
 stiffness $k$ and dissipation time scale $\tau_d$. When in contact, the dynamics
@@ -36,11 +37,11 @@ when $T_n \lesssim \delta t$ and the time step $\delta t$ cannot temporally
 resolve the contact dynamics. 
 
 In this \emph{near-rigid} regime, we use compliance as a means to add a
-Baumgarte-like \emph{stabilization} to avoid constraint drift, as similarly
-done in \cite{bib:todorov2011}. Choosing the time scale of the contact to be
-$T_n = \beta \delta t$ with $\beta \le 1$, we model inelastic contact with a dissipation
-that leads to a critically damped oscillator, or $\zeta=1$. This dissipation is
-$\tau_d=2\zeta/\omega_n$, or in terms of the time step,
+Baumgarte-like \emph{stabilization} to avoid constraint drift, as similarly done
+in \cite{bib:todorov2011}. Choosing the time scale of the contact to be $T_n =
+\beta \delta t$ with $\beta \le 1$, we model inelastic contact with a
+dissipation that leads to a critically damped oscillator, or $\zeta=1$. This
+dissipation is $\tau_d=2\zeta/\omega_n$, or in terms of the time step,
 \begin{equation*}
     \tau_d=\frac{\beta}{\pi}\delta t.
 \end{equation*}
@@ -61,11 +62,11 @@ the ground. In this case we have
 	&= \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2,\\
 	&= \frac{\beta^2}{4\pi^2}g\delta t^2,
 \end{align*}
-independent of mass. Taking $\beta=1.0$ and Earth's gravitational constant, a typical simulation
-time step of $\delta t=10^{-3}~\text{s}$ leads to $\phi\approx 2.5\times
-10^{-7}~\text{m}$, and a large simulation time step of $\delta
-t=10^{-2}~\text{s}$ leads to $\phi\approx 2.5\times 10^{-5}~\text{m}$, well
-within acceptable bounds to consider a body rigid for typical robotics
+independent of mass. Taking $\beta=1.0$ and Earth's gravitational constant, a
+typical simulation time step of $\delta t=10^{-3}~\text{s}$ leads to
+$\phi\approx 2.5\times 10^{-7}~\text{m}$, and a large simulation time step of
+$\delta t=10^{-2}~\text{s}$ leads to $\phi\approx 2.5\times 10^{-5}~\text{m}$,
+well within acceptable bounds to consider a body rigid for typical robotics
 applications.
 
 For a general multibody system, we define the per-contact effective mass as
@@ -81,21 +82,22 @@ dynamics as $\omega_n=\sqrt{k\text{w}_i}$.
 
 Finally, we compute the regularization parameter in the normal direction as
 \begin{eqnarray}
-    R_n = \max\left(\frac{\beta^2}{4\pi^2}\Vert\mathbf{W}_{ii}\Vert_\text{rms}, 
+    R_n = \max\left(\frac{\beta^2}{4\pi^2}\Vert\mathbf{W}_{ii}\Vert_\text{rms},
     \frac{1}{\delta t k(\delta t+\tau_d)}\right)
     \label{eq:normal_regularization}.
 \end{eqnarray}
 With this strategy, our model automatically switches between modeling compliant
 contact with stiffness $k$ when the time step $\delta t$ can resolve the
 temporal dynamics of the contact, and using stabilization to model near-rigid
-contact with the amount of stabilization controlled by parameter
-$\beta$. In all of our simulations, we use $\beta=1.0$.
+contact with the amount of stabilization controlled by parameter $\beta$. In all
+of our simulations, we use $\beta=1.0$.
 
 \subsection{Stiction}
 \label{sec:stiction_parameterization}
 
-Given that our model regularizes friction, we are interested in estimating a bound on
-the slip velocity at stiction. We propose the following regularization for friction
+Given that our model regularizes friction, we are interested in estimating a
+bound on the slip velocity at stiction. We propose the following regularization
+for friction
 \begin{equation}
     R_t = \sigma \text{w},
     \label{eq:tangential_regularization}
@@ -103,26 +105,26 @@ the slip velocity at stiction. We propose the following regularization for frict
 where $\sigma$ is a dimensionless parameter.
 
 To understand the effect of $\sigma$ in the approximation of stiction, we
-consider once again a point of mass $m$ in contact with the ground under gravity,
-for which $\text{w}\approx 1/m$. We push the particle with a horizontal force of magnitude
-$F=\mu\gamma_n$ so that friction is right at the boundary of the friction cone and
-the slip velocity due to regularization, $v_s$, is maximized. Then in stiction, we have
+consider once again a point of mass $m$ in contact with the ground under
+gravity, for which $\text{w}\approx 1/m$. We push the particle with a horizontal
+force of magnitude $F=\mu\gamma_n$ so that friction is right at the boundary of
+the friction cone and the slip velocity due to regularization, $v_s$, is
+maximized. Then in stiction, we have
 \begin{equation*}
     \|\bgamma_t\| = \frac{v_s}{R_t} = \mu m g \delta t.
 \end{equation*}
-Using our proposed regularization in Eq. (\ref{eq:tangential_regularization}), we find
-the maximum slip velocity
+Using our proposed regularization in Eq. (\ref{eq:tangential_regularization}),
+we find the maximum slip velocity
 \begin{equation}
     v_s \approx \mu\sigma g \delta t,
     \label{eq:slip_estimation}
 \end{equation}
-independent of the mass and linear
-with the time step size. Even though the friction coefficient $\mu$ can take any
-non-negative value, most often in practical applications $\mu < 1$. Values in the
-order of 1 are in fact considered as large friction values. Therefore, for this
-analysis we consider $\mu\approx 1$.
-In all of our simulations, we use $\sigma=10^{-3}$. With
-Earth's gravitational constant, a typical simulation with time step of $\delta
+independent of the mass and linear with the time step size. Even though the
+friction coefficient $\mu$ can take any non-negative value, most often in
+practical applications $\mu < 1$. Values in the order of 1 are in fact
+considered as large friction values. Therefore, for this analysis we consider
+$\mu\approx 1$. In all of our simulations, we use $\sigma=10^{-3}$. With Earth's
+gravitational constant, a typical simulation with time step of $\delta
 t=10^{-3}~\text{s}$ leads to a stiction velocity of $v_s\approx
 10^{-5}\text{m}/\text{s}$, and with a large step of $\delta t=10^{-2}~\text{s}$,
 $v_s\approx 10^{-4}\text{ m}/\text{s}$. Smaller friction coefficients lead to
@@ -146,27 +148,26 @@ this regime, $R_n^{-1}\approx \delta t^2k$, and using Eq.
     \lesssim 4\pi^2\sigma
 \end{equation*}
 where in the last inequality we used the assumption that we are in the soft
-regime where $\delta t < T_n$. Since $\sigma \ll 1$ and in particular we
-use $\sigma=10^{-3}$ in all of our simulations, we see that $R_t/R_n \ll
-1$. Moreover, $R_t/R_n$ goes to zero quadratically with $\delta t/T_n$ as
-the time step is reduced and the dynamics of the compliance is better resolved
-in time.
+regime where $\delta t < T_n$. Since $\sigma \ll 1$ and in particular we use
+$\sigma=10^{-3}$ in all of our simulations, we see that $R_t/R_n \ll 1$.
+Moreover, $R_t/R_n$ goes to zero quadratically with $\delta t/T_n$ as the time
+step is reduced and the dynamics of the compliance is better resolved in time.
 
 Therefore, we have shown that our choice of regularization parameters enjoys the
 following properties
 \begin{enumerate}
-    \item Users only provide physical parameters; contact stiffness $k$, dissipation time scale
-    $\tau_d$, and friction coefficient $\mu$. There is no need for users to tweak
-    solver parameters.
-    \item In the \emph{near-rigid} limit, our regularization in
-    Eq. (\ref{eq:normal_regularization}) automatically switches the method to
-    model rigid contact with constraint stabilization to avoid excessively large
+    \item Users only provide physical parameters; contact stiffness $k$,
+    dissipation time scale $\tau_d$, and friction coefficient $\mu$. There is no
+    need for users to tweak solver parameters.
+    \item In the \emph{near-rigid} limit, our regularization in Eq.
+    (\ref{eq:normal_regularization}) automatically switches the method to model
+    rigid contact with constraint stabilization to avoid excessively large
     stiffness parameters and the consequent ill-conditioning of the system.
     \item Frictional regularization is parameterized by a single dimensionless
     parameter $\sigma$. We estimate a bound for the slip velocity during
-    stiction to be $v_s \approx \mu \sigma \delta t g$. For
-    $\sigma=10^{-3}$, the slip during stiction is well within acceptable
-    bounds for robotics applications.
+    stiction to be $v_s \approx \mu \sigma \delta t g$. For $\sigma=10^{-3}$,
+    the slip during stiction is well within acceptable bounds for robotics
+    applications.
     \item We show that $R_t/R_n \ll 1$ when $\delta t$ can resolve the dynamics
     of the compliant contact, as required to accurately model compliance during
     sliding.

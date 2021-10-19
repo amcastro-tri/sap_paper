@@ -1,13 +1,12 @@
 \section{An Unconstrained Convex Formulation}
 \label{sec:unconstrained_convex_formulation}
-Remarkably,  the dual optimal impulses of~\eqref{eq:dual_regularized} can be constructed from 
-the primal optimal velocities of~\eqref{eq:primal_regularized}
-using a simple projection operation. 
- Following~\cite{bib:todorov2014}, we call this construction  \textit{inverse dynamics}. 
- Moreover, this projection
-decomposes into a set of individual projections for each
-contact impulse $\bgamma_i$ given the separable structure of the constraints.
-Letting $\vf{y}_i(\vf{v}_{c,i}) = -\vf{R}_i^{-1}(\vf{v}_{c,i}-\hat{\vf{v}}_{c,i})$,
+Remarkably,  the dual optimal impulses of~\eqref{eq:dual_regularized} can be
+constructed from the primal optimal velocities of~\eqref{eq:primal_regularized}
+using a simple projection operation. Following~\cite{bib:todorov2014}, we call
+this construction  \textit{inverse dynamics}. Moreover, this projection
+decomposes into a set of individual projections for each contact impulse
+$\bgamma_i$ given the separable structure of the constraints. Letting
+$\vf{y}_i(\vf{v}_{c,i}) = -\vf{R}_i^{-1}(\vf{v}_{c,i}-\hat{\vf{v}}_{c,i})$,
 these projections take the form
 \begin{equation}
   \begin{aligned}
@@ -20,42 +19,38 @@ these projections take the form
 where $\vf{R}_i\in\mathbb{R}^{3\times3}$ is the $i\text{-th}$ diagonal block of
 the regularization matrix $\mf{R}$. That is, $\bgamma_i$ is the projection
 $P_{\mathcal{F}_i}$ of $\vf{y}_i(\vf{v}_{c,i})$ onto the friction cone
-$\mathcal{F}_i$ using the norm defined by $\vf{R}_i$.
-The projection $P_{\mathcal{F}}(\mf{y})$ onto 
-the full cone $\mathcal{F} :=
-\mathcal{F}_1 \times F_2 \times \cdots \times \mathcal{F}_{n_c}$ 
-is obtained by simply stacking together the individual projections
-$P_{\mathcal{F}_i}(\vf{y}_i)$ from Eq. (\ref{eq:y_projection}),
-where we form $\mf{y}$ by stacking together each
-$\vf{y}_i$ from all contact pairs.  In this notation,
-the optimal impulse $\bgamma$ of~\eqref{eq:dual_regularized} 
-and the optimal velocities $\mf{v}$ of~\eqref{eq:primal_regularized} 
-satisfy  $\bgamma = P_{\mathcal{F}}(\mf{y}(\mf{v}))$.
+$\mathcal{F}_i$ using the norm defined by $\vf{R}_i$. The projection
+$P_{\mathcal{F}}(\mf{y})$ onto the full cone $\mathcal{F} := \mathcal{F}_1
+\times F_2 \times \cdots \times \mathcal{F}_{n_c}$ is obtained by simply
+stacking together the individual projections $P_{\mathcal{F}_i}(\vf{y}_i)$ from
+Eq. (\ref{eq:y_projection}), where we form $\mf{y}$ by stacking together each
+$\vf{y}_i$ from all contact pairs.  In this notation, the optimal impulse
+$\bgamma$ of~\eqref{eq:dual_regularized} and the optimal velocities $\mf{v}$
+of~\eqref{eq:primal_regularized} satisfy  $\bgamma =
+P_{\mathcal{F}}(\mf{y}(\mf{v}))$.
 
-
-We use $\bgamma = P_{\mathcal{F}}(y(\mf{v}))$  and the optimality
-condition $\sigma = \bgamma$ from Theorem~\ref{th:primal_dual} to eliminate both $\sigma$ and the constraints from the primal
-formulation. In total, we obtain the following unconstrained problem
-in velocities only
+We use $\bgamma = P_{\mathcal{F}}(y(\mf{v}))$  and the optimality condition
+$\sigma = \bgamma$ from Theorem~\ref{th:primal_dual} to eliminate both $\sigma$
+and the constraints from the primal formulation. In total, we obtain the
+following unconstrained problem in velocities only
 \begin{eqnarray}
 	\min_{\mf{v}} \ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
 	\frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2.
 	\label{eq:primal_unconstrained}
 \end{eqnarray}
-Correctness of this reformulation is asserted by the following theorem, 
-which we prove in Appendix \ref{app:unconstrained_formulation_equivalance}.
+Correctness of this reformulation is asserted by the following theorem, which we
+prove in Appendix \ref{app:unconstrained_formulation_equivalance}.
 \begin{theorem}
-  If  $\mf{v}$ solves the unconstrained formulation (\ref{eq:primal_unconstrained}),
-    then $(\mf{v}, \bsigma)$,
-    with $\bsigma =P_\mathcal{F}(\mf{y}(\mf{v}))$,
-    solves the primal
-    formulation (\ref{eq:primal_regularized}).
+  If  $\mf{v}$ solves the unconstrained formulation
+    (\ref{eq:primal_unconstrained}), then $(\mf{v}, \bsigma)$, with $\bsigma
+    =P_\mathcal{F}(\mf{y}(\mf{v}))$, solves the primal formulation
+    (\ref{eq:primal_regularized}).
     \label{th:unconstrained_formulation_equivalance}
 \end{theorem}
-Lemma \ref{lem:PropertiesOfObj} in Appendix \ref{app:sap_converge}
-shows that the unconstrained cost $\ell_p(\mf{v})$ is strongly convex and
-differentiable with Lipschitz continuous gradients. Therefore, the unconstrained
-formulation (\ref{eq:primal_unconstrained}) has a unique solution, and can be
-efficiently solved.  
+Lemma \ref{lem:PropertiesOfObj} in Appendix \ref{app:sap_converge} shows that
+the unconstrained cost $\ell_p(\mf{v})$ is strongly convex and differentiable
+with Lipschitz continuous gradients. Therefore, the unconstrained formulation
+(\ref{eq:primal_unconstrained}) has a unique solution, and can be efficiently
+solved.  
 Section \ref{sec:sap_solver} presents our novel SAP solver specifically designed
 for its solution.

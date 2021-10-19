@@ -15,13 +15,14 @@ respectively.
 \label{sec:about_solvers}
 
 We evaluate commercial software Gurobi, considered an industry standard, to
-solve our primal formulation \eqref{eq:primal_regularized}. As an open source option, we evaluate the Geodesic interior-point method (IPM)
-from \cite{bib:permenter2020}. Geodesic IPMs, in contrast with primal-dual
-IPMs, do not apply Newton's method to the central-path conditions directly.
-Instead, they use geodesic curves that satisfy the complementarity slackness
-condition. Since the Geodesic IPM and SAP use the same supernodal linear algebra
-code described in Section \ref{sec:problem_sparsity}, it is natural to compare
-their performance.
+solve our primal formulation \eqref{eq:primal_regularized}. As an open source
+option, we evaluate the Geodesic interior-point method (IPM) from
+\cite{bib:permenter2020}. Geodesic IPMs, in contrast with primal-dual IPMs, do
+not apply Newton's method to the central-path conditions directly. Instead, they
+use geodesic curves that satisfy the complementarity slackness condition. Since
+the Geodesic IPM and SAP use the same supernodal linear algebra code described
+in Section \ref{sec:problem_sparsity}, it is natural to compare their
+performance.
 
 For performance comparisons, we use the steady clock from the STL
 \verb+std::chrono+ library to measure wall-clock time for SAP and Geodesic IPM.
