@@ -1,37 +1,41 @@
 \section{Multibody Dynamics with Contact}
 \label{sec:multibody_dynamics_with_contact}
 
-We use generalized coordinates to describe our multibody system. Therefore, the
+\sout{We use generalized coordinates to describe our multibody system. Therefore, the
 state is fully described by the generalized positions
 $\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
 $\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
-generalized positions and velocities, respectively.
+generalized positions and velocities, respectively.}
 
 Time derivatives of the generalized positions are described by the kinematic map
 \begin{equation}
 	\dot{\mf{q}} = \mf{N}(\mf{q})\mf{v},
 	\label{eq:kinematic_map}
 \end{equation}
-where $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$ is a block diagonal matrix.
+\sout{where $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$ is a block diagonal matrix.
 For robotic systems comprised of revolute and prismatic joints, the blocks of
 $\mf{N}(\mf{q})$ correspond to identity maps. The same is true for deformable
 body models where the configuration is described by the position of each vertex
 in a deformable mesh. For systems containing ball joints, free floating bodies,
 or mobile bases, where either quaternions or Euler angles are used,
 $\mf{N}(\mf{q})$ will contain non-identity blocks that are in general functions
-of the configuration $\mf{q}$.
+of the configuration $\mf{q}$.}
 
-Given a configuration $\mf{q}$ of the system, our geometry engine reports a
+\sout{Given a configuration $\mf{q}$ of the system, our geometry engine reports a
 discrete set of $n_c$ contacts between a pair of bodies. The $i\text{-th}$
 \emph{contact pair} is described by the location $\vf{p}_i$ of the contact
 point, a normal direction $\hat{\vf{n}}_i$ and the \emph{signed distance} or
-\emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$. The kinematics of each
-contact is further completed with the relative velocity
-$\vf{v}_{c,i}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_i$,
-expressed in a contact frame $C_i$ for which we arbitrarily choose the
-$z\text{-axis}$ to coincide with the contact normal $\hat{\vf{n}}_i$.
+\emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$. The kinematics of each contact is further completed with
+the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$ between these two bodies at
+point $\vf{p}_i$, expressed in a contact frame $C_i$ for which we arbitrarily
+choose the $z\text{-axis}$ to coincide with the contact normal
+$\hat{\vf{n}}_i$.}
+\RedHighlight{We can say more
+about its properties. \cite{bib:anitescu2006} defines it and talks about its
+differentiability. Section 2.2, Eq. 1. VERY nicely described in
+\cite{bib:tasora2011}, Section 2.3.}
 
-We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
+\sout{We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
 stacking velocities $\vf{v}_{c,i}$ of all contact pairs together. Similarly, we
 denote by $\bgamma_i\in\mathbb{R}^3$ the contact impulse in the contact frame
 $C_i$ at a specific contact point and with $\bgamma\in\mathbb{R}^{3n_c}$ the
@@ -39,27 +43,27 @@ stacked vector of all contact impulses. In general, unless otherwise specified,
 we use bold italics for vectors in $\mathbb{R}^3$ and non-italics bold for their
 stacked counterpart. The generalized velocities $\mf{v}$ and contact velocities
 $\mf{v}_c$ satisfy the equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
-$\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.
+$\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.}
 
-To arrive at a discrete time system of equations, we can integrate the momentum
+\sout{To arrive at a discrete time system of equations, we can integrate the momentum
 balance at intervals of size $\delta t$ from time step $t^n$ to the next time
-step $t^{n+1}=t^n+\delta t$. We write this as
+step $t^{n+1}=t^n+\delta t$. We write this as}
 \begin{eqnarray}
 	\mf{M}(\mf{v}^{n+1}-\mf{v}^n)  = \delta t\,\bar{\vf{\tau}} +
 	\mf{J}^T\mf{\bgamma},
 	\label{eq:momentum_balance}
 \end{eqnarray}
-where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
+\sout{where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
 $\bar{\vf{\tau}}\in\mathbb{R}^{n_v}$ models external forces such as gravity and
 gyroscopic terms arising in multibody dynamics. We present a comprehensive
 discussion of our discrete time-stepping scheme in Section
-\ref{sec:discrete_time_formulation}.
+\ref{sec:discrete_time_formulation}.}
 
-Denoting with $\gamma_{n,i} \in \mathbb{R}$ and with $\bgamma_{t,i} \in
+\sout{Denoting with $\gamma_{n,i} \in \mathbb{R}$ and with $\bgamma_{t,i} \in
 \mathbb{R}^2$ the normal and tangential components of the impulse
 $\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$ in frame $C_i$, the formulation is
 most often completed with the following set of standard constraints to be
-satisfied at each contact
+satisfied at each contact}
 \begin{enumerate}
 	\item non-penetration constraint $0\le\phi_i\perp\gamma_{n,i}\ge0$,
 	\item\label{it:cone_constraint} friction cone constraint
@@ -69,10 +73,10 @@ satisfied at each contact
 	friction impulses maximize the rate of energy dissipation. In other words,
 	friction impulses oppose the sliding velocity direction.
 \end{enumerate}
-Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_i$ at
+\sout{Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_i$ at
 point $i$ are constrained to belong to the friction cone
 $\mathcal{F}_i=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
-\mu_i x_n\}$.
+\mu_i x_n\}$.}
 
 While these constraints describe the widely used Colulomb friction model, the
 resulting formulation leads to a very difficult to solve, non-convex, NCP.

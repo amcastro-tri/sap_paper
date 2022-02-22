@@ -1,0 +1,248 @@
+\section{Multibody Dynamics with Contact}
+\label{sec:multibody_dynamics_with_contact}
+
+We use generalized coordinates to describe our multibody system. Therefore, the
+state is fully described by the generalized positions
+$\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
+$\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
+generalized positions and velocities, respectively.
+
+\subsection{Contact Modeling}
+
+Given a configuration $\mf{q}$ of the system, our geometry engine reports a
+discrete set of $n_c$ contacts between a pair of bodies. The $i\text{-th}$
+\emph{contact pair} is described by the location $\vf{p}_i$ of the contact
+point, a normal direction $\hat{\vf{n}}_i$ and the \emph{signed distance} or
+\emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$ \RedHighlight{We can say more
+about its properties. \cite{bib:anitescu2006} defines it and talks about its
+differentiability. Section 2.2, Eq. 1. VERY nicely described in
+\cite{bib:tasora2011}, Section 2.3.}. The kinematics of each contact is further
+completed with the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$ between these
+two bodies at point $\vf{p}_i$, expressed in a contact frame $C_i$ for which we
+arbitrarily choose the $z\text{-axis}$ to coincide with the contact normal
+$\hat{\vf{n}}_i$.
+
+Denoting with $\gamma_{n,i} \in \mathbb{R}$ and with $\bgamma_{t,i} \in
+\mathbb{R}^2$ the normal and tangential components of the impulse
+$\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$ in frame $C_i$, the formulation is
+most often completed with the following set of standard constraints to be
+satisfied at each contact
+\begin{enumerate}
+	\item non-penetration constraint $0\le\phi_i\perp\gamma_{n,i}\ge0$,
+	\item\label{it:cone_constraint} friction cone constraint
+	$\Vert\bgamma_{t,i}\Vert\le \mu_i\gamma_{n,i}$, where $\mu_i \in \mathbb{R}$
+	is the coefficient of friction for the $i\text{-th}$ contact, and
+	\item the \emph{maximum dissipation principle}, which states that the
+	friction impulses maximize the rate of energy dissipation. In other words,
+	friction impulses oppose the sliding velocity direction.
+\end{enumerate}
+Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_i$ at
+point $i$ are constrained to belong to the friction cone
+$\mathcal{F}_i=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
+\mu_i x_n\}$. \RedHighlight{See \cite{bib:anitescu2006} to probably rewrite this
+section in term of constraints and the principle of maximum dissipation.}
+
+We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
+stacking velocities $\vf{v}_{c,i}$ of all contact pairs together. Similarly, we
+denote by $\bgamma_i\in\mathbb{R}^3$ the contact impulse in the contact frame
+$C_i$ at a specific contact point and with $\bgamma\in\mathbb{R}^{3n_c}$ the
+stacked vector of all contact impulses. In general, unless otherwise specified,
+we use bold italics for vectors in $\mathbb{R}^3$ and non-italics bold for their
+stacked counterpart. The generalized velocities $\mf{v}$ and contact velocities
+$\mf{v}_c$ satisfy the equation $\mf{v}_c=\mf{J}\,\mf{v}$, where
+$\mf{J}(\mf{q})\in\mathbb{R}^{3n_c\times n_v}$ denotes the contact Jacobian.
+
+\subsection{Temporal Discretization}
+Our discrete-time model is based on the $\theta\text{-method}$ \cite[\S
+II.7]{bib:hairer2008solving}. In particular, it incorporates the symplectic
+midpoint rule that attains second order accuracy and energy conservation. While
+most of the work in the literature uses first order time-stepping schemes, the
+extension to the second-order midpoint rule is analyzed in
+\cite{bib:potra2006linearly}. We remark that combining the
+$\theta\text{-method}$ with the convex approximation of contact is novel to our
+work. 
+
+We discretize time into intervals of fixed size $\delta t$ and seek to advance
+the state of the system from time $t^n$ to the next step at $t^{n+1} = t^n +
+\delta t$. In the $\theta\text{-method}$, variables are evaluated at
+intermediate time steps $t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with
+$\theta \in [0, 1]$. We define \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$,
+$\mf{v}^{\theta_{v}}$, and $\mf{v}^{\theta_{vq}}$ in accordance with the
+standard $\theta\text{-method}$ using scalar parameters $\theta_q$, $\theta_v$,
+and $\theta_{vq}$
+\begin{align}
+	\mf{q}^{\theta_q} &\defeq \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
+	\mf{v}^{\theta_v} &\defeq \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
+	\mf{v}^{\theta_{vq}} &\defeq \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0,
+	\label{eq:theta_method}
+\end{align}
+where, to simplify notation, we use $(\mf{q}_0, \mf{v}_0)$ to denote the state
+at $t^n$ and $(\mf{q}, \mf{v})$ to denote the state at $t^{n+1}$.
+
+Using these definitions we write the following time stepping scheme where the
+unknowns are the next time step generalized velocities $\mf{v}$ and impulses
+$\bgamma$
+\begin{flalign}
+    % Momentum equation.
+	&\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) =\nonumber\\
+	&\qquad\delta
+	t\,\mf{k}(\mf{q}^{\theta_{q}}(\mf{v}),\mf{v}^{\theta_v}(\mf{v})) +
+	\mf{J}(\mf{q}_0)^T\mf{\bgamma}, \label{eq:scheme_momentum}\\
+    % Non-penetration condition.
+    &0\le\phi_{0,i}+\delta t\,v_{n,i}(\mf{v})\perp\gamma_{n,i}\ge0, \quad
+    i\in\mathcal{A}(\mf{q}_0,\epsilon) \label{eq:scheme_non_penetration}\\
+    % Maximum dissipation principle.
+    &\bgamma_{t,i}=\argmin_{\Vert\bgamma_{t}\Vert\leq\mu_i\gamma_{n,i}}
+    \vf{v}_{t,i}\cdot\bgamma_{t}, \!\qquad\qquad i\in\mathcal{A}(\mf{q}_0,
+    \epsilon) \label{eq:scheme_mdp}\\
+    % Positions update.
+    &\mf{q} = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + \delta
+    t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+    \label{eq:scheme_q_update}
+\end{flalign}
+where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
+$\mf{k}(\mf{q},\mf{v})\in\mathbb{R}^{n_v}$ models external forces such as
+gravity, gyroscopic and other smooth generalized forces such as those arising
+from springs and dampers. Matrix $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$
+maps generalized velocities to time derivatives of the configurations. Notice
+that we explicitly stated in these equations where in time each quantity is
+evaluated.
+
+This scheme based on the $\theta\text{-method}$ enables our framework to
+generalize to some of the most popular schemes for forward dynamics:
+\begin{itemize}
+	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
+	\item Symplectic Euler with $\theta_{q} = \theta_v = 0$ and $\theta_{vq}=1$,
+	\item Implicit Euler with $\theta_{q} = \theta_v = \theta_{vq}= 1$, and
+	\item Symplectic midpoint rule, which is second order, with $\theta_{q} =
+	\theta_v = \theta_{vq}= 1/2$,
+\end{itemize}
+
+Introducing the Coulomb model of dry friction with Eq. (\ref{eq:scheme_mdp})
+however, turns the problem into a non-convex nonlinear complementarity problem
+(NCP). The non-linearity of the problem can be removed using a polyhedral
+approximation of the friction cone leading to an LCP that can be solved with
+Lemke's algorithm. However, as the number of constraints in the problem
+increases, the complexity of these solvers increases faster than linear
+\RedHighlight{(and even exponential? Am I reperating the introduction?)} with
+the size of the problem.
+
+\subsection{Two-Stage Scheme}
+
+Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
+deformable objects and to projection methods used in fluid mechanics
+\cite{bib::bell1991efficient}, we solve Eqs. (\ref{eq:v_update}) and
+(\ref{eq:q_update}) in two stages. In the first stage, we first solve for the
+\emph{free motion velocities} $\mf{v}^*$ the system would have in the absence of
+contact constraints, according to
+\begin{align}
+	\mf{m}(\mf{v}^*) &= \mf{0},
+	\label{eq:vstar_definition}
+\end{align}
+where we defined the momentum residual $\mf{m}(\mf{v})$ from to Eq.
+(\ref{eq:scheme_momentum}) as
+\begin{multline}
+	\mf{m}(\mf{v}) =
+	\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) -
+	\delta t\,\mf{k}(\mf{q}^{\theta_{q}}(\mf{v}),\mf{v}^{\theta_v}(\mf{v})).
+	\label{eq:m_definition}
+\end{multline}
+
+For integration schemes that are implicit in $\mf{v}^*$ (e.g. the implicit Euler
+scheme and the midpoint rule), we solve Eq. (\ref{eq:vstar_definition}) with
+Newton's method. For schemes explicit in $\mf{v}^*$, only the mass matrix
+$\mf{M}$ needs to be inverted, which can be accomplished efficiently using the
+$\mathcal{O}(n)$ \emph{Articulated Body Algorithm}
+\cite{bib:featherstone2008_rigid_body_dynamics_algorithms}.
+
+The second stage solves a linear approximation of the balance of momentum in Eq.
+(\ref{eq:scheme_momentum}) about $\mf{v}^*$ that satisfies the contact
+constraints. To write a convex formulation of contact in Section
+\ref{sec:previous_work}, our linearization uses a symmetric positive definite
+(SPD) approximation $\mf{A}$ of the Jacobian $\partial \mf{m}/\partial \mf{v}$.
+To achieve this we split the non-contract forces $\mf{k}$ in Eq.
+(\ref{eq:scheme_momentum}) as
+\begin{align*}
+	&\mf{k}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})) = \\
+    &\qquad\qquad \mf{k}_1(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))+
+	\mf{k}_2(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
+\end{align*}
+where we split the forces into two contributions $\mf{k}_1$ and $\mf{k}_2$ so
+that the Jacobians $\partial \mf{k}_1/\partial\mf{q}$ and $\partial
+\mf{k}_1/\partial\mf{v}$ are negative definite matrices while the same is
+generally not true for the Jacobians of $\mf{k}_2$. The term $\mf{k}_1(\mf{q},
+\mf{v})$ can include forces from modeling elements such as spring and dampers
+and even internal forces for the modeling of soft-body deformation. The term
+$\mf{k}_2(\mf{q}, \mf{v})$ includes all other contributions that cannot
+guarantee negative definiteness of their Jacobians, such as Coriolis and
+gyroscopic forces arising in multibody dynamics with generalized coordinates. We
+can now define the SPD approximation of $\partial \mf{m}/\partial \mf{v}$ as
+\begin{align}
+	\mf{A}&=\mf{M}+\delta t^2\,\theta_q\theta_{qv}\mf{K}+\delta t\,\theta_v\mf{D},
+	\label{eq:expression_for_A}\\
+	\mf{K}(\mf{q}, \mf{v})&=-\frac{\partial \mf{k}_1(\mf{q}, \mf{v})}{\partial
+	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},
+	\label{eq:stiffness_matrix}\\
+	\mf{D}(\mf{q}, \mf{v})&=-\frac{\partial \mf{k}_1(\mf{q}, \mf{v})}{\partial
+	\mf{v}},
+	\label{eq:dissipation_matrix}
+\end{align}
+where $\mf{K} \succ 0$ and $\mf{D}\succ 0$ are the stiffness and damping
+matrices of the system, respectively. As an example, for joint level
+spring-dampers models, $\mf{K}$ and $\mf{D}$ are constant, diagonal, and
+positive definite matrices. A more complex example arises in the Finite Element
+Model (FEM) of soft body deformations. In this case, $\mf{K}$ and $\mf{D}$ are
+sparse positive definite matrices.
+
+Using this linear approximation, our approximation to the original contact
+problem given by Eqs. (\ref{eq:scheme_momentum})-(\ref{eq:scheme_q_update})
+reads
+\begin{flalign}
+    % Momentum equation.
+	&\mf{A}(\mf{v}-\mf{v}^*) = \mf{J}^T\mf{\bgamma},
+	\label{eq:momentum_linearized}\\
+    % Non-penetration condition.
+    &0\le\phi_{0,i}+\delta t\,v_{n,i}(\mf{v})\perp\gamma_{n,i}\ge0, \quad
+    i\in\mathcal{A}(\mf{q}_0,\epsilon) \tag{\ref{eq:scheme_non_penetration}}\\
+    % Maximum dissipation principle.
+    &\bgamma_{t,i}=\argmin_{\Vert\bgamma_{t}\Vert\leq\mu_i\gamma_{n,i}}
+    \vf{v}_{t,i}\cdot\bgamma_{t}, \!\qquad\qquad i\in\mathcal{A}(\mf{q}_0,
+    \epsilon) \tag{\ref{eq:scheme_mdp}}\\
+    % Positions update.
+    &\mf{q} = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + \delta
+    t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+    \tag{\ref{eq:scheme_q_update}}
+\end{flalign}
+where for convenience we use $\mf{J}$ as a shorthand to denote
+$\mf{J}(\mf{q}_0)$. The approximation in Eq. (\ref{eq:momentum_linearized}) and
+the original discrete momentum update in Eq. (\ref{eq:scheme_momentum}) agree to
+second order as shown by the following result, proved in Appendix
+\ref{app:gradient_of_m_approximation}.
+\begin{prop}	
+Matrix $\mf{A}$ is a first order approximation to the Jacobian of $\mf{m}$,
+i.e.,
+\begin{align*}
+	\left. \frac{\partial \mf{m}}{\partial \mf{v}} \right|_{\mf{v}=\mf{v}^*} = \mf{A} + \mathcal{O}(\delta t).
+\end{align*}
+Therefore, Eq. (\ref{eq:momentum_linearized}) is a second order approximation of
+the discrete balance of momentum in Eq. (\ref{eq:v_update}). Moreover, $\mf{A}
+\succ 0$.
+\label{prop:gradient_of_m_approximation}
+\end{prop}
+
+As we will see in Section \ref{sec:primal_formulation}, this SPD approximation
+together with the convex relaxation of the contact constraints as introduced in
+\cite{bib:anitescu2006} allows us to write a convex formulation of the contact
+problem.
+
+Notice that, in the absence of constraint impulses, the velocities at the next
+time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
+they are computed with the order of accuracy of the $\theta\text{-method}$.
+Furthermore, we also expect to recover the properties of the
+$\theta\text{-method}$ when contact constraints are not active. As an example,
+for bodies in contact that are under rolling friction, the contact constraints
+behave as bi-lateral constraints that impose zero slip velocity. In this case,
+our two stage method using the midpoint rule to compute $\mf{v}^*$ exhibits
+considerably less numerical dissipation than other methods. We demonstrate this
+in Section \ref{sec:spring_cylinder} with an example of a mechanical system with
+rolling friction.

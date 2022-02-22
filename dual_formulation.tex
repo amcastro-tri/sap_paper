@@ -1,0 +1,61 @@
+\section{Convex Approximation of Contact Dynamics}
+\label{sec:previous_work}
+
+To improve computational tractability and ensure existence of a solution,
+Anitescu introduces a \textit{convex approximation} of the contact problem
+\cite{bib:anitescu2006}. In this approximation, the contact impulses are
+solutions to the following convex optimization problem
+\begin{eqnarray}
+	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
+	\frac{1}{2}\bgamma^T\mathbf{W}\bgamma + {\bm r}^T \bgamma,
+	\label{eq:dual_cost}
+\end{eqnarray}
+where $\mathbf{W} =
+\mathbf{J}\mathbf{M}^{-1}\mathbf{J}^T\in\mathbb{R}^{3n_c\times 3n_c}$ is the
+\emph{Delassus operator}, $\mathcal{F} := \mathcal{F}_1 \times F_2 \times \cdots
+\times \mathcal{F}_{n_c}$ is a Cartesian product of friction cones, and ${\bm
+r}$ defines a linear cost that encodes external force contributions and
+stabilization terms used to impose non-penetration at the position level.
+
+Further, \cite{bib:anitescu2006} uses a polyhedral approximation to linearize
+the friction cone constraint $\bgamma_i\in\mathcal{F}_i$. In this work, we do
+not linearize the cone constraints, but work directly with the second order cone
+constraints. This approach is preferred given that the polyhedral approximation
+is known to introduce non-physical anisotropy \cite{bib:li2018implicit}. In
+addition, the linearization of the friction cone results in a far larger problem
+due to the additional constraints needed to represent the polyhedral cone.
+
+Anitescu shows in \cite{bib:anitescu2006} that the optimality conditions for the
+problem in Eq. (\ref{eq:dual_cost}) imply the conservation of momentum in Eq.
+(\ref{eq:momentum_balance}), the maximum dissipation principle, and the modified
+non-penetration condition
+\begin{equation}
+	0 \le \phi_i - \delta t \Vert {\bm v}_{t,i} \Vert \perp \gamma_{n,i} \ge 0,
+	\label{eq:convex_approximation_complementarity_condition}
+\end{equation}
+where $\vf{v}_{t,i}$ is the tangential component of the contact velocity
+$\vf{v}_{c,i} = [\vf{v}_{t,i}\,v_{n,i}]$. Notice that the modified
+non-penetration condition in Eq.
+(\ref{eq:convex_approximation_complementarity_condition}) introduces coupling
+with the sliding velocity, an artifact of the convex approximation. We provide a
+detailed discussion on the physical validity of this approximation in Section
+\ref{sec:physical_intuition}, along with guidelines for determining its
+applicability to robotic simulation.
+
+In \cite{bib:todorov2011, bib:todorov2014} Todorov introduces regularization to
+the formulation in Eq. (\ref{eq:dual_cost}). Though not strictly applicable to
+contact problems, the \emph{Gauss's principle of least constraint} is used to
+obtain the following regularized form of Anitescu's formulation
+\begin{eqnarray}
+	\min_{\gamma\in \mathcal{F}} \ell(\bgamma) =
+	\frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T \bgamma,
+	\label{eq:dual_regularized}
+\end{eqnarray}
+where $\mathbf{R}$ is a diagonal positive matrix introduced to make
+$\mathbf{W}+\mathbf{R}\succ 0$ since in general we only have $\mathbf{W} \succeq
+0$. This makes the problem strictly convex and thus a unique solution exists.
+Regularization is used as a means to add constraint stabilization with a set of
+global parameters that control the amount of numerical compliance introduced by
+the formulation. This is different from our approach described in Section
+\ref{sec:physical_intuition}, where we show how to use regularization to model
+physical compliance, with well defined physical parameters.
