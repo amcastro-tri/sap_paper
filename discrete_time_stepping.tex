@@ -8,41 +8,68 @@ $\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
 generalized positions and velocities, respectively.
 
 \subsection{Contact Modeling}
+\label{sec:contact_modeling}
 
-Given a configuration $\mf{q}$ of the system, our geometry engine reports a
-discrete set of $n_c$ contacts between a pair of bodies. The $i\text{-th}$
-\emph{contact pair} is described by the location $\vf{p}_i$ of the contact
-point, a normal direction $\hat{\vf{n}}_i$ and the \emph{signed distance} or
-\emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$ \RedHighlight{We can say more
-about its properties. \cite{bib:anitescu2006} defines it and talks about its
-differentiability. Section 2.2, Eq. 1. VERY nicely described in
-\cite{bib:tasora2011}, Section 2.3.}. The kinematics of each contact is further
-completed with the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$ between these
-two bodies at point $\vf{p}_i$, expressed in a contact frame $C_i$ for which we
-arbitrarily choose the $z\text{-axis}$ to coincide with the contact normal
-$\hat{\vf{n}}_i$.
+Given a configuration $\mf{q}$ of the system, we assume our geometry engine
+reports a set $\mathcal{A}(\mf{q},\delta)$ of $n_c$ potential contacts between
+pairs of bodies with signed distance $\phi(\mf{q}) < \delta$. The collision
+envelope parameter $\delta > 0$ must be large enough so that all active contacts
+that would be active at the next time step are considered, but small enough to
+avoid an excessively large number of contact constraints. A common heuristics is
+to choose $\delta$ as the maximum distance spanned by any point on a rigid body
+in the span of a time step, given its velocity \cite{bib:anitescu2010}. Given
+our geometry engine, we use $\delta = 0$ in this work without impact on the
+stability of our method. We note that finding this set is not trivial in the
+general case dealing with arbitrary geometries. We refer the reader to
+\cite{bib:hadap2004collision,bib:lin2017collision, bib:erleben2018methodology,
+bib:flores2021contact} for a survey on collision and proximity queries. Though
+$\phi(\mf{q})$ is generally not differentiable everywhere, to simplify our
+analysis we assume that it is differentiable in the neighborhood of
+$\phi(\mf{q}) = 0$. Conditions for local differentiability are discussed in
+\cite{bib:anitescu2004constraint}. For penetration queries, our implementation
+within Drake \cite{bib:drake} relies on the FCL library \cite{bib:fcl}. For
+complex contact among compliant meshes, we use Drake's \emph{hydroelastic
+contact model} with geometric queries described in \cite{bib:elandt2019pressure,
+bib:masterjohn2021discrete}.
+
+We characterize the $i\text{-th}$ \emph{contact pair} in
+$\mathcal{A}(\mf{q},\delta)$ by the location $\vf{p}_i$ of the contact point, a
+normal direction $\hat{\vf{n}}_i$ and the \emph{signed distance} or \emph{gap
+function} $\phi_i(\mf{q})\in\mathbb{R}$. The kinematics of each contact is
+further completed with the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$
+between these two bodies at point $\vf{p}_i$, expressed in a contact frame $C_i$
+for which we arbitrarily choose the $z\text{-axis}$ to coincide with the contact
+normal $\hat{\vf{n}}_i$. The normal and tangential components of $\vf{v}_{c,i}$
+are given by $v_{n,i} = \hat{\vf{n}}_i\cdot\vf{v}_{c,i}$ and $\vf{v}_{t,i} =
+\vf{v}_{c,i}-v_{n,i}\hat{\vf{n}}_i$ respectively, so that
+$\vf{v}_{c,i}=[\vf{v}_{t,i}\,v_{n,i}]$.
 
 Denoting with $\gamma_{n,i} \in \mathbb{R}$ and with $\bgamma_{t,i} \in
 \mathbb{R}^2$ the normal and tangential components of the impulse
-$\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$ in frame $C_i$, the formulation is
-most often completed with the following set of standard constraints to be
-satisfied at each contact
-\begin{enumerate}
-	\item non-penetration constraint $0\le\phi_i\perp\gamma_{n,i}\ge0$,
-	\item\label{it:cone_constraint} friction cone constraint
-	$\Vert\bgamma_{t,i}\Vert\le \mu_i\gamma_{n,i}$, where $\mu_i \in \mathbb{R}$
-	is the coefficient of friction for the $i\text{-th}$ contact, and
-	\item the \emph{maximum dissipation principle}, which states that the
-	friction impulses maximize the rate of energy dissipation. In other words,
-	friction impulses oppose the sliding velocity direction.
-\end{enumerate}
-Condition \ref{it:cone_constraint} states that contact impulses $\bgamma_i$ at
-point $i$ are constrained to belong to the friction cone
+$\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$ in frame $C_i$, the widely used model
+of rigid contact with Coulomb friction can be described as
+\begin{flalign}
+    &0 \le\phi_i\perp\gamma_{n,i}\ge 0,
+    \label{eq:non_penetration_constraint}\\
+    &\bgamma_{t,i}=\argmin_{\Vert\bgamma_{t}\Vert\leq\mu_i\gamma_{n,i}}\vf{v}_{t,i}\cdot\bgamma_{t}
+    \label{eq:maximum_dissipation_principle}
+\end{flalign}
+where $\mu_i > 0$ is the coefficient of friction for the $i\text{-th}$ contact
+and $0 \le a\perp b \ge 0$ denotes complementarity, i.e. $a \ge 0$, $b \ge 0$
+and $a\,b=0$. Equation (\ref{eq:non_penetration_constraint}) enforces
+non-penetration between rigid bodies, constraint which we will relax later when
+we introduce compliance. Equation (\ref{eq:maximum_dissipation_principle})
+describes the \emph{maximum dissipation principle}, which states that
+friction impulses maximize the rate of energy dissipation. In other words,
+friction impulses oppose the sliding velocity direction. Moreover, Eq.
+(\ref{eq:maximum_dissipation_principle}) states that contact impulses
+$\bgamma_i$ at point $i$ are constrained to belong to the friction cone
 $\mathcal{F}_i=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le
-\mu_i x_n\}$. \RedHighlight{See \cite{bib:anitescu2006} to probably rewrite this
-section in term of constraints and the principle of maximum dissipation.}
+\mu_i x_n\}$.
 
-We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
+We finalize this section by stating the relationship between the generalized
+velocities of the system $\vf{v}$ and the contact velocities $\vf{v}_{c,i}$. We
+form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
 stacking velocities $\vf{v}_{c,i}$ of all contact pairs together. Similarly, we
 denote by $\bgamma_i\in\mathbb{R}^3$ the contact impulse in the contact frame
 $C_i$ at a specific contact point and with $\bgamma\in\mathbb{R}^{3n_c}$ the
@@ -104,7 +131,11 @@ where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
 $\mf{k}(\mf{q},\mf{v})\in\mathbb{R}^{n_v}$ models external forces such as
 gravity, gyroscopic and other smooth generalized forces such as those arising
 from springs and dampers. Matrix $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$
-maps generalized velocities to time derivatives of the configurations. Notice
+maps generalized velocities to time derivatives of the configurations. Equation
+(\ref{eq:scheme_non_penetration}) approximates the the non-penetration
+condition in Eq. (\ref{eq:non_penetration_constraint}) with a first order
+expansion in time $\phi_{i} \approx \phi_{0,i}+\delta t\,d\phi_i/dt$ with
+$d\phi_i/dt = v_{n,i}(\mf{v})$ \cite{bib:anitescu1995report}. Finally, notice
 that we explicitly stated in these equations where in time each quantity is
 evaluated.
 
@@ -131,10 +162,10 @@ the size of the problem.
 
 Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
 deformable objects and to projection methods used in fluid mechanics
-\cite{bib::bell1991efficient}, we solve Eqs. (\ref{eq:v_update}) and
-(\ref{eq:q_update}) in two stages. In the first stage, we first solve for the
-\emph{free motion velocities} $\mf{v}^*$ the system would have in the absence of
-contact constraints, according to
+\cite{bib::bell1991efficient}, we solve Eqs.
+(\ref{eq:scheme_momentum})-(\ref{eq:scheme_q_update}) in two stages. In the
+first stage, we solve for the \emph{free motion velocities} $\mf{v}^*$ the
+system would have in the absence of contact constraints, according to
 \begin{align}
 	\mf{m}(\mf{v}^*) &= \mf{0},
 	\label{eq:vstar_definition}
