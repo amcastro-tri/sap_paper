@@ -59,6 +59,7 @@ stability and robustness through non-physical constraint relaxation and
 stabilization, requiring a significant amount of application-specific parameter
 tuning.
 
+\subsection{Previous Work on Convex Formulations}
 To improve computational tractability, Anitescu introduced a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
 convex approximation with proven convergence to the solution of a measure
@@ -100,6 +101,7 @@ and implements both a PGS solver variant \cite{bib:todorov2014} and a second
 order Newton solver. However, the underlying technology is proprietary and
 implementation details are opaque.
 
+\subsection{Outline and Novel Contributions}
 Summarizing, fifteen years after the introduction of these convex
 approximations, robust and performant algorithms for their solution in practice
 are lacking. It is not yet clear if these formulations present a real advantage
@@ -150,7 +152,23 @@ final remarks in Section \ref{sec:future_directions}.
 
 
 \RedHighlight{Text placed here just not to forget if we want to include it:}
-In contrast to \cite{bib:potra2006linearly} which
-uses a polyhedral approximation of the friction cone, our approach does not
-approximate the friction cone but introduces the convex approximation of contact
-from \cite{bib:anitescu2006}.
+
+{\color{red} 
+\begin{itemize}
+    \item In contrast to \cite{bib:potra2006linearly} which
+    uses a polyhedral approximation of the friction cone, our approach does not
+    approximate the friction cone but introduces the convex approximation of contact
+    from \cite{bib:anitescu2006}.
+    \item We provide a
+    detailed discussion on the physical validity of this approximation in Section
+    \ref{sec:physical_intuition}, along with guidelines for determining its
+    applicability to robotic simulation.
+    \item Further, \cite{bib:anitescu2006} uses a polyhedral approximation to linearize
+    the friction cone constraint $\bgamma_i\in\mathcal{F}_i$. In this work, we do
+    not linearize the cone constraints, but work directly with the second order cone
+    constraints. This approach is preferred given that the polyhedral approximation
+    is known to introduce non-physical anisotropy \cite{bib:li2018implicit}. In
+    addition, the linearization of the friction cone results in a far larger problem
+    due to the additional constraints needed to represent the polyhedral cone.
+\end{itemize}
+}
