@@ -1,15 +1,10 @@
-\section{A Primal Formulation of Compliant Contact}
+\subsection{Primal Formulation}
 \label{sec:primal_formulation}
 
-In this section we give a convex program that augments the balance of momentum
-stated in Eq. (\ref{eq:momentum_linearized}) so that contact impulses model
-Coulomb friction and satisfy the principle of maximum dissipation. We call this
-convex program our \emph{primal formulation}, since as stated in Theorem
-\ref{th:primal_dual}, its dual is precisely the formulation stated in Eq.
-(\ref{eq:dual_regularized}). We will see in Section
-\ref{sec:unconstrained_convex_formulation} that with this primal formulation, we
-can eliminate the constraints analytically to write an unconstrained convex
-formulation of the same problem.
+In this section we give a convex approximation of the contact problem described
+by the linearized balance of momentum in Eq. (\ref{eq:momentum_linearized}) and
+the contact constraints in Eqs.
+(\ref{eq:scheme_non_penetration})-(\ref{eq:scheme_mdp}).
 
 We introduce a new decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ and set
 up our primal formulation of compliant contact as the following convex
