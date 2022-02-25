@@ -116,8 +116,8 @@ $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 where $\phi= \phi_0 + \delta t\,v_n$ approximates the signed distance function
 at the next time step. Let us now analyze the resulting forces from this model.
 
-\subsection{Friction Forces}
-We see that friction forces behave exactly as a model of regularized friction
+\textbf{Friction Forces}. We see that friction forces behave exactly as a model
+of regularized friction
 \begin{equation*}
 	\bgamma_t = \min\left(\frac{\Vert\vf{v}_t\Vert}{R_t}, \mu\gamma_n\right)\hat{\vf{t}},
 \end{equation*}
@@ -129,10 +129,10 @@ values of $R_t$. We discuss our parameterization of $R_t$ in Section
 \vf{y}_t/\Vert\vf{y}_t\Vert = -\vf{v}_t/\Vert\vf{v}_t\Vert$, friction forces
 oppose sliding and therefore satisfy the principle of maximum dissipation.
 
-\subsection{Normal Forces}
-We observe that in stiction, we recover the compliant model given by Eq.
-(\ref{eq:compliant_model}), as desired. In the sliding region, however, we see
-that the convex approximation introduces unphysical artifacts. 
+\textbf{Normal Forces}. We observe that in stiction, we recover the compliant
+model given by Eq. (\ref{eq:compliant_model}), as desired. In the sliding
+region, however, we see that the convex approximation introduces unphysical
+artifacts. 
 
 Firstly, the factor $1+\tilde{\mu}^2$ models an effective stiffness
 $k_\text{eff}=k/(1+\tilde{\mu}^2)$ and dissipation
