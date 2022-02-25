@@ -1,15 +1,5 @@
-\section{A Primal Formulation of Compliant Contact}
+\subsection{Primal Formulation}
 \label{sec:primal_formulation}
-
-In this section we give a convex program that augments the balance of momentum
-stated in Eq. (\ref{eq:momentum_linearized}) so that contact impulses model
-Coulomb friction and satisfy the principle of maximum dissipation. We call this
-convex program our \emph{primal formulation}, since as stated in Theorem
-\ref{th:primal_dual}, its dual is precisely the formulation stated in Eq.
-(\ref{eq:dual_regularized}). We will see in Section
-\ref{sec:unconstrained_convex_formulation} that with this primal formulation, we
-can eliminate the constraints analytically to write an unconstrained convex
-formulation of the same problem.
 
 We introduce a new decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ and set
 up our primal formulation of compliant contact as the following convex
@@ -25,25 +15,53 @@ optimization problem
 \end{equation}
 where $\Vert\mf{z}\Vert_X^2=\mf{z}^T\mf{X}\mf{z}$ with $\mf{X}\succ 0$ and
 $\mathcal{F^*}= \mathcal{F}^*_1 \times \mathcal{F}^*_2 \times \cdots \times
-\mathcal{F}^*_{n_c}$ is the \emph{dual cone} of the friction cone $\mathcal{F}$.
-The positive diagonal matrix $\mf{R}\in\mathbb{R}^{3n_c\times 3n_c}$ and the
-vector of stabilization velocities $\hat{\mf{v}}_c$ encode the problem data
-needed to model compliant contact. We will establish a very clear physical
-meaning for these terms when we provide analytical expressions for the impulses
-in Section \ref{sec:physical_intuition}. In the limit of rigid contact when the
-regularization $\mf{R}$ is zero, our primal formulation reduces to that
-presented in \cite{bib:mazhar2014}.
+\mathcal{F}^*_{n_c}$ is the \emph{dual cone} of the friction cone $\mathcal{F} =
+\mathcal{F}_1 \times \mathcal{F}_2 \times \cdots \times \mathcal{F}_{n_c}$, with
+$\times$ the Cartesian product. The positive diagonal matrix
+$\mf{R}\in\mathbb{R}^{3n_c\times 3n_c}$ and the vector of stabilization
+velocities $\hat{\mf{v}}_c$ encode the problem data needed to model compliant
+contact. We establish a very clear physical meaning for these terms in Section
+\ref{sec:physical_intuition}. We note that our formulation extends that in
+\cite{bib:mazhar2014} for rigid contact, though \cite{bib:mazhar2014} never used
+this formulation in practice but its dual.
 
-We conclude this section with the following theorem, proved in Appendix
-\ref{app:primal_dual_proof}.
-
+The Lagrangian of the formulation in Eq. (\ref{eq:primal_regularized}) is
+\begin{equation}
+    \mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = 
+\frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g},
+\end{equation}
+with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
+$\vf{g}\in \mathcal{F}^*$. Minimizing the Lagrangian jointly in variables $\mf{v}$ and $\bsigma$ leads
+to the optimality conditions
+\begin{subequations}\label{eq:primal_optimality_conditions}
+\begin{align}
+    \mf{A}(\mf{v}-\mf{v}^*) &= \mf{J}^T\vf{\gamma} \label{eq:momentum_optimality}\\
+    \vf{\sigma} &= \vf{\gamma}.  \label{eq:sigma_equal_gamma}
+\end{align}
+\end{subequations}
+The optimality condition \eqref{eq:momentum_optimality} reveals that the
+multipliers $\bgamma$ are indeed the contact impulses, and we recover the
+balance of momentum in Eq. (\ref{eq:momentum_linearized}). We use the optimality
+condition \eqref{eq:sigma_equal_gamma} to eliminate $\vf{\sigma}$ from the
+Lagrangian and obtain the dual formulation
+\begin{align}
+    \min_{\bgamma\in \mathcal{F}} \ell_d(\bgamma) =
+    \frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
+    \bgamma,
+	\label{eq:dual_regularized}
+\end{align}
+where $\mf{W}=\mf{J}\mf{A}^{-1}\mf{J}^T$ is the Delassus operator and
+$\mf{r}=\mf{v}_c^*-\hat{\mf{v}}_c$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$. These
+results allow us to establish the following theorem.
 \begin{theorem}\label{th:primal_dual} The dual of \eqref{eq:primal_regularized}
-is given by \eqref{eq:dual_regularized}. Moreover, when $\{\mf{v},\bsigma\}$ is
-primal optimal and $\bgamma$ is dual optimal, $\bsigma = \bgamma$.
+	is given by \eqref{eq:dual_regularized}. Moreover, when $\{\mf{v},\bsigma\}$ is
+	primal optimal and $\bgamma$ is dual optimal, $\bsigma = \bgamma$.
 \end{theorem}
 
-An important outcome from the proof of Theorem \ref{th:primal_dual} is that the
-optimality condition for the primal formulation \eqref{eq:primal_regularized}
-corresponds to the balance of momentum, Eq. \eqref{eq:momentum_linearized}. That
-is, the convex program \eqref{eq:primal_regularized} encodes both balance of
-momentum and contact constraints.
+Finally, we note that the dual in Eq. (\ref{eq:dual_regularized}) is equivalent
+to the formulation in \cite{bib:todorov2011} when symplectic Euler is used
+($\theta_{q} = \theta_v = 0$ and $\theta_{vq}=1$ in Eq.
+\eqref{eq:scheme_momentum}) and $\mf{A}=\mf{M}(\mf{q}_0)$. Moreover, the
+analytical inverse dynamics results from \cite{bib:todorov2011} are also valid
+for our formulation since they only depend on problem data $\hat{\mf{v}}_c$ and
+$\mf{R}$ but not on $\mf{A}$.

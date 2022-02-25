@@ -59,6 +59,7 @@ stability and robustness through non-physical constraint relaxation and
 stabilization, requiring a significant amount of application-specific parameter
 tuning.
 
+\subsection{Previous Work on Convex Formulations}
 To improve computational tractability, Anitescu introduced a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
 convex approximation with proven convergence to the solution of a measure
@@ -100,6 +101,7 @@ and implements both a PGS solver variant \cite{bib:todorov2014} and a second
 order Newton solver. However, the underlying technology is proprietary and
 implementation details are opaque.
 
+\subsection{Outline and Novel Contributions}
 Summarizing, fifteen years after the introduction of these convex
 approximations, robust and performant algorithms for their solution in practice
 are lacking. It is not yet clear if these formulations present a real advantage

@@ -1,7 +1,7 @@
 \section{Discrete Time Formulation}
 \label{sec:discrete_time_formulation}
 
-Our discrete-time model is based on the $\theta\text{-method}$ \cite[\S
+\sout{Our discrete-time model is based on the $\theta\text{-method}$ \cite[\S
 II.7]{bib:hairer2008solving}. In particular, it incorporates the symplectic
 midpoint rule that attains second order accuracy and energy conservation. While
 most of the work in the literature uses first order time-stepping schemes, the
@@ -11,32 +11,32 @@ uses a polyhedral approximation of the friction cone, our approach does not
 approximate the friction cone but introduces the convex approximation of contact
 from \cite{bib:anitescu2006}. We remark that combining the
 $\theta\text{-method}$ with the convex approximation of contact is novel to our
-work. 
+work. }
 
-We discretize time into intervals of fixed size $\delta t$ and seek to advance
+\sout{We discretize time into intervals of fixed size $\delta t$ and seek to advance
 the state of the system from time $t^n$ to the next step at $t^{n+1} = t^n +
 \delta t$. In the $\theta\text{-method}$, variables are evaluated at
 intermediate time steps $t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with
 $\theta \in [0, 1]$. We define \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$,
 $\mf{v}^{\theta_{v}}$, and $\mf{v}^{\theta_{vq}}$ in accordance with the
 standard $\theta\text{-method}$ using scalar parameters $\theta_q$, $\theta_v$,
-and $\theta_{vq}$
+and $\theta_{vq}$}
 \begin{align}
 	\mf{q}^{\theta_q} &= \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
 	\mf{v}^{\theta_v} &= \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
 	\mf{v}^{\theta_{vq}} &= \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0,
 	\label{eq:theta_method}
 \end{align}
-where, to simplify notation, we use $(\mf{q}_0, \mf{v}_0)$ to denote the state
-at $t^n$ and $(\mf{q}, \mf{v})$ to denote the state at $t^{n+1}$.
+\sout{where, to simplify notation, we use $(\mf{q}_0, \mf{v}_0)$ to denote the state
+at $t^n$ and $(\mf{q}, \mf{v})$ to denote the state at $t^{n+1}$.}
 
-Using these mid-step quantities, we write an approximation for the mean
-generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as
+\sout{Using these mid-step quantities, we write an approximation for the mean
+generalized forces $\bar{\vf{\tau}}$ in Eq. (\ref{eq:momentum_balance}) as}
 \begin{equation*}
 	\bar{\vf{\tau}} = \mf{F}_1(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))+
 	\mf{F}_2(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})),
 \end{equation*}
-where we split the forces into two contributions $\mf{F}_1$ and $\mf{F}_2$ so
+\sout{where we split the forces into two contributions $\mf{F}_1$ and $\mf{F}_2$ so
 that the Jacobians $\partial \mf{F}_1/\partial\mf{q}$ and $\partial
 \mf{F}_1/\partial\mf{v}$ are negative definite matrices while the same is
 generally not true for the Jacobians of $\mf{F}_2$. The term $\mf{F}_1(\mf{q},
@@ -44,7 +44,7 @@ generally not true for the Jacobians of $\mf{F}_2$. The term $\mf{F}_1(\mf{q},
 and even internal forces for the modeling of soft-body deformation. The term
 $\mf{F}_2(\mf{q}, \mf{v})$ includes all other contributions that cannot
 guarantee negative definiteness of their Jacobians, such as Coriolis and
-gyroscopic forces arising in multibody dynamics with generalized coordinates.
+gyroscopic forces arising in multibody dynamics with generalized coordinates.}
 
 Using the above definitions, we write our discrete update in the following form
 \begin{align}
@@ -73,7 +73,7 @@ dynamics:
 	\theta_v = \theta_{vq}= 1/2$,
 \end{itemize}
 
-Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
+\sout{Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
 deformable objects and to projection methods used in fluid mechanics
 \cite{bib::bell1991efficient}, we solve Eqs. (\ref{eq:v_update}) and
 (\ref{eq:q_update}) in two stages. We first solve for the \emph{free motion
@@ -85,7 +85,7 @@ each stage. For the update of free motion velocities, we use the
 $\theta\text{-method}$ to attain the desired order of accuracy and energy
 conservation properties, while for the second stage we use our primal
 formulation of compliant contact presented in Section
-\ref{sec:primal_formulation} to calculate the contact impulses.
+\ref{sec:primal_formulation} to calculate the contact impulses.}
 
 In the first stage, we solve for the free motion velocities $\mf{v}^*$ in the
 absence of constraint impulses, i.e.,

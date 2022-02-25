@@ -1,38 +1,14 @@
+\algblockdefx{RepeatUntil}{EndRepeatUntil}{\textbf{repeat until}}{}
+\algnotext{EndRepeatUntil}
+
 \section{An Unconstrained Convex Formulation}
 \label{sec:unconstrained_convex_formulation}
-Remarkably,  the dual optimal impulses of~\eqref{eq:dual_regularized} can be
-constructed from the primal optimal velocities of~\eqref{eq:primal_regularized}
-using a simple projection operation. Following~\cite{bib:todorov2014}, we call
-this construction  \textit{inverse dynamics}. Moreover, this projection
-decomposes into a set of individual projections for each contact impulse
-$\bgamma_i$ given the separable structure of the constraints. Letting
-$\vf{y}_i(\vf{v}_{c,i}) = -\vf{R}_i^{-1}(\vf{v}_{c,i}-\hat{\vf{v}}_{c,i})$,
-these projections take the form
-\begin{equation}
-  \begin{aligned}
-	\bgamma_i(\vf{v}_{c,i})&= P_{\mathcal{F}_i}(\vf{y}_i(\vf{v}_{c,i}))\\
-	&= \argmin_{\bgamma\in\mathcal{F}_i} \quad 
-		\frac{1}{2}(\bgamma-\vf{y}_i)^T\vf{R}_i(\bgamma-\vf{y}_i),\\
-	\end{aligned}
-	\label{eq:y_projection}
-\end{equation}
-where $\vf{R}_i\in\mathbb{R}^{3\times3}$ is the $i\text{-th}$ diagonal block of
-the regularization matrix $\mf{R}$. That is, $\bgamma_i$ is the projection
-$P_{\mathcal{F}_i}$ of $\vf{y}_i(\vf{v}_{c,i})$ onto the friction cone
-$\mathcal{F}_i$ using the norm defined by $\vf{R}_i$. The projection
-$P_{\mathcal{F}}(\mf{y})$ onto the full cone $\mathcal{F} := \mathcal{F}_1
-\times F_2 \times \cdots \times \mathcal{F}_{n_c}$ is obtained by simply
-stacking together the individual projections $P_{\mathcal{F}_i}(\vf{y}_i)$ from
-Eq. (\ref{eq:y_projection}), where we form $\mf{y}$ by stacking together each
-$\vf{y}_i$ from all contact pairs.  In this notation, the optimal impulse
-$\bgamma$ of~\eqref{eq:dual_regularized} and the optimal velocities $\mf{v}$
-of~\eqref{eq:primal_regularized} satisfy  $\bgamma =
-P_{\mathcal{F}}(\mf{y}(\mf{v}))$.
 
-We use $\bgamma = P_{\mathcal{F}}(y(\mf{v}))$  and the optimality condition
-$\sigma = \bgamma$ from Theorem~\ref{th:primal_dual} to eliminate both $\sigma$
-and the constraints from the primal formulation. In total, we obtain the
-following unconstrained problem in velocities only
+We use $\bgamma = P_{\mathcal{F}}(\mf{y}(\mf{v}))$ from Section
+\ref{sec:analytical_inverse_dynamics} and the optimality condition $\vf{\sigma}
+= \bgamma$ from Theorem~\ref{th:primal_dual} to eliminate both $\vf{\sigma}$ and
+the constraints from the primal formulation \eqref{eq:primal_regularized}. In
+total, we obtain the following unconstrained problem in velocities only
 \begin{eqnarray}
 	\min_{\mf{v}} \ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
 	\frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2.
@@ -54,3 +30,26 @@ with Lipschitz continuous gradients. Therefore, the unconstrained formulation
 solved.  
 Section \ref{sec:sap_solver} presents our novel SAP solver specifically designed
 for its solution.
+
+We outline our overall time-stepping scheme in the following Algorithm
+\begin{algorithm}[H]
+	\caption{Overall Time-Stepping Strategy}
+	  \label{alg:sap_time_stepping}
+	  \begin{algorithmic}[1]
+		  \State Solve free motion velocities from
+		  $\mf{m}(\mf{v}^*)=\mf{0}$, Eq. \eqref{eq:m_definition}
+		  \State Solve $\displaystyle \mf{v} = \argmin_{\mf{v}} \ell_p(\mf{v})$, Eq. \eqref{eq:primal_unconstrained}
+		  \State Update positions $\displaystyle \mf{q} = \mf{q}_0 + \delta t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}$ 	
+	  \end{algorithmic}
+\end{algorithm}
+
+We note that Algorithm \ref{alg:sap_time_stepping} is executed once per time
+step, with no inner iterations updating $\mf{A}$. This strategy is equivalent to
+solving the following problem
+\begin{align*}
+	\mf{A}(\mf{v}-\mf{v}^*) &= \mf{J}^T\mf{\bgamma}(\mf{v})\\	
+	\bgamma(\mf{v}) &= P_{\mathcal{F}}(\mf{y}(\mf{v}))
+\end{align*}
+where the discrete momentum (\ref{eq:scheme_momentum}) has been linearized
+around $\vf{v}^*$ and impulses are given by the analytical expressions from
+Section \ref{sec:analytical_inverse_dynamics}.
