@@ -5,72 +5,13 @@ We use generalized coordinates to describe our multibody system. Therefore, the
 state is fully described by the generalized positions
 $\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
 $\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
-generalized positions and velocities, respectively.
-
-In the absence of contact forces the dynamics the system is described
-by the following set of ordinary differential equations
-\begin{align}
-    \mf{M}(\mf{q})\dot{\mf{v}}&=\mf{k}(\mf{q},\mf{v})
-    \label{eq:momentum_continuous}\\
-    \dot{\mf{q}}&=\mf{N}(\mf{q})\mf{v}
+generalized positions and velocities, respectively. Time derivatives of the
+configurations relate to generalized velocities by the kinematic map $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times
+n_v}$ as
+\begin{equation}
+    \dot{\mf{q}}=\mf{N}(\mf{q})\mf{v}.
     \label{eq:v_to_qdot}
-\end{align}
-where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
-$\mf{k}(\mf{q},\mf{v})\in\mathbb{R}^{n_v}$ models external forces such as
-gravity, gyroscopic terms and other smooth generalized forces such as those
-arising from springs and dampers. Matrix $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times
-n_v}$ maps generalized velocities to time derivatives of the configurations.
-
-To integrate the smooth dynamics described by Eqs.
-(\ref{eq:momentum_continuous})-(\ref{eq:v_to_qdot}) we propose to use a scheme
-based on the $\theta\text{-method}$ \cite[\S
-II.7]{bib:hairer2008solving}. We discretize time into intervals of fixed size $\delta t$ and seek to advance
-the state of the system from time $t^n$ to the next step at $t^{n+1} = t^n +
-\delta t$. In the $\theta\text{-method}$, variables are evaluated at
-intermediate time steps $t^\theta = \theta t^{n+1}+(1-\theta)t^{n}$, with
-$\theta \in [0, 1]$. We define \emph{mid-step quantities} $\mf{q}^{\theta_{q}}$,
-$\mf{v}^{\theta_{v}}$, and $\mf{v}^{\theta_{vq}}$ in accordance with the
-standard $\theta\text{-method}$ using scalar parameters $\theta_q$, $\theta_v$,
-and $\theta_{vq}$
-\begin{align}
-	\mf{q}^{\theta_q} &\defeq \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
-	\mf{v}^{\theta_v} &\defeq \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
-	\mf{v}^{\theta_{vq}} &\defeq \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0,
-	\label{eq:theta_method}
-\end{align}
-where, to simplify notation, we use the naught subscript to denote quantities
-evaluated at the previous time step $t^n$ while no additional subscript is used
-for quantities at the next time step $t^{n+1}$. Using these definitions we write
-the following time stepping scheme where the generalized velocities $\mf{v}$ are
-the unknowns of the problem
-\begin{flalign}
-    % Momentum equation.
-	&\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) =\delta
-	t\,\mf{k}(\mf{q}^{\theta_{q}}(\mf{v}),\mf{v}^{\theta_v}(\mf{v})),
-    \label{eq:scheme_momentum}\\
-    % Positions update.
-    &\mf{q}(\mf{v}) = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + \delta
-    t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}.
-    \label{eq:scheme_q_update}
-\end{flalign}
-
-This scheme based on the $\theta\text{-method}$ enables our framework to
-generalize to some of the most popular schemes for forward dynamics:
-\begin{itemize}
-	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
-	\item Symplectic Euler with $\theta_{q} = \theta_v = 0$ and $\theta_{vq}=1$,
-	\item Implicit Euler with $\theta_{q} = \theta_v = \theta_{vq}= 1$, and
-	\item Symplectic midpoint rule, which is second order, with $\theta_{q} =
-	\theta_v = \theta_{vq}= 1/2$,
-\end{itemize}
-
-In particular, when only conservative forces are considered in
-$\mf{k}(\mf{q},\mf{v})$, the symplectic Euler keeps the total mechanical energy
-bounded while exact energy conservations can be attained with the second order
-midpoint rule. In addition, stability analysis in
-\cite{bib:anitescu2002,bib:potra2006linearly}, shows that these implicit schemes
-are appropriate for the integration of stiff forces arising in multibody
-applications such as springs and dampers.
+\end{equation}
 
 \subsection{Contact Kinematics}
 \label{sec:contact_modeling}
@@ -172,13 +113,29 @@ Finally, the total contact
 impulse $\bgamma_i\in\mathbb{R}^3$ expressed in the contact frame $C_i$ is given
 by $\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$.
 
-\subsection{Overall Discrete Model}
+\subsection{Discrete Model}
 
-We model the discrete time-stepping dynamics with the following scheme that
-combines the $\theta\text{-method}$ with the contact constraints, where the
-unknowns are the next time step generalized velocities
-$\mf{v}\in\mathbb{R}^{n_v}$, impulses $\bgamma\in\mathbb{R}^{3n_c}$ and
-multipliers ${\bm\lambda}\in\mathbb{R}^{n_c}$
+We base our time-stepping scheme on the $\theta\text{-method}$ \cite[\S
+II.7]{bib:hairer2008solving}. We discretize time into intervals of fixed size
+$\delta t$ and seek to advance the state of the system from time $t^n$ to the
+next step at $t^{n+1} = t^n + \delta t$. In the $\theta\text{-method}$,
+variables are evaluated at intermediate time steps $t^\theta = \theta
+t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. We define \emph{mid-step
+quantities} $\mf{q}^{\theta_{q}}$, $\mf{v}^{\theta_{v}}$, and
+$\mf{v}^{\theta_{vq}}$ in accordance with the standard $\theta\text{-method}$
+using scalar parameters $\theta_q$, $\theta_v$, and $\theta_{vq}$
+\begin{align}
+	\mf{q}^{\theta_q} &\defeq \theta_q\mf{q} + (1-\theta_{q})\mf{q}_0,\nonumber\\
+	\mf{v}^{\theta_v} &\defeq \theta_v\mf{v} + (1-\theta_v)\mf{v}_0,\nonumber\\
+	\mf{v}^{\theta_{vq}} &\defeq \theta_{vq}\mf{v} + (1-\theta_{vq})\mf{v}_0,
+	\label{eq:theta_method}
+\end{align}
+where, to simplify notation, we use the naught subscript to denote quantities
+evaluated at the previous time step $t^n$ while no additional subscript is used
+for quantities at the next time step $t^{n+1}$. Using these definitions we write
+the following time stepping scheme where the unknowns are the next time step
+generalized velocities $\mf{v}\in\mathbb{R}^{n_v}$, impulses
+$\bgamma\in\mathbb{R}^{3n_c}$ and multipliers ${\bm\lambda}\in\mathbb{R}^{n_c}$
 \begin{flalign}
     % Momentum equation.
 	&\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) =\nonumber\\
@@ -197,18 +154,32 @@ multipliers ${\bm\lambda}\in\mathbb{R}^{n_c}$
     , \qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
     \label{eq:scheme_mdp_cone}\\
     % Positions update.
-    &\mf{q} = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + \delta
-    t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},
+    &\dot{\mf{q}}^{\theta_{vq}} = \mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},\\    
+    &\mf{q} = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}},
     \label{eq:scheme_q_update}
 \end{flalign}
+where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
+$\mf{k}(\mf{q},\mf{v})\in\mathbb{R}^{n_v}$ models external forces such as
+gravity, gyroscopic terms and other smooth generalized forces such as those
+arising from springs and dampers.
 
-As mentioned before, this scheme based on the $\theta\text{-method}$ allow us to
-incorporate they symplectic Euler and the midpoint rule in the same framework.
-Their accuracy and stability when applied to multibody dynamics with
-contact is analyzed in \cite{bib:anitescu2002, bib:potra2006linearly}, though a
-polyhedral approximation of the friction cone is used. We do not discretize the
-friction cone in this work since it is known to introduce non-physical
-anisotropy \cite{bib:li2018implicit}.
+This scheme based on the $\theta\text{-method}$ includes some of the most
+popular schemes for forward dynamics:
+\begin{itemize}
+	\item Explicit Euler with $\theta_q=\theta_{v}=\theta_{vq} = 0$,
+	\item Symplectic Euler with $\theta_{q} = \theta_v = 0$ and $\theta_{vq}=1$,
+	\item Implicit Euler with $\theta_{q} = \theta_v = \theta_{vq}= 1$, and
+	\item Symplectic midpoint rule, which is second order, with $\theta_{q} =
+	\theta_v = \theta_{vq}= 1/2$,
+\end{itemize}
+
+In particular, when only conservative forces are considered in
+$\mf{k}(\mf{q},\mf{v})$, the symplectic Euler scheme keeps the total mechanical
+energy bounded while exact energy conservations can be attained with the second
+order midpoint rule, see results in Section \ref{sec:spring_cylinder}. In
+addition, stability analysis in \cite{bib:anitescu2002,bib:potra2006linearly},
+shows that these implicit schemes are appropriate for the integration of stiff
+forces arising in multibody applications such as springs and dampers.
 
 Introducing the Coulomb model of dry friction however, turns the problem into a
 non-convex nonlinear complementarity problem (NCP). This kind of problems have
@@ -247,7 +218,7 @@ $\mathcal{O}(n)$ \emph{Articulated Body Algorithm}
 
 The second stage solves a linear approximation of the balance of momentum in Eq.
 (\ref{eq:scheme_momentum}) about $\mf{v}^*$ that satisfies the contact
-constraints, Eqs. (\ref{eq:scheme_nonpenetration})-(\ref{eq:scheme_mdp}). To write
+constraints, Eqs. (\ref{eq:scheme_nonpenetration})-(\ref{eq:scheme_mdp_cone}). To write
 a convex formulation of contact in Section \ref{sec:previous_work}, our
 linearization uses a symmetric positive definite (SPD) approximation $\mf{A}$ of
 the Jacobian $\partial \mf{m}/\partial \mf{v}$. To achieve this we split the
@@ -323,11 +294,6 @@ the discrete balance of momentum in Eq. (\ref{eq:v_update}). Moreover, $\mf{A}
 \label{prop:gradient_of_m_approximation}
 \end{prop}
 
-As we will see in Section \ref{sec:primal_formulation}, this SPD approximation
-together with the convex relaxation of the contact constraints as introduced in
-\cite{bib:anitescu2006} allows us to write a convex formulation of the contact
-problem.
-
 Notice that, in the absence of constraint impulses, the velocities at the next
 time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
 they are computed with the order of accuracy of the $\theta\text{-method}$.
@@ -336,6 +302,6 @@ $\theta\text{-method}$ when contact constraints are not active. As an example,
 for bodies in contact that are under rolling friction, the contact constraints
 behave as bi-lateral constraints that impose zero slip velocity. In this case,
 our two stage method using the midpoint rule to compute $\mf{v}^*$ exhibits
-considerably less numerical dissipation than other methods. We demonstrate this
-in Section \ref{sec:spring_cylinder} with an example of a mechanical system with
-rolling friction.
+considerably less numerical dissipation than first order methods. We demonstrate
+this in Section \ref{sec:spring_cylinder} with an example of a mechanical system
+with rolling friction.
