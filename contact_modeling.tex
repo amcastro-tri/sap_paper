@@ -1,0 +1,47 @@
+\subsection{Contact Modeling}
+We model the normal component of the impulse $\gamma_{n,i}$ during a time
+interval of size $\delta t$ with the compliant force law
+\begin{equation}
+    \gamma_{n,i}/\delta t = (-k_i\phi_i - \tau_{d,i}\,k_i\,v_{n,i})_+
+    \label{eq:compliant_model}
+\end{equation}
+where $k_i$ is the stiffness parameter, $\tau_{d,i}$ is a \textit{dissipation time
+scale} and $(x)_+=\max(0, x)$ is the \textit{positive part} operator. This model
+of compliance can be written as the equivalent complementarity condition
+\begin{equation}
+    0 \le \phi_i + \tau_{d,i}\,v_{n,i} + c_i \gamma_{n,i}\perp \gamma_{n,i} \ge 0
+\end{equation}
+where $c_i=k_i^{-1}$ is the compliance parameter and $0 \le a\perp b \ge 0$ denotes
+complementarity, i.e. $a \ge 0$, $b \ge 0$ and $a\,b=0$.
+
+The tangential component $\bgamma_{t,i}\in\mathbb{R}^2$ of the contact force is
+modeled with Coulomb's law of dry friction as
+\begin{equation}
+    \bgamma_{t,i}=\argmin_{\Vert\bgamma_{t}\Vert\leq\mu_i\gamma_{n,i}}\vf{v}_{t,i}\cdot\bgamma_{t}
+    \label{eq:maximum_dissipation_principle}
+\end{equation}
+where $\mu_i > 0$ is the coefficient of friction for the $i\text{-th}$ contact.
+Equation (\ref{eq:maximum_dissipation_principle}) describes the \emph{maximum
+dissipation principle}, which states that friction impulses maximize the rate of
+energy dissipation. In other words, friction impulses oppose the sliding
+velocity direction. Moreover, Eq. (\ref{eq:maximum_dissipation_principle})
+states that contact impulses $\bgamma_i$ at point $i$ are constrained to belong
+to the friction cone $\mathcal{F}_i=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\,
+\Vert\vf{x}_t\Vert\le \mu_i x_n\}$.
+
+The optimality conditions for Eq. (\ref{eq:maximum_dissipation_principle}) are
+\cite{bib:stewart2000rigid, bib:tasora2011}
+\begin{flalign}
+    &\mu_i\gamma_{n,i}\vf{v}_{t,i} + \lambda \bgamma_{t,i} = \vf{0}\nonumber\\
+    &0\le \lambda \perp \mu_i\gamma_{n,i}-\Vert\bgamma_{t,i}\Vert \ge 0
+    \label{eq:mpd_optimality_conditions}
+\end{flalign}
+where $\lambda$ is the multiplier needed to enforce Coulomb's law condition
+$\Vert\bgamma_{t,i}\Vert \le \mu_i\gamma_{n,i}$. Notice that in the form we
+wrote Eq. (\ref{eq:mpd_optimality_conditions}), multiplier $\lambda_i$
+has units of velocity and it is zero during stiction and takes the value
+$\lambda_i=\Vert\vf{v}_{t,i}\Vert$ during sliding.
+
+Finally, the total contact
+impulse $\bgamma_i\in\mathbb{R}^3$ expressed in the contact frame $C_i$ is given
+by $\bgamma_i=[\bgamma_{t,i}\,\gamma_{n,i}]$.
