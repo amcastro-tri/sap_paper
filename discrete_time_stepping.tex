@@ -155,13 +155,6 @@ addition, stability analysis in \cite{bib:anitescu2002,bib:potra2006linearly},
 shows that these implicit schemes are appropriate for the integration of stiff
 forces arising in multibody applications such as springs and dampers.
 
-Introducing the Coulomb model of dry friction however, turns the problem into a
-non-convex nonlinear complementarity problem (NCP). This kind of problems have
-remained difficult to solve in practice, specially so in engineering
-applications for which robustness and accuracy are a requirement. In the next
-sections we introduce a number of approximations to this original NCP that allow
-us to make the problem tractable and solve it efficiently in practice.
-
 \subsection{Two-Stage Scheme}
 
 Similar to the work in \cite{bib:duriez2005realistic} for the simulation of
@@ -279,3 +272,12 @@ our two stage method using the midpoint rule to compute $\mf{v}^*$ exhibits
 considerably less numerical dissipation than first order methods. We demonstrate
 this in Section \ref{sec:spring_cylinder} with an example of a mechanical system
 with rolling friction.
+
+Even after the linearization of the balance of momentum equations, the full
+problem stated by Eq. \eqref{eq:momentum_linearized} together with the contact
+constraints \eqref{eq:scheme_nonpenetration}-\eqref{eq:scheme_mdp_cone} consists
+of a non-convex nonlinear complementarity problem (NCP). This kind of problems
+have remained difficult to solve in practice, specially so in engineering
+applications for which robustness and accuracy are a requirement. In the next
+section we introduce a number of approximations to this original NCP that allow
+us to make the problem tractable and solve it efficiently in practice.
