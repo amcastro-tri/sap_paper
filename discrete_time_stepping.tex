@@ -17,17 +17,18 @@ n_v}$ as
 \label{sec:contact_modeling}
 
 Given a configuration $\mf{q}$ of the system, we assume our geometry engine
-reports a set $\mathscr{C}(\mf{q})$ of $n_c$ potential contacts between
-pairs of bodies. We characterize the $i\text{-th}$ \emph{contact pair} in
+reports a set $\mathscr{C}(\mf{q})$ of $n_c$ potential contacts between pairs of
+bodies. We characterize the $i\text{-th}$ \emph{contact pair} in
 $\mathscr{C}(\mf{q})$ by the location $\vf{p}_i$ of the contact point, a normal
 direction $\hat{\vf{n}}_i$ and \emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$
-\cite{bib:flores2021contact}. The kinematics of each contact is further
-completed with the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$ between these
-two bodies at point $\vf{p}_i$, expressed in a contact frame $C_i$ for which we
-arbitrarily choose the $z\text{-axis}$ to coincide with the contact normal
-$\hat{\vf{n}}_i$. In this frame the normal and tangential components of
-$\vf{v}_{c,i}$ are given by $v_{n,i} = \hat{\vf{n}}_i\cdot\vf{v}_{c,i}$ and
-$\vf{v}_{t,i} = \vf{v}_{c,i}-v_{n,i}\hat{\vf{n}}_i$ respectively, so that
+\cite{bib:flores2021contact,bib:pfeiffer1996multibody}. The kinematics of each
+contact is further completed with the relative velocity
+$\vf{v}_{c,i}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_i$,
+expressed in a contact frame $C_i$ for which we arbitrarily choose the
+$z\text{-axis}$ to coincide with the contact normal $\hat{\vf{n}}_i$. In this
+frame the normal and tangential components of $\vf{v}_{c,i}$ are given by
+$v_{n,i} = \hat{\vf{n}}_i\cdot\vf{v}_{c,i}$ and $\vf{v}_{t,i} =
+\vf{v}_{c,i}-v_{n,i}\hat{\vf{n}}_i$ respectively, so that
 $\vf{v}_{c,i}=[\vf{v}_{t,i}\,v_{n,i}]$.
 
 We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
