@@ -1,18 +1,3 @@
-\section{Contact Modeling Parameters}
-\label{sec:contact_modeling_parameters}
-
-Thus far, $\vf{R}_i$ and $\hat{\vf{v}}_{c,i}$ have been treated as known problem
-data. This section makes an explicit connection of these quantities with
-physical parameters to model compliant contact with regularized friction. We
-seek to model compliant contact as in Eq. (\ref{eq:compliant_model}),
-parameterized by physical parameters; stiffness $k$ (in N/m) and
-\textit{dissipation time scale} $\tau_d$ (in seconds). Therefore, users of this
-model only need to provide these physical parameters and regularization is
-computed from them. Notice this approach is different from the one in
-\cite{bib:todorov2014}, where regularization is not used to model physical
-compliance but rather to introduce a user tunable Baumgarte-style stabilization
-to avoid constraint drift. 
-
 \subsection{Compliant Contact, Principle of Maximum Dissipation and Artifacts}
 \label{sec:physical_intuition}
 
