@@ -16,48 +16,21 @@ n_v}$ as
 \subsection{Contact Kinematics}
 \label{sec:contact_modeling}
 
-\RedHighlight{TODO: consider summarizing this intro on the set and
-differentiability of $\phi$. Also, $\delta$ might just be complicating things.
-Consider just saying ``set $\mathscr{C}$ or $\mathcal{C}$''. See what the reviewers ask for.}
 Given a configuration $\mf{q}$ of the system, we assume our geometry engine
-reports a set $\mathcal{A}(\mf{q},\delta)$ of $n_c$ potential contacts between
-pairs of bodies with signed distance $\phi(\mf{q}) < \delta$. The collision
-envelope parameter $\delta > 0$ must be large enough so that all active contacts
-that would be active at the next time step are considered, but small enough to
-avoid an excessively large number of contact constraints. A common heuristics is
-to choose $\delta$ as the maximum distance spanned by any point on a rigid body
-in the span of a time step, given its velocity \cite{bib:anitescu2010}. Given
-our geometry engine, we use $\delta = 0$ in this work without impact on the
-stability of our method. We note that finding this set is not trivial in the
-general case dealing with arbitrary geometries. We refer the reader to
-\cite{bib:hadap2004collision,bib:lin2017collision, bib:erleben2018methodology,
-bib:flores2021contact} for a survey on collision and proximity queries.
-\RedHighlight{Consider moving this to where it gets first used.}
-\redcolor{Though
-$\phi(\mf{q})$ is generally not differentiable everywhere, to simplify our
-analysis we assume that it is differentiable in the neighborhood of
-$\phi(\mf{q}) = 0$. Conditions for local differentiability are discussed in
-\cite{bib:anitescu2004constraint}}. For penetration queries, our implementation
-within Drake \cite{bib:drake} relies on the FCL library \cite{bib:fcl}. For
-complex contact among compliant meshes, we use Drake's \emph{hydroelastic
-contact model} with geometric queries described in \cite{bib:elandt2019pressure,
-bib:masterjohn2021discrete}.
-
-We characterize the $i\text{-th}$ \emph{contact pair} in
-$\mathcal{A}(\mf{q},\delta)$ by the location $\vf{p}_i$ of the contact point, a
-normal direction $\hat{\vf{n}}_i$ and the \emph{signed distance} or \emph{gap
-function} $\phi_i(\mf{q})\in\mathbb{R}$. The kinematics of each contact is
-further completed with the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$
-between these two bodies at point $\vf{p}_i$, expressed in a contact frame $C_i$
-for which we arbitrarily choose the $z\text{-axis}$ to coincide with the contact
-normal $\hat{\vf{n}}_i$. In this frame the normal and tangential components of
+reports a set $\mathscr{C}(\mf{q})$ of $n_c$ potential contacts between
+pairs of bodies. We characterize the $i\text{-th}$ \emph{contact pair} in
+$\mathscr{C}(\mf{q})$ by the location $\vf{p}_i$ of the contact point, a normal
+direction $\hat{\vf{n}}_i$ and \emph{gap function} $\phi_i(\mf{q})\in\mathbb{R}$
+\cite{bib:flores2021contact}. The kinematics of each contact is further
+completed with the relative velocity $\vf{v}_{c,i}\in\mathbb{R}^3$ between these
+two bodies at point $\vf{p}_i$, expressed in a contact frame $C_i$ for which we
+arbitrarily choose the $z\text{-axis}$ to coincide with the contact normal
+$\hat{\vf{n}}_i$. In this frame the normal and tangential components of
 $\vf{v}_{c,i}$ are given by $v_{n,i} = \hat{\vf{n}}_i\cdot\vf{v}_{c,i}$ and
 $\vf{v}_{t,i} = \vf{v}_{c,i}-v_{n,i}\hat{\vf{n}}_i$ respectively, so that
 $\vf{v}_{c,i}=[\vf{v}_{t,i}\,v_{n,i}]$.
 
-We finalize this section by stating the relationship between the generalized
-velocities of the system $\vf{v}$ and the contact velocities $\vf{v}_{c,i}$. We
-form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
+We form the vector $\mf{v}_{c}\in\mathbb{R}^{3n_c}$ of contact velocities by
 stacking velocities $\vf{v}_{c,i}$ of all contact pairs together. In general,
 unless otherwise specified, we use bold italics for vectors in $\mathbb{R}^3$
 and non-italics bold for their stacked counterpart. The generalized velocities
@@ -144,14 +117,14 @@ $\bgamma\in\mathbb{R}^{3n_c}$ and multipliers ${\bm\lambda}\in\mathbb{R}^{n_c}$
 	\mf{J}(\mf{q}_0)^T\mf{\bgamma}, \label{eq:scheme_momentum}\\
     % Non-penetration condition.
     &0 \le \phi_i(\mf{q}) + \tau_{d,i}\,v_{n,i}(\mf{q}, \mf{v}) + c_i\gamma_{n,i}\nonumber\\
-    &\qquad\perp \gamma_{n,i} \ge 0, \quad\qquad\qquad\qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
+    &\qquad\perp \gamma_{n,i} \ge 0, \quad\qquad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_nonpenetration}\\
     % Maximum dissipation principle.
     &\mu_i\gamma_{n,i}\vf{v}_{t,i} + \lambda \bgamma_{t,i} = \vf{0},
-    \!\!\quad\qquad\qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
+    \!\!\quad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_mdp_multiplier}\\
     &0\le \lambda \perp \mu_i\gamma_{n,i}-\Vert\bgamma_{t,i}\Vert \ge 0
-    , \qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
+    , \qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_mdp_cone}\\
     % Positions update.
     &\dot{\mf{q}}^{\theta_{vq}} = \mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},\\    
@@ -263,14 +236,14 @@ reads
 	\label{eq:momentum_linearized}\\
     % Non-penetration condition.
     &0 \le \phi_i(\mf{q}) + \tau_{d,i}\,v_{n,i}(\mf{q}, \mf{v}) + c_i\gamma_{n,i}\nonumber\\
-    &\qquad\perp \gamma_{n,i} \ge 0, \quad\qquad\qquad\qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
+    &\qquad\perp \gamma_{n,i} \ge 0, \quad\qquad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
     \tag{\ref{eq:scheme_nonpenetration}}\\
     % Maximum dissipation principle.
     &\mu_i\gamma_{n,i}\vf{v}_{t,i} + \lambda \bgamma_{t,i} = \vf{0},
-    \!\!\quad\qquad\qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
+    \!\!\quad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
     \tag{\ref{eq:scheme_mdp_multiplier}}\\
     &0\le \lambda \perp \mu_i\gamma_{n,i}-\Vert\bgamma_{t,i}\Vert \ge 0
-    , \qquad i\in\mathcal{A}(\mf{q}_0,\epsilon)
+    , \qquad i\in\mathscr{C}(\mf{q}_0)
     \tag{\ref{eq:scheme_mdp_cone}}\\
     % Positions update.
     &\mf{q} = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}} = \mf{q}_0 + \delta
