@@ -39,7 +39,8 @@ We outline our overall time-stepping scheme in the following Algorithm
 		  \State Solve free motion velocities from
 		  $\mf{m}(\mf{v}^*)=\mf{0}$, Eq. \eqref{eq:m_definition}
 		  \State Solve $\displaystyle \mf{v} = \argmin_{\mf{v}} \ell_p(\mf{v})$, Eq. \eqref{eq:primal_unconstrained}
-		  \State Update positions $\displaystyle \mf{q} = \mf{q}_0 + \delta t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}$ 	
+		  \State Update positions $\displaystyle \mf{q} = \mf{q}_0 + \delta
+		  t\mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}$, Eq. \eqref{eq:scheme_q_update}
 	  \end{algorithmic}
 \end{algorithm}
 

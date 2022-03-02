@@ -1,13 +1,5 @@
-\section{Understanding Model Parameters}
+\subsection{Conditioning of the Problem}
 \label{sec:understanding_model_parameters}
-
-We have provided explicit algebraic expressions for the impulses as a function
-of contact velocities in Eq. \eqref{eq:analytical_y_projection} via the inverse
-dynamics. While these expressions are given in terms of regularization $\mf{R}$,
-Section \ref{sec:physical_intuition} describes in detail the resulting physical
-model in terms of contact stiffness $k$, dissipation time constant $\tau_d$ and
-friction coefficient $\mu$. Therefore, users of this model only need to provide
-these physical parameters and regularization is computed from them.
 
 Regularization parameters not only determine the physical model, but also affect
 the robustness and performance of the SAP solver. Modeling near-rigid objects
@@ -17,16 +9,15 @@ conditions, the Hessian of the system exhibits a large condition number, and
 round-off errors can render the search direction of Newton iterations useless.
 We show in this section how a judicious choice of the regularization parameters
 leads to much better conditioned system of equations, without sacrificing
-accuracy.
+accuracy. This is demonstrated in Section \ref{sec:test_cases} with a variety of
+tests cases.
 
-\subsection{Near-Rigid Contact}
-
-With the formulation presented in this work, all bodies are modeled as
-compliant. Therefore, rigid objects must be modeled as \emph{near-rigid} bodies
-with large stiffness. However, as mentioned above, blindly choosing large values
-of stiffness can lead to ill-conditioned systems of equations. Here, we propose
-a principled way to choose the stiffness parameter when modeling near-rigid
-contact.
+\textbf{Near-Rigid Contact}. With the formulation presented in this work, all
+bodies are modeled as compliant. Therefore, rigid objects must be modeled as
+\emph{near-rigid} bodies with large stiffness. However, as mentioned above,
+blindly choosing large values of stiffness can lead to ill-conditioned systems
+of equations. Here, we propose a principled way to choose the stiffness
+parameter when modeling near-rigid contact.
 
 Consider the dynamics of a mass particle $m$ laying on the ground, with contact
 stiffness $k$ and dissipation time scale $\tau_d$. When in contact, the dynamics
@@ -92,12 +83,9 @@ temporal dynamics of the contact, and using stabilization to model near-rigid
 contact with the amount of stabilization controlled by parameter $\beta$. In all
 of our simulations, we use $\beta=1.0$.
 
-\subsection{Stiction}
-\label{sec:stiction_parameterization}
-
-Given that our model regularizes friction, we are interested in estimating a
-bound on the slip velocity at stiction. We propose the following regularization
-for friction
+\textbf{Stiction}. Given that our model regularizes friction, we are interested
+in estimating a bound on the slip velocity at stiction. We propose the following
+regularization for friction
 \begin{equation}
     R_t = \sigma \text{w},
     \label{eq:tangential_regularization}
@@ -132,16 +120,15 @@ even tighter bounds. These values are well within acceptable bounds even for
 simulation of grasping tasks, which are significantly more demanding than
 simulation for other robotic applications, see Section \ref{sec:test_cases}.
 
-\subsection{Sliding Soft Contact}
-
-As we discussed in Section \ref{sec:physical_intuition}, we require $R_t/R_n\ll
-1$ so that we model compliance accurately during sliding. Now, in the
-\emph{near-rigid} contact regime, the condition $R_t/R_n\ll 1$ is no longer
-required since in this regime regularization is only used to apply stabilization
-and avoid constraint drift. Therefore, we only need to verify this condition in
-the \emph{soft contact} regime, when time step $\delta t$ can properly resolve
-the contact dynamics, i.e. according to our criteria, when $\delta t < T_n$. In
-this regime, $R_n^{-1}\approx \delta t^2k$, and using Eq.
+\textbf{Sliding Soft Contact}. As we discussed in Section
+\ref{sec:physical_intuition}, we require $R_t/R_n\ll 1$ so that we model
+compliance accurately during sliding. Now, in the \emph{near-rigid} contact
+regime, the condition $R_t/R_n\ll 1$ is no longer required since in this regime
+regularization is only used to apply stabilization and avoid constraint drift.
+Therefore, we only need to verify this condition in the \emph{soft contact}
+regime, when time step $\delta t$ can properly resolve the contact dynamics,
+i.e. according to our criteria, when $\delta t < T_n$. In this regime,
+$R_n^{-1}\approx \delta t^2k$, and using Eq.
 (\ref{eq:tangential_regularization}) we have
 \begin{equation*}
     \frac{R_t}{R_n}\approx \sigma \delta t^2 \omega_n^2=4\pi^2\sigma\left(\frac{\delta t}{T_n}\right)^2
@@ -153,8 +140,8 @@ $\sigma=10^{-3}$ in all of our simulations, we see that $R_t/R_n \ll 1$.
 Moreover, $R_t/R_n$ goes to zero quadratically with $\delta t/T_n$ as the time
 step is reduced and the dynamics of the compliance is better resolved in time.
 
-Therefore, we have shown that our choice of regularization parameters enjoys the
-following properties
+Summarizing, we have shown that our choice of regularization parameters enjoys
+the following properties
 \begin{enumerate}
     \item Users only provide physical parameters; contact stiffness $k$,
     dissipation time scale $\tau_d$, and friction coefficient $\mu$. There is no
@@ -172,7 +159,3 @@ following properties
     of the compliant contact, as required to accurately model compliance during
     sliding.
 \end{enumerate}
-
-In addition, our tests cases in Section \ref{sec:test_cases} show that this
-choice of regularization parameters keeps the condition number of the Hessian at
-each Newton iteration under control.

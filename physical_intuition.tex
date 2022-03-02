@@ -1,15 +1,20 @@
-\section{Compliant Contact, Principle of Maximum Dissipation and Artifacts}
-\label{sec:physical_intuition}
+\section{Contact Modeling Parameters}
+\label{sec:contact_modeling_parameters}
 
 Thus far, $\vf{R}_i$ and $\hat{\vf{v}}_{c,i}$ have been treated as known problem
 data. This section makes an explicit connection of these quantities with
-physical parameters to model compliant contact with regularized friction. Notice
-this approach is different from the one in \cite{bib:todorov2014}, where
-regularization is not used to model physical compliance but rather to introduce
-a user tunable Baumgarte-style stabilization to avoid constraint drift. We want
-to model compliant contact as in Eq. (\ref{eq:compliant_model}) with stiffness
-$k$ (in N/m) and linear dissipation $d = \tau_d k$ where $\tau_d$ (in seconds)
-is the \textit{dissipation time scale}. 
+physical parameters to model compliant contact with regularized friction. We
+seek to model compliant contact as in Eq. (\ref{eq:compliant_model}),
+parameterized by physical parameters; stiffness $k$ (in N/m) and
+\textit{dissipation time scale} $\tau_d$ (in seconds). Therefore, users of this
+model only need to provide these physical parameters and regularization is
+computed from them. Notice this approach is different from the one in
+\cite{bib:todorov2014}, where regularization is not used to model physical
+compliance but rather to introduce a user tunable Baumgarte-style stabilization
+to avoid constraint drift. 
+
+\subsection{Compliant Contact, Principle of Maximum Dissipation and Artifacts}
+\label{sec:physical_intuition}
 
 Dropping subscript $i$ for simplicity, we solve the projection problem in Eq.
 (\ref{eq:y_projection}) analytically in Appendix
@@ -120,21 +125,17 @@ t+\tau_d)\mu\Vert\vf{v}_t\Vert) + d\,v_n)$. We can write this as
 with an \textit{effective} signed distance $\phi_\text{eff} = \phi-(\delta
 t+\tau_d)\mu\Vert\vf{v}_t\Vert$. That is, we recover the dynamics of compliant
 contact but with a spurious drift of magnitude $(\delta
-t+\tau_d)\mu\Vert\vf{v}_t\Vert$.
-
-This is consistent with the formulation in \cite{bib:anitescu2010} for rigid
-contact when $k\rightarrow \infty$ and $\tau_d=0$, leading to an unphysical
-\textit{gliding effect} at a positive distance $\phi=\delta
-t\mu\Vert\vf{v}_t\Vert$. Notice that the \textit{gliding} goes away as $\delta
-t\rightarrow 0$ since the formulation converges to the original contact problem
-\cite{bib:anitescu2006}. The effect of compliance is to \textit{soften} this
-gliding effect. 
-
-With finite compliance,  the normal force when sliding goes to
-$-k(\phi-\tau_d\mu\Vert\vf{v}_t\Vert)$ in the limit to $\delta t\rightarrow 0$.
-This tells us that, unlike the rigid case, the \textit{gliding} effect
-unfortunately does not go away as $\delta t\rightarrow 0$. It persists with a
-finite value that now depends on the dissipation rate,
+t+\tau_d)\mu\Vert\vf{v}_t\Vert$. This is consistent with the formulation in
+\cite{bib:anitescu2010} for rigid contact when $k\rightarrow \infty$ and
+$\tau_d=0$, leading to an unphysical \textit{gliding effect} at a positive
+distance $\phi=\delta t\mu\Vert\vf{v}_t\Vert$. Notice that the \textit{gliding}
+goes away as $\delta t\rightarrow 0$ since the formulation converges to the
+original contact problem \cite{bib:anitescu2006}. The effect of compliance is to
+\textit{soften} this gliding effect. With finite compliance,  the normal force
+when sliding goes to $-k(\phi-\tau_d\mu\Vert\vf{v}_t\Vert)$ in the limit to
+$\delta t\rightarrow 0$. This tells us that, unlike the rigid case, the
+\textit{gliding} effect unfortunately does not go away as $\delta t\rightarrow
+0$. It persists with a finite value that now depends on the dissipation rate,
 $\phi\approx\tau_d\mu\Vert\vf{v}_t\Vert$.
 
 We close this discussion by making the following remarks relevant to robotics
