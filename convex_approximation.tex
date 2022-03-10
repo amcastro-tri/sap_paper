@@ -1,22 +1,27 @@
-\section{Convex Approximation of Contact Dynamics}
-\label{sec:convex_approximation}
+% Dummy comment for Reviewable.
 
-Previous work from Anitescu \cite{bib:anitescu2006} introduces an approximation
-of the nonpenetration constraint Eq. \eqref{eq:scheme_nonpenetration} that
-together with Eqs. \eqref{eq:scheme_mdp_multiplier}-\eqref{eq:scheme_mdp_cone}
-leads to a convex formulation in impulses. Though not strictly applicable to
-contact problems, later on Todorov \cite{bib:todorov2011, bib:todorov2014} uses
-the \emph{Gauss's principle of least constraint} to obtain a regularized form of
-Anitescu's formulation that admits a unique solution. Moreover, Todorov shows
-that impulses can be constructed from the computed velocities, an operation
-referred to as \textit{analytical inverse dynamics}.
+\section{Convex Approximation of Contact Dynamics}\label{sec:convex_approximation}
 
-In this section we build from this previous work to write a convex formulation
-of compliant contact. Our convex optimization problem is formulated in terms of
-velocities and we show that (with symplectic Euler) its dual corresponds to
-Todorov's \cite{bib:todorov2014} formulation in impulses. Further, we use
+Previous work from Anitescu~\cite{bib:anitescu2006} introduces an approximation
+of the nonpenetration constraint that together with
+Eqs.~\eqref{eq:scheme_mdp_multiplier}-\eqref{eq:scheme_mdp_cone} leads to a
+convex formulation in impulses. Later on Todorov~\cite{bib:todorov2011,
+bib:todorov2014} uses the \emph{Gauss's principle of least constraint} to obtain
+a regularized form of Anitescu's formulation that admits a unique solution.
+Moreover, Todorov shows that impulses can be constructed from the computed
+velocities, an operation referred to as \textit{analytical inverse dynamics}. It
+should be pointed out that the Gauss's principle of least constraint can only be
+applied to problems with Tresca type dry friction, for which normal forces are
+known in advance \cite{bib:yunt2014}. Therefore the Gauss's principle of least
+constraint is only an approximation to the model of Coulomb friction for which
+normal forces are unknown and the formulation is non-convex.
+
+In this section we build from this previous work to write a new convex formulation
+of compliant contact in terms of \emph{velocities}.  We then show that (with
+symplectic Euler) its dual corresponds to Todorov's~\cite{bib:todorov2014}
+formulation in impulses. Finally, we use
 Todorov's \textit{analytical inverse dynamics} to eliminate constraints
-analytically and write an unconstrained formulation.
+analytically, yielding an unconstrained formulation.
 
 \input{primal_formulation_of_compliant_contact.tex}
 \input{analytical_inverse_dynamics.tex}

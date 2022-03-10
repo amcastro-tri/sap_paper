@@ -1,3 +1,5 @@
+% Dummy comment for Reviewable.
+
 \subsection{Compliant Contact, Principle of Maximum Dissipation and Artifacts}
 \label{sec:physical_intuition}
 
@@ -72,9 +74,10 @@ $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
     \vf{0} & \text{no contact, } \end{dcases}\nonumber	
 \end{align*}
 where $\phi= \phi_0 + \delta t\,v_n$ approximates the signed distance function
-at the next time step. Let us now analyze the resulting forces from this model.
+at the next time step. Let us now analyze the resulting impulses from this
+model.
 
-\textbf{Friction Forces}. We see that friction forces behave exactly as a model
+\textbf{Friction Impulses}. We see that friction impulses behave exactly as a model
 of regularized friction
 \begin{equation*}
 	\bgamma_t = \min\left(\frac{\Vert\vf{v}_t\Vert}{R_t}, \mu\gamma_n\right)\hat{\vf{t}},
@@ -84,10 +87,10 @@ with a maximum value given by $\mu\gamma_n$, effectively modeling Coulomb's
 friction. Notice that to better model stiction, we are interested in small
 values of $R_t$. We discuss our parameterization of $R_t$ in Section
 \ref{sec:understanding_model_parameters}. Moreover, since $\hat{\vf{t}} =
-\vf{y}_t/\Vert\vf{y}_t\Vert = -\vf{v}_t/\Vert\vf{v}_t\Vert$, friction forces
+\vf{y}_t/\Vert\vf{y}_t\Vert = -\vf{v}_t/\Vert\vf{v}_t\Vert$, friction impulses
 oppose sliding and therefore satisfy the principle of maximum dissipation.
 
-\textbf{Normal Forces}. We observe that in stiction, we recover the compliant
+\textbf{Normal impulses}. We observe that in stiction, we recover the compliant
 model given by Eq. (\ref{eq:compliant_model}), as desired. In the sliding
 region, however, we see that the convex approximation introduces unphysical
 artifacts. 
@@ -102,7 +105,7 @@ introduces a parameterization of $R_t$ that satisfies this condition.
 
 Secondly, while we'd like to recover $\gamma_n = -\delta t(k\,\phi + d\,v_n)$ as
 in stiction, we instead see that the slip velocity $\vf{v}_t$ unphysically
-couples into the normal forces as $\gamma_n=-\delta t(k(\phi-(\delta
+couples into the normal impulses as $\gamma_n=-\delta t(k(\phi-(\delta
 t+\tau_d)\mu\Vert\vf{v}_t\Vert) + d\,v_n)$. We can write this as
 \begin{equation*}
   \gamma_n/\delta t=-(k\,\phi_\text{eff} + d\,v_n),
@@ -116,8 +119,8 @@ $\tau_d=0$, leading to an unphysical \textit{gliding effect} at a positive
 distance $\phi=\delta t\mu\Vert\vf{v}_t\Vert$. Notice that the \textit{gliding}
 goes away as $\delta t\rightarrow 0$ since the formulation converges to the
 original contact problem \cite{bib:anitescu2006}. The effect of compliance is to
-\textit{soften} this gliding effect. With finite compliance,  the normal force
-when sliding goes to $-k(\phi-\tau_d\mu\Vert\vf{v}_t\Vert)$ in the limit to
+\textit{soften} this gliding effect. With finite stiffness, the normal impulse
+when sliding goes to $-k(\phi-\tau_d\mu\Vert\vf{v}_t\Vert)-d\,v_n$ in the limit to
 $\delta t\rightarrow 0$. This tells us that, unlike the rigid case, the
 \textit{gliding} effect unfortunately does not go away as $\delta t\rightarrow
 0$. It persists with a finite value that now depends on the dissipation rate,

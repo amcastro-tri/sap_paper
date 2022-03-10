@@ -1,3 +1,5 @@
+% Dummy comment for Reviewable.
+
 \subsection{Discrete Model}
 We base our time-stepping scheme on the $\theta\text{-method}$ \cite[\S
 II.7]{bib:hairer2008solving}. We discretize time into intervals of fixed size
@@ -27,19 +29,19 @@ $\bgamma\in\mathbb{R}^{3n_c}$ and multipliers ${\bm\lambda}\in\mathbb{R}^{n_c}$
 	t\,\mf{k}(\mf{q}^{\theta_{q}}(\mf{v}),\mf{v}^{\theta_v}(\mf{v})) +
 	\mf{J}(\mf{q}_0)^T\mf{\bgamma}, \label{eq:scheme_momentum}\\
     % Non-penetration condition.
-    &0 \le \phi_i(\mf{q}) + \tau_{d,i}\,v_{n,i}(\mf{q}, \mf{v}) + c_i\gamma_{n,i}\nonumber\\
+    &0 \le \phi_i(\mf{q}(\mf{v})) + \tau_{d,i}\,v_{n,i}(\mf{q}, \mf{v}) + c_i\gamma_{n,i}\nonumber\\
     &\qquad\perp \gamma_{n,i} \ge 0, \quad\qquad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_nonpenetration}\\
     % Maximum dissipation principle.
-    &\mu_i\gamma_{n,i}\vf{v}_{t,i} + \lambda \bgamma_{t,i} = \vf{0},
-    \!\!\quad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
+    &\mu_i\gamma_{n,i}\vf{v}_{t,i}(\mf{q}, \mf{v}) + \lambda_i \bgamma_{t,i} = \vf{0},
+    \!\qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_mdp_multiplier}\\
-    &0\le \lambda \perp \mu_i\gamma_{n,i}-\Vert\bgamma_{t,i}\Vert \ge 0
-    , \qquad i\in\mathscr{C}(\mf{q}_0)
+    &0\le \lambda_i \perp \mu_i\gamma_{n,i}-\Vert\bgamma_{t,i}\Vert \ge 0
+    , \!\!\qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_mdp_cone}\\
     % Positions update.
-    &\dot{\mf{q}}^{\theta_{vq}} = \mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}},\\    
-    &\mf{q} = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}},
+    &\dot{\mf{q}}^{\theta_{vq}}(\mf{v}) = \mf{N}(\mf{q}^{\theta_{q}}(\mf{v}))\mf{v}^{\theta_{vq}}(\mf{v}),\\    
+    &\mf{q}(\mf{v}) = \mf{q}_0 + \delta t \dot{\mf{q}}^{\theta_{vq}}(\mf{v}),
     \label{eq:scheme_q_update}
 \end{flalign}
 where $\mf{M}(\mf{q})\in\mathbb{R}^{n_v\times n_v}$ is the mass matrix and
@@ -61,6 +63,6 @@ In particular, when only conservative forces are considered in
 $\mf{k}(\mf{q},\mf{v})$, the symplectic Euler scheme keeps the total mechanical
 energy bounded while exact energy conservations can be attained with the second
 order midpoint rule, see results in Section \ref{sec:spring_cylinder}. In
-addition, stability analysis in \cite{bib:anitescu2002,bib:potra2006linearly},
+addition, stability analysis in \cite{bib:anitescu2002,bib:potra2006linearly}
 shows that these implicit schemes are appropriate for the integration of stiff
 forces arising in multibody applications such as springs and dampers.

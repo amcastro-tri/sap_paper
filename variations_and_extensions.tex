@@ -21,9 +21,13 @@ convergence properties of the algorithm executed in a single thread. The sparse
 algebra can be parallelized and, in particular, disjoints \emph{islands} of
 bodies can be solved separately in different threads.
 
-\textbf{Deformable FEM models:} Section \ref{sec:discrete_time_formulation}
-gives a glimpse into this topic. However, deformable objects introduce a much
-larger number of unknowns and require specialized handling of sparsity.
+\textbf{Deformable FEM models:} SAP for the modeling of deformable objects with
+contact and friction is the topic of current research efforts by the authors.
+FEM models lead to state dependent stiffness \eqref{eq:stiffness_matrix} and
+damping \eqref{eq:dissipation_matrix} matrices with a complex structure that
+requires specialized handling of sparsity. Moreover, modeling assumptions must
+be carefully analyzed in order to ensure the positive definiteness of these
+matrices used in our convex approximation of contact.
 
 \textbf{Differentiation:} Since forces are a continuous function of state, the
 model is well suited for applications requiring gradients such as trajectory

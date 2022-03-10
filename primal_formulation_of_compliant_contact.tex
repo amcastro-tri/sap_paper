@@ -1,8 +1,10 @@
+% Dummy comment for Reviewable.
+
 \subsection{Primal Formulation}
 \label{sec:primal_formulation}
 
 We introduce a new decision variable $\vf{\sigma}\in\mathbb{R}^{3n_c}$ and set
-up our primal formulation of compliant contact as the following convex
+up our convex formulation of compliant contact as the following 
 optimization problem
 \begin{equation}
 	\begin{aligned}
@@ -20,18 +22,18 @@ $\mathcal{F^*}= \mathcal{F}^*_1 \times \mathcal{F}^*_2 \times \cdots \times
 $\times$ the Cartesian product. The positive diagonal matrix
 $\mf{R}\in\mathbb{R}^{3n_c\times 3n_c}$ and the vector of stabilization
 velocities $\hat{\mf{v}}_c$ encode the problem data needed to model compliant
-contact. We establish a very clear physical meaning for these terms in Section
-\ref{sec:physical_intuition}. We note that our formulation extends that in
-\cite{bib:mazhar2014} for rigid contact, though \cite{bib:mazhar2014} never used
-this formulation in practice but its dual.
+contact. We establish a very clear physical meaning for these terms in
+Section~\ref{sec:physical_intuition}.  We note that when $R$ and $\bsigma$
+are removed, this reformulation reduces to~\cite{bib:mazhar2014}.
 
-The Lagrangian of the formulation in Eq. (\ref{eq:primal_regularized}) is
+We refer to~\eqref{eq:primal_regularized} as the \emph{primal formulation}
+and next derive its dual. To begin, define the Lagrangian
 \begin{equation}
     \mathcal{L}(\mf{v},\bsigma,\vf{\gamma}) = 
 \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_A^2 + \frac{1}{2} \Vert\bsigma\Vert_{R}^2 - \vf{\gamma}^T\mf{g},
 \end{equation}
-with $\vf{\gamma}\in\mathcal{F}$ the dual variable to enforce the constraint
-$\vf{g}\in \mathcal{F}^*$. Minimizing the Lagrangian jointly in variables $\mf{v}$ and $\bsigma$ leads
+where $\vf{\gamma}\in\mathcal{F}$ is the dual variable for the constraint
+$\vf{g}\in \mathcal{F}^*$. Taking gradients of the Lagrangian with respect to $\mf{v}$ and $\bsigma$ leads
 to the optimality conditions
 \begin{subequations}\label{eq:primal_optimality_conditions}
 \begin{align}
@@ -39,11 +41,12 @@ to the optimality conditions
     \vf{\sigma} &= \vf{\gamma}.  \label{eq:sigma_equal_gamma}
 \end{align}
 \end{subequations}
-The optimality condition \eqref{eq:momentum_optimality} reveals that the
-multipliers $\bgamma$ are indeed the contact impulses, and we recover the
-balance of momentum in Eq. (\ref{eq:momentum_linearized}). We use the optimality
-condition \eqref{eq:sigma_equal_gamma} to eliminate $\vf{\sigma}$ from the
-Lagrangian and obtain the dual formulation
+Note that~\eqref{eq:momentum_optimality} is a restatement
+of the balance of momentum equation~\eqref{eq:momentum_linearized}
+if the dual variable $\bgamma$ is interpreted as a vector of contact impulses. 
+ Using the optimality
+condition~\eqref{eq:sigma_equal_gamma} to eliminate $\vf{\sigma}$ from the
+Lagrangian yields the dual formulation
 \begin{align}
     \min_{\bgamma\in \mathcal{F}} \ell_d(\bgamma) =
     \frac{1}{2}\bgamma^T(\mathbf{W}+\mathbf{R})\bgamma + {\bm r}^T
@@ -51,17 +54,13 @@ Lagrangian and obtain the dual formulation
 	\label{eq:dual_regularized}
 \end{align}
 where $\mf{W}=\mf{J}\mf{A}^{-1}\mf{J}^T$ is the Delassus operator and
-$\mf{r}=\mf{v}_c^*-\hat{\mf{v}}_c$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$. These
-results allow us to establish the following theorem.
-\begin{theorem}\label{th:primal_dual} The dual of \eqref{eq:primal_regularized}
-	is given by \eqref{eq:dual_regularized}. Moreover, when $\{\mf{v},\bsigma\}$ is
+$\mf{r}=\mf{v}_c^*-\hat{\mf{v}}_c$ with $\mf{v}_c^*=\mf{J}\mf{v}^*$.
+In summary, we have proven the following theorem.
+\begin{theorem}\label{th:primal_dual} The dual of~\eqref{eq:primal_regularized}
+	is given by~\eqref{eq:dual_regularized}. Moreover, when $\{\mf{v},\bsigma\}$ is
 	primal optimal and $\bgamma$ is dual optimal, $\bsigma = \bgamma$.
 \end{theorem}
 
-Finally, we note that the dual in Eq. (\ref{eq:dual_regularized}) is equivalent
-to the formulation in \cite{bib:todorov2011} when symplectic Euler is used
-($\theta_{q} = \theta_v = 0$ and $\theta_{vq}=1$ in Eq.
-\eqref{eq:scheme_momentum}) and $\mf{A}=\mf{M}(\mf{q}_0)$. Moreover, the
-analytical inverse dynamics results from \cite{bib:todorov2011} are also valid
-for our formulation since they only depend on problem data $\hat{\mf{v}}_c$ and
-$\mf{R}$ but not on $\mf{A}$.
+Finally, we note that the dual~\eqref{eq:dual_regularized} is equivalent to the
+formulation in~\cite{bib:todorov2011} when $\theta_{q} = \theta_v = 0$ in
+Eq.~\eqref{eq:scheme_momentum} and $\mf{A}=\mf{M}(\mf{q}_0)$. 

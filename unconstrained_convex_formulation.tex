@@ -1,3 +1,5 @@
+% Dummy comment for Reviewable.
+
 \algblockdefx{RepeatUntil}{EndRepeatUntil}{\textbf{repeat until}}{}
 \algnotext{EndRepeatUntil}
 
@@ -45,12 +47,5 @@ We outline our overall time-stepping scheme in the following Algorithm
 \end{algorithm}
 
 We note that Algorithm \ref{alg:sap_time_stepping} is executed once per time
-step, with no inner iterations updating $\mf{A}$. This strategy is equivalent to
-solving the following problem
-\begin{align*}
-	\mf{A}(\mf{v}-\mf{v}^*) &= \mf{J}^T\mf{\bgamma}(\mf{v})\\	
-	\bgamma(\mf{v}) &= P_{\mathcal{F}}(\mf{y}(\mf{v}))
-\end{align*}
-where the discrete momentum (\ref{eq:scheme_momentum}) has been linearized
-around $\vf{v}^*$ and impulses are given by the analytical expressions from
-Section \ref{sec:analytical_inverse_dynamics}.
+step, with no inner iterations updating $\mf{A}$.
+
