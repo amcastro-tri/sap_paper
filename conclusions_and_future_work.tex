@@ -13,10 +13,22 @@ of contact; the approximation is exact for sticking contact and introduces an
 $\mathcal{O}(\delta t\|\vf{v}_t\|)$ \emph{gliding} effect for sliding contact.
 
 We developed a two-stage time stepping approach based on the
-$\theta\text{-method}$ and we showed that with the midpoint rule it can achieve
-second order accuracy even in problems with frictional contact. Our formulation
-does not linearize the friction cone but it works with the second order cone
-constraints directly.
+$\theta\text{-method}$ and we showed with an example in Section
+\ref{sec:spring_cylinder} that with the midpoint rule it can achieve second
+order accuracy even in problems with frictional contact. 
+
+\reviewquestion{Q6}{Our formulation does not linearize the friction cone
+but it works with the second order cone constraints directly, avoiding spurious
+non-physical anisotropy \cite{bib:li2018implicit}. Since we eliminate
+constraints analytically, the only unknowns of our primal formulation are the
+generalized velocities of the system, independent of the number of contact
+constraints. Compare this to an LCP formulation that introduces $(2u+1)$
+constraints per contact \cite{bib:anitescu1997}, where $u$ is the number of
+edges in the polygonal approximation. Typically $u=4$ (the true circular cone is
+replaced by a pyramid with a rectangular base) and $9$ additional constraints
+and variables per contact are needed. This strongly affects the performance of
+solvers in practice given their worst case exponential complexity in the number
+of constraints \cite{bib:baraff1994fast},\cite{bib:erleben2007velocity}.}
 
 We presented SAP, a robust and performant open source solver for this
 formulation that warm-starts very effectively in practice. SAP globally

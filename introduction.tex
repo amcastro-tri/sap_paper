@@ -59,7 +59,7 @@ stability and robustness through non-physical constraint relaxation and
 stabilization, requiring a significant amount of application-specific parameter
 tuning.
 
-\subsection{Previous Work on Convex Formulations}
+\subsection{Previous Work on Convex Approximations of Contact}
 To improve computational tractability, Anitescu introduced a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
 convex approximation with proven convergence to the solution of a measure
@@ -78,6 +78,7 @@ compliance} that provides Baumgarte-like stabilization to avoid constraint
 drift. As a side effect, the regularized formulation can lead to a noticeable
 non-zero slip velocity even during stiction \cite{bib:simbenchmark}.
 
+\subsection{State of the Art}
 Even though these formulations introduce a tractable approximation of frictional
 contact, they have not been widely adopted in practice. We believe this is
 because of the lack of robust solution methods with a computational cost
@@ -89,26 +90,34 @@ method \cite{bib:Kaufman2008}. Drake \cite{bib:drake} solves compliant contact
 with regularized friction with its transition aware solver TAMSI
 \cite{bib:castro2020}. 
 
-To our knowledge, Chrono \cite{bib:hrono2016} and Mujoco \cite{bib:mujoco} are
-the only packages that implement the convex approximation of contact. The
-multi-physics simulation package Chrono implements a variant of the PGS method
-for solving Anitescu's convex formulation \cite{bib:tasora2011}. This method is
-specially targeted to the simulation of very large scale systems such as those
-encountered in granular flow. Even though some convergence guarantees are
-provided in \cite{bib:anitescu2010}, the solver exhibits low convergence rates.
-This is expected for such a first order method. Mujoco is targeted to robotics
-and implements both a PGS solver variant \cite{bib:todorov2014} and a second
-order Newton solver. However, the underlying technology is proprietary and
-implementation details are opaque.
+To our knowledge, Chrono \cite{bib:hrono2016}, Mujoco \cite{bib:mujoco} and
+Siconos \cite{bib:acary2019siconos} are the only packages that implement the
+convex approximation of contact. The multi-physics simulation package Chrono
+implements a variant of the PGS method for solving Anitescu's convex formulation
+\cite{bib:tasora2011}. This method is specially targeted to the simulation of
+very large scale systems such as those encountered in granular flow. Even though
+some convergence guarantees are provided in \cite{bib:anitescu2010}, the solver
+exhibits low convergence rates. This is expected for such a first order method.
+Mujoco is targeted to robotics and implements both a PGS solver variant
+\cite{bib:todorov2014} and a second order Newton solver. However, the underlying
+technology is proprietary and implementation details are opaque.
+\reviewquestion{Q9}{Siconos is an open-source software targeting large scale
+simulation of both rigid and deformable objects. The authors of Siconos perform
+an exhaustive benchmarking campaign in \cite{bib:acary2018solving} using the
+convex approximation of contact. The analysis reveals that there is not
+universal solver and that every solver technology suffers from accuracy,
+robustness and/or efficiency problems.}
+%The work studies the performance of four solver families and a total of
+%40 solver variants. The benchmark campaign includes 2368 problems organized into
+%11 sets from various applications. 
+
+\reviewquestion{Q10}{It is not even clear if these convex approximations present
+a real advantage when compared to approaches solving the original non-convex NCP
+problem and whether the artifacts introduced by the approximation are acceptable
+in robotics applications.} In this work, we aim to provide answers to these
+questions.
 
 \subsection{Outline and Novel Contributions}
-Summarizing, fifteen years after the introduction of these convex
-approximations, robust and performant algorithms for their solution in practice
-are lacking. It is not yet clear if these formulations present a real advantage
-when compared to more traditional approaches and whether the artifacts
-introduced by the approximation are acceptable in robotics applications. In this
-work, we aim to provide answers to these questions. 
-
 We make a number of novel contributions. To address accuracy and model validity,
 Section \ref{sec:physical_intuition} provides compact expressions for the
 impulses that correspond to the optimal velocities of the convex approximation.
@@ -149,12 +158,3 @@ number of simulation cases, including the simulation of the challenging dual arm
 manipulation task shown in Fig. \ref{fig:dual_arm_frames}. We discuss extensions
 and variations in Section \ref{sec:variations_and_extensions} and conclude with
 final remarks in Section \ref{sec:future_directions}.
-
-\redcolor{See if/how to include this in the intro:
-\begin{itemize}
-    \item though a
-    polyhedral approximation of the friction cone is used. We do not discretize the
-    friction cone in this work since it is known to introduce non-physical
-    anisotropy \cite{bib:li2018implicit}.
-\end{itemize}
-}

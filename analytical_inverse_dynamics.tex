@@ -3,7 +3,7 @@
 \subsection{Analytical Inverse Dynamics}
 \label{sec:analytical_inverse_dynamics}
 
-Remarkably,  the dual optimal impulses of~\eqref{eq:dual_regularized} can be
+The dual optimal impulses of~\eqref{eq:dual_regularized} can be
 constructed from the primal optimal velocities of~\eqref{eq:primal_regularized}
 using a simple projection operation. Following~\cite{bib:todorov2014}, we call
 this construction  \textit{analytical inverse dynamics}. Moreover, this
@@ -22,12 +22,15 @@ these projections take the form
 where $\vf{R}_i\in\mathbb{R}^{3\times3}$ is the $i\text{-th}$ diagonal block of
 the regularization matrix $\mf{R}$. That is, $\bgamma_i$ is the projection
 $P_{\mathcal{F}_i}$ of $\vf{y}_i(\vf{v}_{c,i})$ onto the friction cone
-$\mathcal{F}_i$ using the norm defined by $\vf{R}_i$. The projection
+$\mathcal{F}_i$ using the norm defined by $\vf{R}_i$.
+\reviewquestion{Q8}{Remarkably, projection $P_{\mathcal{F}_i}$ can be solved
+\emph{analytically}. We derive and provide algebraic expressions for it in
+Appendix \ref{app:analytical_inverse_dynamics_derivations}.} The projection
 $P_{\mathcal{F}}(\mf{y})$ onto the full cone $\mathcal{F} := \mathcal{F}_1
-\times \mathcal{F}_2 \times \cdots \times \mathcal{F}_{n_c}$ is obtained by simply
-stacking together the individual projections $P_{\mathcal{F}_i}(\vf{y}_i)$ from
-Eq. (\ref{eq:y_projection}), where we form $\mf{y}$ by stacking together each
-$\vf{y}_i$ from all contact pairs.  In this notation, the optimal impulse
-$\bgamma$ of~\eqref{eq:dual_regularized} and the optimal velocities $\mf{v}$
-of~\eqref{eq:primal_regularized} satisfy  $\bgamma =
+\times \mathcal{F}_2 \times \cdots \times \mathcal{F}_{n_c}$ is obtained by
+simply stacking together the individual projections
+$P_{\mathcal{F}_i}(\vf{y}_i)$ from Eq. (\ref{eq:y_projection}), where we form
+$\mf{y}$ by stacking together each $\vf{y}_i$ from all contact pairs.  In this
+notation, the optimal impulse $\bgamma$ of~\eqref{eq:dual_regularized} and the
+optimal velocities $\mf{v}$ of~\eqref{eq:primal_regularized} satisfy  $\bgamma =
 P_{\mathcal{F}}(\mf{y}(\mf{v}))$.
