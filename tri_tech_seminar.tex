@@ -1,0 +1,85 @@
+\begin{equation}
+    \Vert\bgamma_t\Vert \le \mu \gamma_n
+\end{equation}
+
+\begin{equation}
+    \bgamma_t = -\mu\frac{\vf{v}_t}{\Vert\vf{v}_t\Vert}\gamma_n
+\end{equation}
+
+\begin{flalign}
+    % Momentum equation.
+	&\mf{M}\,\mf{a} = \mf{k} + \mf{J}^T\mf{\bgamma},\\
+    % Non-penetration condition.
+    &0 \le \phi_i \perp \gamma_{n,i} \ge 0, \quad\qquad\qquad \forall\,i
+    \label{eq:scheme_nonpenetration}\\
+    % Maximum dissipation principle.
+    &\bgamma_{t,i}=-\argmax_{\Vert\bgamma_{t}\Vert\leq\mu\gamma_{n,i}}\vf{v}_{t,i}\cdot\bgamma_{t},
+    \,\,\quad \forall\,i
+\end{flalign}
+
+\begin{flalign}
+    &m\,a = -m\,g + \gamma_n\\
+    &0\le \phi \perp \gamma_n \ge 0
+\end{flalign}
+
+
+\begin{flalign}
+    &\mf{M}\,\mf{a} = \mf{k} + \mf{J}^T\mf{\bgamma},\\
+    &0 \le \phi_i \perp \gamma_{n,i} \ge 0, \qquad \forall\,i
+\end{flalign}
+
+\begin{equation}
+	\begin{aligned}
+	\min_{\mf{a}} \quad & \frac{1}{2}\Vert\mf{a}-\mf{M}^{-1}\mf{k}\Vert_{M}^2 \\
+	\textrm{s.t.} \quad & \mf{J}\mf{a} \ge 0\\
+	\end{aligned}
+	\label{eq:primal_regularized}
+\end{equation}
+
+
+\begin{equation}
+    \bgamma_{t}=-\argmax_{\Vert\bgamma_{t}\Vert\leq\mu\gamma_{n}}\vf{v}_{t}\cdot\bgamma_{t}
+\end{equation}
+
+\begin{flalign}
+    &m\,\mf{a} = -m\,\mf{g} + \bgamma\\
+    &0\le \phi \perp \gamma_n \ge 0\\
+    &\bgamma_{t}=-\argmax_{\Vert\bgamma_{t}\Vert\leq\mu\gamma_{n}}\vf{v}_{t}\cdot\bgamma_{t}
+\end{flalign}
+
+\begin{flalign*}
+    &\phi = 0,\quad \gamma_n = m\,g > 0,\\
+    &\phi\gamma_n = 0.
+\end{flalign*}
+
+\begin{flalign*}
+    &\phi > 0,\quad \gamma_n = 0,\\
+    &\phi\gamma_n = 0.
+\end{flalign*}
+
+\begin{equation}
+	\mf{A}(\mf{v}-\mf{v}^*) = \mf{J}^T\mf{\bgamma}(\mf{v}),
+\end{equation}
+
+\begin{equation}
+	R_n^{-1}=\delta t\,k(\delta t + \tau_d)
+\end{equation}
+
+\begin{equation}
+	c= \tau_dk
+\end{equation}
+
+
+\begin{equation}
+	 R_t = \sigma\Vert\mf{W}_{ii}\Vert
+\end{equation}
+
+\begin{eqnarray}
+    \sigma&=&10^{-3}\\
+    \delta t&=&0.01~\text{s}
+\end{eqnarray}
+
+\begin{equation}
+    v_s\approx 10^{-4}~\text{m/s}
+\end{equation}
+
