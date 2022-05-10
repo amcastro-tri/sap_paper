@@ -3,13 +3,13 @@
 \section{Multibody Dynamics with Contact}
 \label{sec:multibody_dynamics_with_contact}
 
-We use generalized coordinates to describe our multibody system. Therefore, the
-state is fully specified by the generalized positions
-$\mf{q}\in\mathbb{R}^{n_q}$ and the generalized velocities
-$\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote the number of
-generalized positions and velocities, respectively. Time derivatives of the
-configurations relate to generalized velocities by the kinematic map $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times
-n_v}$ as
+\reviewquestion{Q3}{We use generalized coordinates (in particular joint
+coordinates) to describe our multibody system.} Therefore, the state is fully
+specified by the generalized positions $\mf{q}\in\mathbb{R}^{n_q}$ and the
+generalized velocities $\mf{v}\in\mathbb{R}^{n_v}$, where $n_q$ and $n_v$ denote
+the number of generalized positions and velocities, respectively. Time
+derivatives of the configurations relate to generalized velocities by the
+kinematic map $\mf{N}(\mf{q})\in\mathbb{R}^{n_q\times n_v}$ as
 \begin{equation}
     \dot{\mf{q}}=\mf{N}(\mf{q})\mf{v}.
     \label{eq:v_to_qdot}

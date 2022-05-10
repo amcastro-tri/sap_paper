@@ -11,29 +11,29 @@ derivatives are evaluated at $\mf{v} = \mf{v}^*$ unless otherwise noted. We
 first evaluate the Jacobian of the mass matrix term in Eq.
 (\ref{eq:m_definition})
 \begin{align*}
-	\frac{\partial \left( \mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) \right)}{\partial \mf{v}}
-	= \mf{M}(\mf{q}^{\theta_{q}}(\mf{v}^*)) + \mf{E},
+	\frac{\partial \left( \mf{M}(\mf{q}^{\theta}(\mf{v}))(\mf{v}-\mf{v}_0) \right)}{\partial \mf{v}}
+	= \mf{M}(\mf{q}^{\theta}(\mf{v}^*)) + \mf{E},
 \end{align*}
 where we defined
 \begin{align*}
-	\mf{E} = \frac{\partial \mf{M}(\mf{q}^{\theta_{q}})}{\partial\mf{v}} (\mf{v}^*-\mf{v}_0).
+	\mf{E} = \frac{\partial \mf{M}(\mf{q}^{\theta})}{\partial\mf{v}} (\mf{v}^*-\mf{v}_0).
 \end{align*}
-Note that by combining Eqs. (\ref{eq:theta_method}) and (\ref{eq:q_update}), the
-mid-step configuration $\mf{q}^{\theta_q}$ can be written as
+Note that by combining Eqs. (\ref{eq:theta_method}) and (\ref{eq:scheme_q_update}), the
+mid-step configuration $\mf{q}^{\theta}$ can be written as
 \begin{align*}
-	\mf{q}^{\theta_q}(\mf{v}) &= \mf{q}_0 + \delta t \theta_q \dot{\mf{q}}^{\theta_{vq}} \\
-	                          &= \mf{q}_0 + \delta t \theta_q \mf{N}(\mf{q}^{\theta_{q}})\mf{v}^{\theta_{vq}}(\mf{v}).
+	\mf{q}^{\theta}(\mf{v}) &= \mf{q}_0 + \delta t \theta \dot{\mf{q}}^{\theta_{vq}} \\
+	                          &= \mf{q}_0 + \delta t \theta \mf{N}(\mf{q}^{\theta})\mf{v}^{\theta_{vq}}(\mf{v}).
 \end{align*}
 Hence by the chain rule, $\mf{E}$ can be further calculated as
 \begin{align*}
-	\mf{E} = \delta t\theta_q\frac{\partial \mf{M}(\mf{q}^{\theta_{q}}) }{\partial\mf{q}}
+	\mf{E} = \delta t\theta\frac{\partial \mf{M}(\mf{q}^{\theta}) }{\partial\mf{q}}
              \frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}
 			 (\mf{v}^*-\mf{v}_0).
 \end{align*}
 Notice that 
 \begin{align*}
 		\Vert\mf{E}\Vert 
-		&\le \delta t\theta_q \left\| \frac{\partial\mf{M}(\mf{q}^{\theta_{q}})}{\partial\mf{q}}  \right\|
+		&\le \delta t\theta \left\| \frac{\partial\mf{M}(\mf{q}^{\theta})}{\partial\mf{q}}  \right\|
 			\left\| \frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}}  \right\|
 		    \left\| \mf{v}^*-\mf{v}_0 \right\| \\
 		&= \mathcal{O}(\delta t^2),
@@ -41,11 +41,11 @@ Notice that
 since $\Vert\mf{v}^*-\mf{v}_0\Vert = \mathcal{O}(\delta t)$.
 
 We proceed similarly to expand the Jacobian of
-$\mf{F}_1(\mf{v})=\mf{F}_1(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v}))$
+$\mf{F}_1(\mf{v})=\mf{F}_1(\mf{q}^{\theta}(\mf{v}), \mf{v}^{\theta}(\mf{v}))$
 as
 \begin{align*}
-	\frac{\partial\mf{F}_1}{\partial \mf{v}} = -\delta t\,\theta_q\theta_{vq}\mf{K}(\mf{q}^{\theta_q},
-	\mf{v}^{\theta_v})-\theta_v\mf{D}(\mf{q}^{\theta_q}, \mf{v}^{\theta_v}),
+	\frac{\partial\mf{F}_1}{\partial \mf{v}} = -\delta t\,\theta\theta_{vq}\mf{K}(\mf{q}^{\theta},
+	\mf{v}^{\theta})-\theta\mf{D}(\mf{q}^{\theta}, \mf{v}^{\theta}),
 \end{align*}
 with $\mf{K}$ and $\mf{D}$ the stiffness and damping matrices defined by Eqs.
 (\ref{eq:stiffness_matrix})-(\ref{eq:dissipation_matrix}).
@@ -57,7 +57,7 @@ We can now write the Jacobian of $\mf{m}(\mf{v})$ in Eq.
 \end{align*}
 where we defined
 \begin{align*}
-	\mf{A}=\mf{M}+ \delta t^2\theta_q\theta_{qv}\mf{K}+\delta t\theta_v\mf{D}.
+	\mf{A}=\mf{M}+ \delta t^2\theta\theta_{qv}\mf{K}+\delta t\theta\mf{D}.
 \end{align*}
 With these definitions the Taylor expansion in Eq. (\ref{eq:m_taylor_expansion})
 becomes
@@ -78,7 +78,7 @@ Therefore, the positive definite linearization
 	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(\delta t^3) + \mathcal{O}_G(\delta t^2) +
 	\mathcal{O}_m(\delta t^2) = \mf{J}^T\mf{\bgamma},
 \end{align*}
-agrees with the original momentum balance in Eq. (\ref{eq:v_update}) to second
+agrees with the original momentum balance in Eq. (\ref{eq:scheme_momentum}) to second
 order.
 
 Finally, notice that $\mf{A}$ is a linear combination of positive definite

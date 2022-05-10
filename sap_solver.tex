@@ -4,8 +4,9 @@
 \section{Semi-Analytic Primal Solver}
 \label{sec:sap_solver}
 
-Inspired by Newton's method, our Semi-Analytic Primal Solver (SAP) seeks to
-monotonically decrease the primal cost $\ell_p(\mf{v})$ at each iteration, as
+Inspired by Newton's method, \reviewquestion{Q4}{our Semi-Analytic Primal
+Solver (SAP) seeks to solve \eqref{eq:primal_unconstrained} by 
+monotonically decreasing the primal cost $\ell_p(\mf{v})$} at each iteration, as
 outlined in Algorithm \ref{alg:sap}
 \begin{algorithm}[H]
 	\caption{The Semi-Analytic Primal Solver (SAP)}	
@@ -36,11 +37,12 @@ Appendix \ref{app:analytical_inverse_dynamics_derivations}. The Hessian formula
 are given in Appendix \ref{app:gradients_derivation}. Our convergence analysis
 in Appendix \ref{app:sap_converge} also accounts for this definition.
 
-As shown in Appendix \ref{app:sap_converge}, SAP globally convergences at least
-at a linear-rate. Further, SAP exhibits quadratic convergence when $\nabla^2
-\ell_p$ exists in a neighborhood of the optimal $\mf{v}$. In practice, we
-initialize SAP with the previous time-step velocity $\mf{v}_0$. The stopping
-criteria is discussed below in Section \ref{sec:stopping_criteria}.
+\reviewquestion{Q4}{As shown in Appendix \ref{app:sap_converge}, SAP
+globally convergences at least at a linear-rate. Further, SAP exhibits quadratic
+convergence when $\nabla^2 \ell_p$ exists in a neighborhood of the optimal
+$\mf{v}$. In practice, we initialize SAP with the previous time-step velocity
+$\mf{v}_0$.} The stopping criteria is discussed below in Section
+\ref{sec:stopping_criteria}.
 
 \subsection{Gradients}
 \label{sec:gradients}

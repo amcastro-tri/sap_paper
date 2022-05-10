@@ -15,8 +15,8 @@ where we define the momentum residual $\mf{m}(\mf{v})$ from Eq.
 (\ref{eq:scheme_momentum}) as
 \begin{equation}
 	\mf{m}(\mf{v}) =
-	\mf{M}(\mf{q}^{\theta_{q}}(\mf{v}))(\mf{v}-\mf{v}_0) -
-	\delta t\,\mf{k}(\mf{q}^{\theta_{q}}(\mf{v}), \mf{v}^{\theta_v}(\mf{v})).
+	\mf{M}(\mf{q}^{\theta}(\mf{v}))(\mf{v}-\mf{v}_0) -
+	\delta t\,\mf{k}(\mf{q}^{\theta}(\mf{v}), \mf{v}^{\theta}(\mf{v})).
 	\label{eq:m_definition}
 \end{equation}
 
@@ -47,7 +47,7 @@ gyroscopic forces arising in multibody dynamics with generalized coordinates. We
 can now define the SPD approximation of $\partial \mf{m}/\partial \mf{v}$
 evaluated at $\mf{v}^*$ as
 \begin{align}
-	\mf{A}&=\mf{M}+\delta t^2\,\theta_q\theta_{qv}\mf{K}+\delta t\,\theta_v\mf{D},
+	\mf{A}&=\mf{M}+\delta t^2\,\theta\theta_{qv}\mf{K}+\delta t\,\theta\mf{D},
 	\label{eq:expression_for_A}\\
 	\mf{K}&=-\frac{\partial \mf{k}_1}{\partial
 	\mf{q}}\frac{\partial\dot{\mf{q}}^{\theta_{vq}}}{\partial\mf{v}},
@@ -89,7 +89,7 @@ Notice that, in the absence of constraint impulses, the velocities at the next
 time step are equal to the free motion velocities, i.e., $\mf{v}=\mf{v}^*$, and
 they are computed with the order of accuracy of the $\theta\text{-method}$.
 Furthermore, we also expect to recover the properties of the
-$\theta\text{-method}$ when contact constraints are not active. As an example,
+$\theta\text{-method}$ when contact constraints are in stiction. As an example,
 for bodies in contact that are under rolling friction, the contact constraints
 behave as bi-lateral constraints that impose zero slip velocity. In this case,
 our two stage method using the midpoint rule to compute $\mf{v}^*$ exhibits
