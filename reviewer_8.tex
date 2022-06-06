@@ -1,0 +1,92 @@
+\section{Reviewer 8}
+\label{sec:reviewer_8}
+
+\textcolor{blue}{In this paper, the authors have presented a convex formulation
+of compliant frictional contact and a method to solve it. The proposed
+formulation can be used for robotic simulation and planning purposes. The
+formulation is unconstrained in the sense that it has been described in terms of
+the contact impulses and corresponding velocities rather than the contact
+constraints directly. The mathematical analysis provided in this paper and the
+appendix is rigorous and sufficient for understanding the convex nature of the
+optimization formulation. To solve the proposed formulation, the authors have
+developed SAP, the Semi-Analytic Primal Solver. They have studied its
+initialization, stopping criteria and convergence properties. They have also
+studied the solver's performance compared with commercially available solvers
+like Gurobi and Geodesic IPM. The video attachment provided along with the paper
+is very well made and helps in understanding the key contributions, experiments
+and their results.}
+
+\textcolor{blue}{\textbf{Comments to the authors:}}
+
+\textcolor{blue}{R8-Q1: 1) It would be useful to understand whether this method
+only works for convex objects. Will the convergence properties and results of
+the proposed method be affected if we use non-convex objects with non-convex
+contact surface patches?}
+
+This method is not limited to convex objects only. Support for non-convex
+geometries will depend on whether the geometry engine provides support for
+non-convex geometries or not. The mathematical formulation presented here only
+requires the geometry engine to report \emph{contact pairs}, regardless of
+whether those pairs correspond to convex or non-convex geometries. We describe
+the characterization of contact pairs in in Section II.A. At the moment of this
+writing, Drake's support for non-convex geometry is limited, though we are
+actively working on it. However, coming back to the topic of this paper, the
+solver itself is not limited to convex geometry.
+
+\vspace{5mm}
+\textcolor{blue}{R8-Q2: 2) Is it possible to incorporate maximum contact force
+constraints directly in the optimization formulation for the dual-arm
+manipulation? It would be interesting to be able to simulate tasks where the
+contact forces in the normal direction are not large enough to firmly grasp and
+manipulate the object against the effect of external wrenches.}
+
+If we understand the question correctly, the reviewer is asking to simulate
+actuation limits on the Allegro hands. While we are not actively applying
+actuation limits on the hands, the parameters of the simulation are well within
+real specifications. To be more specific to the contribution of this work, our
+method does allow to specify these limits. 
+
+We believe it would be very interesting to investigate the limits of different
+parameters for this particular platform and task. However it was not our
+intention to investigate this particular task to inform for instance, how to
+build real platform. This robotic platform is only hypothetical and for
+demonstration purposes. The objective of this simulation demo is mostly to
+showcase the new capability.
+
+\vspace{5mm}
+\textcolor{blue}{R8-Q3: 3) It is not evident to me whether the proposed
+formulation can be used to study the change in the contact modes (stiction,
+sliding, no contact) for prehensile manipulation tasks such as pivoting a cubic
+object about an edge using a manipulator. For examples, impulses applied at the
+object-manipulator contact may cause the object to slip and slide instead of
+pivoting on the edge. The change in contact modes can be used as feedback for
+adjusting the contact impulses provided by the manipulator to the object.}
+
+Our formulation does handle contact modes implicitly. As an example, consider
+the \emph{Slip Control} example in Section IV.D. In this example the controller
+commands a variable grip force to the gripper. In this case, the gripper always
+makes contact with the spatula. However, given the change in grip force, the
+grip transitions periodically between a loose grip where the spatula rotates
+within grasp (sliding) and a secure grasp where the spatula stops moving
+(stiction). This transition between stiction and sliding is made very evident in
+the accompanying video (starting at 0:42) where the visualization shows a
+contact patch at all times, though its size changes due to the changes in grasp
+force.
+
+Consider now the dual arm manipulation task (better shown in the video at 3:23).
+Initially the jar is closed, with the lid held in place only by stiction. As the
+robot pulls the lid out, the lid comes off given that contact between the jar
+and lid transitions to sliding contact. The model fully predicts these
+transitions.
+
+Similarly for the example case the reviewer provided. If there was a transition
+between sliding and stiction at the edge of this cubic object, our model is able
+to resolve it. 
+
+Finally, the particular contact mode can be recovered by inspecting the value of
+the impulses before projection $\mf{y}$, see Eq. (27). The region in which
+$\mf{y}$ lies determines the contact mode, see Fig. (22) in Appendix C for a
+graphical schematic.
+
+To make this point clear, we added text for the \emph{Slip Control} case in
+Section VI.D and for the \emph{Dual Arm Manipulation} case in Section VI.E.

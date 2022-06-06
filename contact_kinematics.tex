@@ -3,13 +3,13 @@
 \subsection{Contact Kinematics}
 \label{sec:contact_modeling}
 
-Given a configuration $\mf{q}$ of the system, we assume our geometry engine
+\reviewquestion{Q8-Q1}{Given a configuration $\mf{q}$ of the system, we assume our geometry engine
 reports a set $\mathscr{C}(\mf{q})$ of $n_c$ potential contacts between pairs of
 bodies. We characterize the $i\text{-th}$ \emph{contact pair} in
 $\mathscr{C}(\mf{q})$ by the location $\vf{p}_i$ of the contact point, a normal
 direction $\hat{\vf{n}}_i$ and \emph{signed distance function}
 \cite{bib:flores2021contact,bib:pfeiffer1996multibody}
-$\phi_i(\mf{q})\in\mathbb{R}$, defined negative for overlapping bodies. The
+$\phi_i(\mf{q})\in\mathbb{R}$, defined negative for overlapping bodies.} The
 kinematics of each contact is further completed with the relative velocity
 $\vf{v}_{c,i}\in\mathbb{R}^3$ between these two bodies at point $\vf{p}_i$,
 expressed in a contact frame $C_i$ for which we arbitrarily choose the
