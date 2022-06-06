@@ -1,0 +1,146 @@
+\section{Reviewer 4}
+\label{sec:reviewer_4}
+
+\textcolor{blue}{
+The Authors present an interesting and original research on a numerical
+method for simulating contact problems. The method can resolve corner
+case scenarios that are known to be difficult in conventional multibody
+solvers, hence it is very promising in the framework of robotics, that
+always strive for maximum robustness and stability. The transformation
+dual-vs-primal is an interesting strategy that allows the simulation of
+near-rigid FEA structures in NSCD, something that was always
+challenging.
+Some comments that the Authors can address:
+}
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q1: page 2: "the convex approximation introduces a gliding
+artifact at a distance proportional to the time step size and to the sliding
+velocity" ... I would recall: *and to the friction coefficient $\mu$ *. Later
+(ex. pag.6) this is mentioned. The proportionality with the friction coefficient
+means that such artifact can be irrelevant for problems with lubricated contacts
+as in many mechanisms, but still relevant for sticky materials, ex. rubber etc.
+like in robot grippers etc. (maybe worth mentioning this, as the paper is
+involving robotic \& manipulation)}
+
+Thank you for this very useful remark. We added text in the revised manuscript
+highlighting this observation.
+
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q2: pag.2: "The multi-physics simulation package Chrono implements a
+variant of the PGS method [...] the solver exhibits low convergence
+rates.". True, but that PGS is not the only solver available in that
+simulation library: additional methods based on Nesterov,
+Barzilai-Borwein accelerations and ADMM have been introduced with the
+aim of better convergence.}
+
+\RedHighlight{TODO: Find out more about these methods. Basically figure out: are
+they also first order? do they also require many iterations. See how to update
+this text in the intro to make are more accurate assessment.}
+
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q3: pag.4: "K and D are constant, diagonal, and positive
+definite matrices.". Are there assumptions on K and D being symmetric in your
+implementation? In many FEA nonlinear problems these are not symmetric, for
+example. Can this have an impact on numerical performances? Comment on this,
+please.}
+
+Yes. Actually, we split the forces term $\mf{k}$ into $\mf{k}_1$ and $\mf{k}_2$
+precisely to ensure that the stiffness and damping matrices are symmetric
+positive definite. This then allow us to obtain an SPD approximation $\mf{A}$ of
+the gradient $\partial \mf{m}/\partial \mf{v}$. We highlighted edited text in
+Section II.D making specific mention to the important case of joint spring
+dampers, for which $\mf{K}$ and $\mf{D}$ are positive diagonal matrices.
+Regarding finite elements modeling, we are currently working on a new
+publication that incorporates our new solver SAP within a FEM framework. In this
+new work we essentially restrict to materials whose internal stress comes from
+an internal elastic energy. Significantly more details will be provided in that
+piece of work. We updated the text in Section VII to briefly mention this
+discussion.
+
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q4: pag.7: on line search: have you considered to use an
+inexact "buffered" line search like Grippo-Lampariello-Lucidi (GLL)? This could
+speed up line search where Armijo or other strategies can be too conservative
+during zones of frequent constraint transitions.}
+
+\RedHighlight{TODO: I doubt the peformance could be better. It is already pretty
+good. However, it'd seem like giving this method a try would not be hard.
+Consider implementing and making at least a quick comparison that can be briefly
+discussed in a one liner.}
+
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q5: pag.7: "supernodal Cholesky factorization" ... this
+implies that H is Hermitian, but in some FEA problems the D and K matrices might
+be non-symmetric, thus H as well, correct? How do you deal with this, if so? Can
+you comment on this? }
+
+Supernodal ideas generalize to LU factorization. However, it is a requirement of
+the formulation for the stiffness and damping matrices that are included in the
+linear dynamics matrix $\mf{A}$ to be symmetric positive definite. We discussed
+this in the answer to R4-Q3. We provided two examples: joint spring and dampers,
+which we include in term $\mf{k}_1$, and simulation of deformable solids for
+which stresses stem from an internal elastic energy. However, modeling
+of deformable objects with frictional contact will be discussed in depth in our
+next publication. Please see highlighted text labeled as R4-Q3 in the revised
+manuscript.
+
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q6: pag.8, bottom: "...we form the approximation [....].
+Using this approximation, we estimate the frequency of the contact dynamics...".
+This is a smart idea, although I have a counterexample: suppose you have two
+very light particles in contact, but both of them are welded to two very heavy
+bodies via two joints: the simplified evaluation of the Delassus operator would
+underestimate the contact masses in the constraint metric. If this is the case,
+please add a comment on the practical limitation of this simplified Delassus
+formula, mentioning a real example like the one I wrote here.}
+
+This is an excellent question, thank you. This particular case you mention is
+not problematic because we are using joint coordinates. Lets call the two heavy
+bodies H1 and H2 and for simplicity, consider they are free. Lets refer to the
+light particle welded to H1 as L1 and to the light particle welded to H2 as L2.
+In joint coordinates, there will be two trees: t1 formed by L1 welded to H1 and
+t2 formed by L2 welded to H2. Therefore the mass matrix for each tree will be
+dominated by the mass of the heavy particle and the Delassus approximation works
+as desired in this case.
+
+However, as you pointed out, we can still come up with a counterexample. 
+
+\RedHighlight{TODO: Come up with an easy to explain counter example. Maybe a
+stack of objects is the easiest? but one with joints might be more satisfying if
+easy to explain.}
+
+\vspace{5mm}
+
+\textcolor{blue}{R4-Q7: pag. 12: for scalability, you tested up to hundreds of
+bodies. Do you thing this approach (with the SAP solver, I mean) can scale up to
+hundreds of thousands of bodies or millions? Are there limitations? Is it more
+practical for "low contact density" scenarios like robotics, or also for "high
+contact density" scenarios like granular flows, or both?}
+
+The scalability of SAP, like any second-order optimization method, depends
+on the complexity of solving the Newton system. For fully dense problems,
+this has $O(n^3)$ complexity, where $n$ denotes the number of variables. 
+For sparse problems, the complexity is $O(d^3)$, where
+$d$ is the size of the largest clique in a chordal completion of the 
+linear system matrix.  We see no reason the algorithm could not
+be applied to millions of bodies if the clique size $d$ is small (which implies
+low contact density).  When $d$ is large, SAP can be modified to improve
+scalability. Specifically, we can approximately solve the Newton
+system using the conjugate-gradient (CG) method. Note that ff we terminate CG after
+one-iteration, SAP reduces to gradient descent, i.e., a first-order
+optimization algorithm.
+
+Note that the $O(d^3)$ per-iteration complexity of SAP is the same
+for interior-point methods (IPMs).  Our computational results show the per-iteration
+complexity is comparable to Gurobi, a commercial implementation of an IPM..
+
+
+
+\RedHighlight{TODO: Add text in either conclusions or the "limitations"
+section.}
