@@ -8,13 +8,16 @@ interval of size $\delta t$ with the compliant law
     \label{eq:compliant_model}
 \end{equation}
 where $k$ is the stiffness parameter, $\tau_{d}$ is a \textit{dissipation time
-scale} and $(x)_+=\max(0, x)$ is the \textit{positive part} operator. This model
-of compliance can be written as the equivalent complementarity condition
+scale} and $(x)_+=\max(0, x)$ is the \textit{positive part} operator.
+\reviewquestion{AE-Q5}{The $\delta t$ is needed to convert \emph{forces} into
+\emph{impulses}.} This model of compliance can be written as the equivalent
+complementarity condition
 \begin{equation}
     0 \le \phi + \tau_{d}\,v_{n} + \frac{c}{\delta t} \gamma_{n}\perp \gamma_{n} \ge 0
 \end{equation}
-where $c=k^{-1}$ is the compliance parameter and $0 \le a\perp b \ge 0$ denotes
-complementarity, i.e. $a \ge 0$, $b \ge 0$ and $a\,b=0$.
+where $c=k^{-1}$ is the compliance parameter \reviewquestion{AE-Q6}{and $0 \le
+a\perp b \ge 0$ denotes complementarity, i.e. $a \ge 0$, $b \ge 0$ and
+$a\,b=0$.}
 
 The tangential component $\bgamma_{t}\in\mathbb{R}^2$ of the contact impulse is
 modeled with Coulomb's law of dry friction as

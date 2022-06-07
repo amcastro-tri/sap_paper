@@ -70,7 +70,7 @@ improvement over the original version thanks to the reviewers' comments.
 \textcolor{blue}{In addition, this AE has the following further comments.}
 \textcolor{blue}{
 \begin{itemize}
-    \item As also highlighted by Reviewer 1, the current paper's outline
+    \item[AE-Q1] As also highlighted by Reviewer 1, the current paper's outline
 confuses the reader and makes the reading flow difficult. This AE suggests
 deeply revising the organization of the contents. One solution is to avoid
 fragmenting the content in so many different sections. Authors should organize
@@ -79,35 +79,76 @@ the related content. For instance, this AE believes that Sections V, VI, VII,
 and IX may be unified. Instead, it is not clear why Sections II, III, and IV
 have been split in such a way, also because the same concepts are often repeated
 (as the fact that "the proposed approach does not approximate the friction cone
-but [...]").On the other hand, the state of the art can be removed from Section
-I, and a dedicated (sub)section may be created. Novelties (and limitations of
-the approach as said above) should be addressed in separated subsections.
-Therefore, a considerable re-organization of the contents is suggested.
-\end{itemize}}
+but [...]").\end{itemize}}
+
+We do realize the original organization of the contents was far from optimal. We
+are glad the reviewers agreed on the need for this change. We reorganized the
+updated manuscript in order to make the contents flow more linearly, group
+similar concepts together and avoid repetition. In the new manuscript Section II
+introduces the mathematical model of multibody dynamics with frictional contact,
+introduces notation and establishes the non-linear complementarity problem (NCP)
+that must be solved in the most general case. Section III now is entirely
+focused to the convex approximation of this NCP formulation, effectively
+grouping together concepts previously scattered across different sections.
+Section IV now follows naturally, describing our proposed SAP strategy to solve
+the resulting unconstrained optimization problem. Finally, everything related to
+the physical interpretation and modeling parameters of the convex approximation
+is condensed in Section V.
+
+\vspace{5mm}
+\textcolor{blue}{AE-Q2: On the other hand, the state of the art can be removed from
+Section I, and a dedicated (sub)section may be created. Novelties (and
+limitations of the approach as said above) should be addressed in separated
+subsections. Therefore, a considerable re-organization of the contents is
+suggested.}
+
+In the updated manuscript Section I.B summarizes available software that uses a
+convex approximation of contact, Section I.C states our contributions and
+Section VIII explicitly states limitations of our approach.
 
 \textcolor{blue}{
 \begin{itemize}
-    \item Authors performed a good state of the art within the Introduction,
+    \item[AE-Q3] Authors performed a good state of the art within the Introduction,
     mentioning much software such as ODE, Dart, Vortex, Mujoco, and Chrono. The
     authors also provide differences between the cited software and the one
     proposed in the reviewed paper. However, RaiSim [AE1,AE2] is
     missing.\end{itemize}}
 
+Thank you for the reference, we added it to the updated manuscript.
+
 \textcolor{blue}{
 \begin{itemize}
-    \item What is the "gap function" in section II?\end{itemize}}
+    \item[AE-Q4] What is the "gap function" in section II?\end{itemize}}
     
-\textcolor{blue}{\begin{itemize}
-\item Maybe, a $\delta t$ term is missing in the last term of Eq. (2).
-\end{itemize}} 
+In the context of multibody dynamics with contact \emph{gap function} often
+refers to the \emph{signed distance function}, see for instance
+\cite{bib:negrut2018posing}. We do realize however that \emph{signed distance}
+is the more common term in the robotics community and we adopted this
+terminology instead. Section II.A has been updated and references are provided.
 
 \textcolor{blue}{\begin{itemize}
-\item In Section II, the non-penetration constraint equation has a non-explained
+\item[AE-Q5] Maybe, a $\delta t$ term is missing in the last term of Eq. (2).
+\end{itemize}} 
+
+\textbf{Please note:} in the updated manuscript the balance of momentum in the
+previous Eq. (2) is now stated in Eq. (7).
+
+The reason $\delta t$ does not appear in the last term of Eq. (7) is because
+$\bgamma$ denote impulses, the integral (in this case over one time step) of the
+forces. Mean forces over a time step are recovered dividing impulses by $\delta
+t$. This shows in Eq. (2) for the modeling of compliance. We updated the
+manuscript to explicitly state this.
+
+\textcolor{blue}{\begin{itemize}
+\item[AE-Q6] In Section II, the non-penetration constraint equation has a non-explained
 symbolism. Please, clarify the expressions with the $\perp$ symbol (see also Eq.
-(4)).\end{itemize}} 
+(4)).\end{itemize}}
+
+Thank you, we missed this in the original manuscript. We updated the text in
+Section II.B to define the $\perp$ symbol.
     
 \textcolor{blue}{\begin{itemize}
-\item At the beginning of Section VII, it is written that "the approach is
+\item[AE-Q7] At the beginning of Section VII, it is written that "the approach is
 different from the one in [16], where regularization is not used to model
 physical compliance but rather to introduce a user tunable Baumgarte-style"
 stabilization to avoid constant drift." It is unclear to this AE whether this

@@ -89,11 +89,14 @@ suitable for interactive simulation. Software such as ODE \cite{bib:ode}, Dart
 \cite{bib:dart} and Vortex \cite{bib:vortex} use a polyhedral approximation of
 the friction cone leading to an LCP formulation. Algoryx \cite{bib:algoryx} uses
 a \emph{split solver}, reminiscent of one iteration in the staggered projections
-method \cite{bib:Kaufman2008}. Drake \cite{bib:drake} solves compliant contact
-with regularized friction with its transition aware solver TAMSI
-\cite{bib:castro2020}. 
+method \cite{bib:Kaufman2008}. \reviewquestion{AE-Q3}{RaiSim \cite{bib:raisim}
+implements an iterative method with exact solution per-contact, a significant
+improvement over traditional Projected Gauss-Seidel (PGS) methods though still
+with no converge nor accuracy guarantees.} Drake \cite{bib:drake} solves
+compliant contact with regularized friction with its transition aware solver
+TAMSI \cite{bib:castro2020}.
 
-To our knowledge, Chrono \cite{bib:hrono2016}, Mujoco \cite{bib:mujoco} and
+To our knowledge, Chrono \cite{bib:chrono2016}, Mujoco \cite{bib:mujoco} and
 Siconos \cite{bib:acary2019siconos} are the only packages that implement the
 convex approximation of contact. The multi-physics simulation package Chrono
 implements a variant of the PGS method for solving Anitescu's convex formulation
@@ -128,7 +131,26 @@ approximation and evaluate the robustness and accuracy of our method on a family
 of examples.
 
 \subsection{Outline and Novel Contributions}
-We make a number of novel contributions. To address accuracy and model validity,
+Section \ref{sec:discrete_time_formulation} introduces a time stepping approach
+based on the $\theta\text{-method}$. This includes the popular symplectic Euler
+method and the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we
+demonstrate that the midpoint rule can achieve second order accuracy even in
+problems with frictional contact. Unlike previous work
+\cite{bib:anitescu2010,bib:todorov2014} that formulates the problem in its dual
+form (impulses), we write a primal formulation of compliant contact in
+velocities (Section \ref{sec:primal_formulation}). We then analytically
+eliminate constraints from this formulation to obtain an unconstrained convex
+problem (Section \ref{sec:unconstrained_convex_formulation}).
+
+To solve this formulation, we develop SAP---the Semi-Analytic Primal solver---in
+Section \ref{sec:sap_solver} and study its theoretical and practical
+convergence.  Crucially, we show that SAP globally converges from all initial
+conditions (Appendix \ref{app:sap_converge}) and warm-starts effectively using
+the previous time-step velocities, enabling simulation at interactive rates. We
+provide full details needed for implementation, including formulae for selecting
+a search direction, a line search procedure, and sparsity analysis. 
+
+To address accuracy and model validity,
 Section \ref{sec:physical_intuition} provides compact expressions for the
 impulses that correspond to the optimal velocities of the convex approximation.
 This provides intuition for the approximation, even to those without
@@ -138,33 +160,21 @@ regularization introduced by Todorov \cite{bib:todorov2014} is given a clear
 physical interpretation. Such interpretability  allows us to incorporate not
 only compliant point contact, but also complex models of compliant surface
 patches \cite{bib:elandt2019pressure}, as we demonstrate in Section
-\ref{sec:slip_control}. We introduce in Section
-\ref{sec:discrete_time_formulation} a time stepping approach based on the
-$\theta\text{-method}$. This includes the popular symplectic Euler method and
-the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we demonstrate
-that the midpoint rule can achieve second order accuracy even in problems with
-frictional contact. Unlike previous work \cite{bib:anitescu2010,bib:todorov2014}
-that formulates the problem in its dual form (impulses), we write a primal
-formulation of compliant contact in velocities (Section
-\ref{sec:primal_formulation}). We then analytically eliminate constraints from
-this formulation to obtain an unconstrained convex problem (Section
-\ref{sec:unconstrained_convex_formulation}).
+\ref{sec:slip_control}. 
 
-To solve this formulation, we develop SAP---the Semi-Analytic Primal solver---in
-Section \ref{sec:sap_solver} and study its theoretical and practical
-convergence.  Crucially, we show that SAP globally converges from all initial
-conditions (Appendix \ref{app:sap_converge}) and warm-starts effectively using
-the previous time-step velocities, enabling simulation at interactive rates. We
-provide full details needed for implementation, including formulae for selecting
-a search direction, a line search procedure, and sparsity analysis. Section
-\ref{sec:understanding_model_parameters} presents regularization procedures that
-improve numerical conditioning without sacrificing the accuracy needed for
-simulation of stiction and simulation of \emph{near-rigid} objects. This is
-critical for the simulation of demanding robotics tasks such as manipulation. We
-evaluate the accuracy, robustness and performance of SAP against available
-commercial and open-source optimization solvers. In Section
-\ref{sec:test_cases}, we demonstrate the effectiveness of our approach in a
-number of simulation cases, including the simulation of the challenging dual arm
-manipulation task shown in Fig. \ref{fig:dual_arm_frames}. We discuss extensions
-and variations in Section \ref{sec:variations_and_extensions} and conclude with
-final remarks in Section \ref{sec:future_directions}.
+Section \ref{sec:understanding_model_parameters} presents regularization
+procedures that improve numerical conditioning without sacrificing the accuracy
+needed for simulation of stiction and simulation of \emph{near-rigid} objects.
+This is critical for the simulation of demanding robotics tasks such as
+manipulation. 
+
+We demonstrate the effectiveness of our approach in Section \ref{sec:test_cases}
+in a number of simulation cases, including the simulation of the challenging
+dual arm manipulation task shown in Fig. \ref{fig:dual_arm_frames}. We evaluate
+the accuracy, robustness and performance of SAP against available commercial and
+open-source optimization solvers.
+
+Finally, we discuss extensions and variations in Section
+\ref{sec:variations_and_extensions}, limitations in Section
+\ref{sec:limitations} and conclude with final remarks in Section
+\ref{sec:future_directions}.
