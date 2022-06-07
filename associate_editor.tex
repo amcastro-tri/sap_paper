@@ -3,13 +3,121 @@
 
 \textcolor{blue}{Three Reviewers evaluated the submitted paper. Their comments
 are reported and should be carefully followed. In particular, the Reviewers
-highlighted several criticisms.
-\begin{itemize}
+highlighted several criticisms.}
+\textcolor{blue}{\begin{itemize}
     \item Linearization effects should be better highlighted (Reviewer 1).
-    \item It seems that the approach has an implicitly defined constraint,
-\end{itemize}
-which contradicts the claim of an unconstrained problem. If this impression is
-confirmed, then the global convergence of the method becomes unclear (Reviewer
-1).}
+\end{itemize}}
+Linearization of the equations of motion is a very common approximation in many
+other time stepping schemes for multibody dynamics in the literature, specially
+so if contact is involved. However, the details might be elusive if not properly
+mentioned. Therefore we do agree with this review, these approximations must be
+mentioned explicitly.
+\RedHighlight{TODO: consider adding this into a Limitations section.}
 
+Reviewer 1 comments on linearization effects in questions R1-Q1, R1-Q2 and
+R1-Q3. We provided specific answers to each of these questions in this document
+and updated the manuscript accordingly. 
+
+\textcolor{blue}{\begin{itemize}
+    \item It seems that the approach has an implicitly defined constraint,
+\end{itemize}}
+Constraints in this formulation are eliminated using analytic formulae that we
+provide in this work. We provided more details in the answer to R1-Q7 in this
+document.
+
+\textcolor{blue}{which contradicts the claim of an unconstrained problem. If
+this impression is confirmed, then the global convergence of the method becomes
+unclear (Reviewer 1).}
+
+We address this point in answer to R1-Q4, with mention specific theorems and
+results in our work. We highlighted updates in the manuscript accordingly.
+
+\textcolor{blue}{
+\begin{itemize}
+    \item A more in-depth analysis of the matrices K, D, and H should be
+    carried out. Can they be non-symmetric? (Reviewer 4)
+\end{itemize}}
+
+This is an important aspect of our work. While we do not impose any restriction
+on the gradient $\partial \mf{m}/\partial \mf{v}$ (with the momentum residual
+$\mf{m}$ defined in Eq. 14), we do require its approximation $\mf{A}$ to be SPD.
+We address this question in detail in R4-Q3 and in the updated manuscript.
+
+
+\textcolor{blue}{
+\begin{itemize}
+    \item Authors should clearly state the limitation of the approach. This
+regards scalability (Reviewer 4), objects convexity (Reviewer 8), change in
+contact modes during the task( Reviewer 8), and possible others. \end{itemize}}
+
+Scalability is addressed in R4-Q7, objects convexity in R8-Q1, and changes in
+contact modes in R8-Q3, along specific updates to the manuscript.
+
+In addition, we added \RedHighlight{Section XXX} discussing these and other
+limitations of our approach.
+
+\RedHighlight{TODO: ok, Done deal. Add a Limitations section that includes all
+the topics here and the TODOs I sprinkled all over.}
+
+\vspace{5mm}
+\textcolor{blue}{After a careful reading of the paper, this Associate Editor
+agrees with all the points raised by the Reviewers.}
+
+We agree with the points raised as well. We believe the updated manuscript is an
+improvement over the original version thanks to the reviewers' comments.
+
+\vspace{5mm}
+\textcolor{blue}{In addition, this AE has the following further comments.}
+\textcolor{blue}{
+\begin{itemize}
+    \item As also highlighted by Reviewer 1, the current paper's outline
+confuses the reader and makes the reading flow difficult. This AE suggests
+deeply revising the organization of the contents. One solution is to avoid
+fragmenting the content in so many different sections. Authors should organize
+the same focus in one or two bigger sections and exploit subsections to split
+the related content. For instance, this AE believes that Sections V, VI, VII,
+and IX may be unified. Instead, it is not clear why Sections II, III, and IV
+have been split in such a way, also because the same concepts are often repeated
+(as the fact that "the proposed approach does not approximate the friction cone
+but [...]").On the other hand, the state of the art can be removed from Section
+I, and a dedicated (sub)section may be created. Novelties (and limitations of
+the approach as said above) should be addressed in separated subsections.
+Therefore, a considerable re-organization of the contents is suggested.
+\end{itemize}}
+
+\textcolor{blue}{
+\begin{itemize}
+    \item Authors performed a good state of the art within the Introduction,
+    mentioning much software such as ODE, Dart, Vortex, Mujoco, and Chrono. The
+    authors also provide differences between the cited software and the one
+    proposed in the reviewed paper. However, RaiSim [AE1,AE2] is
+    missing.\end{itemize}}
+
+\textcolor{blue}{
+\begin{itemize}
+    \item What is the "gap function" in section II?\end{itemize}}
+    
+\textcolor{blue}{\begin{itemize}
+\item Maybe, a $\delta t$ term is missing in the last term of Eq. (2).
+\end{itemize}} 
+
+\textcolor{blue}{\begin{itemize}
+\item In Section II, the non-penetration constraint equation has a non-explained
+symbolism. Please, clarify the expressions with the $\perp$ symbol (see also Eq.
+(4)).\end{itemize}} 
+    
+\textcolor{blue}{\begin{itemize}
+\item At the beginning of Section VII, it is written that "the approach is
+different from the one in [16], where regularization is not used to model
+physical compliance but rather to introduce a user tunable Baumgarte-style"
+stabilization to avoid constant drift." It is unclear to this AE whether this
+difference is due to a different interpretation of the regularization term or it
+is substantial, affecting the theoretical part.\end{itemize}} 
+
+\vspace{5mm}
+\textcolor{blue}{\begin{itemize}
+    \item[AE1] https://raisim.com
+    \item[AE2] J. Hwangbo, J. Lee, M. Hutter, "Pre-contact iteration method for
+solving contact dynamics," IEEE Robotics and Automation Letters, vol. 3, n. 2,
+pp. 895-902, 2018.\end{itemize}} 
 

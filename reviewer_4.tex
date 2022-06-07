@@ -49,7 +49,7 @@ please.}
 
 Yes. Actually, we split the forces term $\mf{k}$ into $\mf{k}_1$ and $\mf{k}_2$
 precisely to ensure that the stiffness and damping matrices are symmetric
-positive definite. This then allow us to obtain an SPD approximation $\mf{A}$ of
+positive definite. This then allows us to obtain an SPD approximation $\mf{A}$ of
 the gradient $\partial \mf{m}/\partial \mf{v}$. We highlighted edited text in
 Section II.D making specific mention to the important case of joint spring
 dampers, for which $\mf{K}$ and $\mf{D}$ are positive diagonal matrices.
@@ -59,6 +59,8 @@ new work we essentially restrict to materials whose internal stress comes from
 an internal elastic energy. Significantly more details will be provided in that
 piece of work. We updated the text in Section VII to briefly mention this
 discussion.
+
+\RedHighlight{TODO: add to Limitations section.}
 
 \vspace{5mm}
 
@@ -116,7 +118,6 @@ stack of objects is the easiest? but one with joints might be more satisfying if
 easy to explain.}
 
 \vspace{5mm}
-
 \textcolor{blue}{R4-Q7: pag. 12: for scalability, you tested up to hundreds of
 bodies. Do you thing this approach (with the SAP solver, I mean) can scale up to
 hundreds of thousands of bodies or millions? Are there limitations? Is it more
@@ -129,18 +130,27 @@ this has $O(n^3)$ complexity, where $n$ denotes the number of variables.
 For sparse problems, the complexity is $O(d^3)$, where
 $d$ is the size of the largest clique in a chordal completion of the 
 linear system matrix.  We see no reason the algorithm could not
-be applied to millions of bodies if the clique size $d$ is small (which implies
-low contact density).  When $d$ is large, SAP can be modified to improve
-scalability. Specifically, we can approximately solve the Newton
-system using the conjugate-gradient (CG) method. Note that ff we terminate CG after
-one-iteration, SAP reduces to gradient descent, i.e., a first-order
-optimization algorithm.
+be applied to millions of bodies if the clique size $d$ is small.  When $d$ is
+large, SAP can be modified to improve scalability. Specifically, we can
+approximately solve the Newton system using the conjugate-gradient (CG) method.
+Note that if we terminate CG after one-iteration, SAP reduces to gradient
+descent, i.e., a first-order optimization algorithm.
 
 Note that the $O(d^3)$ per-iteration complexity of SAP is the same
 for interior-point methods (IPMs).  Our computational results show the per-iteration
-complexity is comparable to Gurobi, a commercial implementation of an IPM..
+complexity is comparable to Gurobi, a commercial implementation of an IPM.
 
+Recently, we tested the scalability of SAP for high contact density problems,
+though with a small $d$. That is, we performed a grid study with our most recent
+contact model that leads to thousands of contact pairs. Still, not all objects
+are in contact with each other and therefore SAP acchieves almost linear
+convergence with the number of contact constraints (an exponent about $n\sim1.3$
+to be precise). Details of this scalability study are provided in
+\cite{bib:masterjohn2021discrete}.
 
+We added text at the end of Section IV.D and \RedHighlight{in the Limitations
+Section.}
 
 \RedHighlight{TODO: Add text in either conclusions or the "limitations"
-section.}
+section, mentioning that scalability  and other iterative solvers like CG is
+future research.}
