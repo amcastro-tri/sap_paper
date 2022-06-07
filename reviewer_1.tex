@@ -30,7 +30,7 @@ and solve Eq. (17) instead.
 \vspace{5mm}
 
 \textcolor{blue}{
-Q1: The authors use a first order approximation of the impulse dynamics (Eq. (2))
+R1-Q1: The authors use a first order approximation of the impulse dynamics (Eq. (2))
 in order to recursively solve the linearized problem around the unconstrained
 position $\vf{v^*}$ (Eq. (14)). This is an interesting assumption, since the linearized
 problem might not be easy to converge for a high DoF system. While the authors
@@ -52,7 +52,7 @@ approximation in Eq. (18) is proven in Appendix E.
 \vspace{5mm}
 
 \textcolor{blue}{
-Q2: Could the authors discuss the effects of this linearization, and what the
+R1-Q2: Could the authors discuss the effects of this linearization, and what the
 worst-case situation in this setup would be. }
 
 There is a significant amount of work on the validity of the approximation in
@@ -66,7 +66,7 @@ $\theta>0$ and $\theta_{vq}>0$).
 \vspace{5mm}
 
 \textcolor{blue}{
-Q3: Also, the linearization would introduce joint constraint errors the
+R1-Q3: Also, the linearization would introduce joint constraint errors the
 multi-body linkages. Do the authors have a measure of their convergence? If so,
 could they discuss it here please?}
 
@@ -79,7 +79,7 @@ choice at the beginning of Section II.
 \vspace{5mm}
 
 \textcolor{blue}{
-Q4: The above point is linked to the the claim of ``proven global convergence"
+R1-Q4: The above point is linked to the the claim of ``proven global convergence"
 that the authors use in the abstract. The authors do create an unconstrained
 optimization problem, but the underlined dynamics seems to be implicitly
 constrained, and non-convex, for which the authors use a linearized
@@ -100,7 +100,7 @@ Section III.C in the revised manuscript now explicitly states these
 observations.
 \vspace{5mm}
 
-\textcolor{blue}{Q5: ``In addition, the linearization of the friction cone
+\textcolor{blue}{R1-Q5: ``In addition, the linearization of the friction cone
 results in a far larger problem due to the additional constraints needed to
 represent the polyhedral cone." Please elaborate ``larger problems" here. Could
 the authors compare this to the assumptions that they need to take for the
@@ -116,7 +116,7 @@ address this question in the manuscript, and in particular to compare against
 LCP formulations, we added text in the conclusions.
 \vspace{5mm}
 
-\textcolor{blue}{Q6: $\theta_q$, $\theta_v$, $\theta_{vq}$ could the authors
+\textcolor{blue}{R1-Q6: $\theta_q$, $\theta_v$, $\theta_{vq}$ could the authors
 please provide explanations for these variables in Eq. (6).}
 
 We thank the reviewer for this question. While reviewing the manuscript we
@@ -136,7 +136,7 @@ book by
 explaining these parameters in the revised manuscript.
 \vspace{5mm}
 
-\textcolor{blue}{Q7: Could the authors please explain the significance of
+\textcolor{blue}{R1-Q7: Could the authors please explain the significance of
 ``$\vf{y}$" in equations 16 and above? Since the Projection operation ($Pf()$)
 is constrained, the authors still don't have an unconstrained equation in Eq.
 (17), and have an implicitly defined constraint instead. Could the authors
@@ -181,7 +181,7 @@ Appendix C.
 %(Section C) is not unexpected but flows naturally from the previous sections.
 \vspace{5mm}
 
-\textcolor{blue}{Q8: ``fifteen years after the introduction of these convex
+\textcolor{blue}{R1-Q8: ``fifteen years after the introduction of these convex
 approximations, robust and performant algorithms for their solution in practice
 are lacking." There are already multiple simulators in practice that provide
 solutions with various levels of accuracy and robustness and different
@@ -201,7 +201,7 @@ research in this direction and that finally led to this paper. We hope this new
 reference helps the reviewer understand the purpose of our research efforts.
 \vspace{5mm}
 
-\textcolor{blue}{Q9: ``It is not yet clear if these formulations present a real
+\textcolor{blue}{R1-Q9: ``It is not yet clear if these formulations present a real
 advantage when compared to more traditional approaches and whether the artifacts
 introduced by the approximation are acceptable in robotics applications". Could
 the authors please discuss the approximations that they mean here? Is this

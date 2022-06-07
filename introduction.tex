@@ -108,7 +108,7 @@ is parameterized by a daunting number of parameters, most of which do not relate
 to physics. Still, it has become very popular in the reinforcement learning
 community given its performance. MuJoCo's underlying technology is proprietary
 and it is close-sourced at the time of this writing.
-\reviewquestion{Q8}{Siconos is an open-source software targeting large
+\reviewquestion{R1-Q8}{Siconos is an open-source software targeting large
 scale simulation of both rigid and deformable objects. The authors of Siconos
 perform an exhaustive benchmarking campaign in \cite{bib:acary2018solving} using
 the convex approximation of contact. The analysis reveals that there is no
@@ -118,14 +118,14 @@ robustness and/or efficiency problems.}
 %40 solver variants. The benchmark campaign includes 2368 problems organized into
 %11 sets from various applications. 
 
-\reviewquestion{Q9}{It is not even clear if these convex approximations present
-a real advantage when compared to approaches solving the original non-convex NCP
-problem and whether the artifacts introduced by the approximation are acceptable
-in robotics applications.} 
-In this work, we propose a new unconstrained convex approximation and discuss
-techniques for its efficient implementation. We carefully quantify the artifacts
-introduced in the convex approximation and evaluate the robustness and accuracy
-of our method on a family of examples.
+\reviewquestion{R1-Q9}{It is not even clear if these convex approximations
+present a real advantage when compared to approaches solving the original
+non-convex NCP problem and whether the artifacts introduced by the approximation
+are acceptable in robotics applications.} In this work, we propose a new
+unconstrained convex approximation and discuss techniques for its efficient
+implementation. We carefully quantify the artifacts introduced in the convex
+approximation and evaluate the robustness and accuracy of our method on a family
+of examples.
 
 \subsection{Outline and Novel Contributions}
 We make a number of novel contributions. To address accuracy and model validity,

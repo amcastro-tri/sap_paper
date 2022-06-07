@@ -6,7 +6,7 @@ II.7]{bib:hairer2008solving}. We discretize time into intervals of fixed size
 $\delta t$ and seek to advance the state of the system from time $t^n$ to the
 next step at $t^{n+1} = t^n + \delta t$. In the $\theta\text{-method}$,
 variables are evaluated at intermediate time steps $t^\theta = \theta
-t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. \reviewquestion{Q6}{We define \emph{mid-step
+t^{n+1}+(1-\theta)t^{n}$, with $\theta \in [0, 1]$. \reviewquestion{R1-Q6}{We define \emph{mid-step
 quantities} $\mf{q}^{\theta}$, $\mf{v}^{\theta}$, and
 $\mf{v}^{\theta_{vq}}$ in accordance with the standard $\theta\text{-method}$
 using scalar parameters $\theta$ and $\theta_{vq}$
@@ -49,7 +49,7 @@ $\mf{k}(\mf{q},\mf{v})\in\mathbb{R}^{n_v}$ models external forces such as
 gravity, gyroscopic terms and other smooth generalized forces such as those
 arising from springs and dampers.
 
-\reviewquestion{Q6}{This scheme based on the $\theta\text{-method}$ includes some of the most
+\reviewquestion{R1-Q6}{This scheme based on the $\theta\text{-method}$ includes some of the most
 popular schemes for forward dynamics:
 \begin{itemize}
 	\item Explicit Euler with $\theta=\theta_{vq} = 0$,
