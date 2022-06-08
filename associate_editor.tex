@@ -122,7 +122,8 @@ Thank you for the reference, we added it to the updated manuscript.
     
 In the context of multibody dynamics with contact \emph{gap function} often
 refers to the \emph{signed distance function}, see for instance
-\cite{bib:negrut2018posing}. We do realize however that \emph{signed distance}
+\cite{bib:negrut2018posing, bib:duriez2005realistic,
+bib:laursen2003computational}. We do realize however that \emph{signed distance}
 is the more common term in the robotics community and we adopted this
 terminology instead. Section II.A has been updated and references are provided.
 
@@ -154,6 +155,27 @@ physical compliance but rather to introduce a user tunable Baumgarte-style"
 stabilization to avoid constant drift." It is unclear to this AE whether this
 difference is due to a different interpretation of the regularization term or it
 is substantial, affecting the theoretical part.\end{itemize}} 
+
+\textbf{Please note:} [16] refers to the work by Todorov in
+\cite{bib:todorov2014}.
+
+It is somewhat known that stabilization leads to \emph{numerical compliance}, a
+fact that Todorov uses effectively in his work. However, there is a substantial
+contribution here that must not be overlooked. That is, we do provide an exact
+mapping between regularization and physical compliance, something that has never
+been done before. This novel contribution means that:
+\begin{enumerate}
+    \item Regularization is no longer a \emph{tunning} parameter of the
+    algorithm, but now the user can specify true physical parameters that SAP
+    uses to map into the needed regularization.
+    \item New models of the physics of contact, such as the hydroelastic contact
+    model we use in this work
+    \cite{bib:elandt2019pressure,bib:masterjohn2021discrete}, can now be
+    incorporated into the formulation. This is simply impossible without the
+    exact mapping between regularization and physical parameters.
+\end{enumerate}
+
+We updated text in the ``Outline and Novel Contributions'' Section I.C.
 
 \vspace{5mm}
 \textcolor{blue}{\begin{itemize}

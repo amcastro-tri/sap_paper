@@ -155,12 +155,15 @@ Section \ref{sec:physical_intuition} provides compact expressions for the
 impulses that correspond to the optimal velocities of the convex approximation.
 This provides intuition for the approximation, even to those without
 optimization expertise. Moreover, the artifacts introduced by the approximation
-become apparent and can be characterized precisely. In particular,
-regularization introduced by Todorov \cite{bib:todorov2014} is given a clear
-physical interpretation. Such interpretability  allows us to incorporate not
-only compliant point contact, but also complex models of compliant surface
-patches \cite{bib:elandt2019pressure}, as we demonstrate in Section
-\ref{sec:slip_control}. 
+become apparent and can be characterized precisely. \reviewquestion{AE-Q7}{In
+particular, we provide an exact mapping between the regularization introduced by
+Todorov \cite{bib:todorov2014} to \emph{physical} parameters of compliance.
+Therefore regularization is no longer treated as a tunning parameter of the
+algorithm but as a true physical parameterization of the contact model. This
+allows us to incorporate not only compliant point contact, but also complex
+models of compliant surface patches \cite{bib:elandt2019pressure,
+bib:masterjohn2021discrete}, as we demonstrate in Section
+\ref{sec:slip_control}.}
 
 Section \ref{sec:understanding_model_parameters} presents regularization
 procedures that improve numerical conditioning without sacrificing the accuracy
