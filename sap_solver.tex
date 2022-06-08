@@ -91,8 +91,6 @@ is slow. The fast computation of derivatives we show next allows us to iterate
 $\alpha$ to machine precision at a negligible impact on the computational cost.
 In practice, this is our preferred algorithm since it allows us to use very low
 regularization parameters without having to tune tolerances in the line search.
-Moreover, we observe 15\%-35\% performance improvement when compared to the
-backtracking line search.
 
 \subsection{Efficient Analytical Derivatives For Line Search}
 
@@ -131,14 +129,6 @@ Notice the first term on the right can be precomputed before the line search
 \subsection{Problem Sparsity}
 \label{sec:problem_sparsity}
 
-The matrix $\mf{H}$ inherits a block sparse structure from the specific contact
-configuration of the problem. We exploit this structure using a supernodal
-Cholesky factorization \cite[\S 9]{bib:davis2016survey}. Implementing this
-factorization requires construction of a \emph{junction tree}.  For this we
-apply the algorithm in \cite{bib:smail2017junction}, using cliques of $\mf{H}$
-as input. We use the implementation from the Conex solver
-\cite{bib:permenter2020}.
-
 The block sparsity of $\mf{H}$  is best described with an example. We organize
 our multibody systems as a collection of articulated \emph{tree structures}, or
 a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
@@ -164,19 +154,16 @@ Figure~\ref{fig:sparsity_example} shows the corresponding graph where nodes
 correspond to trees and edges correspond to patches.
 
 Generally, the Jacobian is sparse since the relative contact velocity only
-involves velocities of two trees in contact. When rows are condensed by patches
-and columns by trees, the Jacobian exhibits a sparse block structure. Figure
-\ref{fig:JTGJ_schematic} illustrates the Jacobian sparsity for the example in
-Fig.~\ref{fig:sparsity_example}, where each non-zero block is the Jacobian
-$\mf{J}_{pt}$ of size $3r_p\times n_t$.
+involves velocities of two trees in contact, Fig. \ref{fig:JTGJ_schematic}. Each
+non-zero block $\mf{J}_{pt}$ has size $3r_p\times n_t$. Since $\mf{A}$ is block
+diagonal, $\mf{H}$ inherits the sparsity structure of $\mf{J}^T\mf{G}\mf{J}$.
 
-Finally, since $\mf{A}$ is block diagonal, $\mf{H}$ inherits the sparsity
-structure of $\mf{J}^T\mf{G}\mf{J}$. For our example, this is sketched in
-\ref{fig:JTGJ_schematic}. Notice how the sparsity pattern of
-$\mf{J}^T\mf{G}\mf{J}$ exactly matches the graph from Fig.
-\ref{fig:sparsity_example}. Using this block structure, our supernodal Cholesky
-factorization can take full advantage of specific optimizations for dense
-algebra.
+We exploit this structure using a supernodal Cholesky factorization \cite[\S
+9]{bib:davis2016survey} that can take advantage of dense algebra optimizations.
+Implementing this factorization requires construction of a \emph{junction tree}.
+For this we apply the algorithm in \cite{bib:smail2017junction}, using cliques
+of $\mf{H}$ as input. We use the implementation from the Conex solver
+\cite{bib:permenter2020}.
 \begin{figure*}[!h]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figures/schematics/jacobian_and_JTGJ.png}

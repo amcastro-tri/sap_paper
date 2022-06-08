@@ -22,19 +22,17 @@ $a\,b=0$.}
 The tangential component $\bgamma_{t}\in\mathbb{R}^2$ of the contact impulse is
 modeled with Coulomb's law of dry friction as
 \begin{equation}
-    \bgamma_{t}=\argmin_{\Vert\bgamma_{t}\Vert\leq\mu\gamma_{n}}\vf{v}_{t}\cdot\bgamma_{t}
+    \bgamma_{t}=\argmin_{\Vert\bxi\Vert\leq\mu\gamma_{n}}\vf{v}_{t}\cdot\bxi
     \label{eq:maximum_dissipation_principle}
 \end{equation}
 where $\mu > 0$ is the coefficient of friction. Equation
 (\ref{eq:maximum_dissipation_principle}) describes the \emph{maximum dissipation
 principle}, which states that friction impulses maximize the rate of energy
 dissipation. In other words, friction impulses oppose the sliding velocity
-direction. Moreover, Eq. (\ref{eq:maximum_dissipation_principle}) states that
-contact impulses $\bgamma$ are constrained to belong to the friction cone
+direction. Moreover, \eqref{eq:maximum_dissipation_principle} states that
+contact impulses $\bgamma$ are constrained to be in the friction cone
 $\mathcal{F}=\{[\vf{x}_t, x_n] \in\mathbb{R}^3 \,|\, \Vert\vf{x}_t\Vert\le \mu
-x_n\}$.
-
-The optimality conditions for Eq. (\ref{eq:maximum_dissipation_principle}) are
+x_n\}$. The optimality conditions for Eq. (\ref{eq:maximum_dissipation_principle}) are
 \cite{bib:stewart2000rigid, bib:tasora2011}
 \begin{flalign}
     &\mu\gamma_{n}\vf{v}_{t} + \lambda \bgamma_{t} = \vf{0}\nonumber\\

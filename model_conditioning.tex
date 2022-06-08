@@ -14,9 +14,8 @@ leads to much better conditioned system of equations, without sacrificing
 accuracy. This is demonstrated in Section \ref{sec:test_cases} with a variety of
 tests cases.
 
-\textbf{Near-Rigid Contact}. With the formulation presented in this work, all
-bodies are modeled as compliant. Therefore, rigid objects must be modeled as
-\emph{near-rigid} bodies with large stiffness. However, as mentioned above,
+\textbf{Near-Rigid Contact}. In our formulation rigid objects must be modeled as
+\emph{near-rigid} using large stiffnesses. However, as mentioned above,
 blindly choosing large values of stiffness can lead to ill-conditioned systems
 of equations. Here, we propose a principled way to choose the stiffness
 parameter when modeling near-rigid contact.
@@ -27,14 +26,13 @@ of this particle is described by the equations of a harmonic oscillator with
 natural frequency $\omega_n^2 = k/m$, or period $T_n = 2\pi/\omega_n$, and
 damping ratio $\zeta=\tau_d\omega_n/2$. We say the contact is \emph{near-rigid}
 when $T_n \lesssim \delta t$ and the time step $\delta t$ cannot temporally
-resolve the contact dynamics. 
-
-In this \emph{near-rigid} regime, we use compliance as a means to add a
-Baumgarte-like \emph{stabilization} to avoid constraint drift, as similarly done
-in \cite{bib:todorov2011}. Choosing the time scale of the contact to be $T_n =
-\beta \delta t$ with $\beta \le 1$, we model inelastic contact with a
-dissipation that leads to a critically damped oscillator, or $\zeta=1$. This
-dissipation is $\tau_d=2\zeta/\omega_n$, or in terms of the time step,
+resolve the contact dynamics. In this \emph{near-rigid} regime, we use
+compliance as a means to add a Baumgarte-like \emph{stabilization} to avoid
+constraint drift, as similarly done in \cite{bib:todorov2011}. Choosing the time
+scale of the contact to be $T_n = \beta \delta t$ with $\beta \le 1$, we model
+inelastic contact with a dissipation that leads to a critically damped
+oscillator, or $\zeta=1$. This dissipation is $\tau_d=2\zeta/\omega_n$, or in
+terms of the time step,
 \begin{equation*}
     \tau_d=\frac{\beta}{\pi}\delta t.
 \end{equation*}
@@ -51,9 +49,7 @@ where we defined $\text{w}=1/m$.
 It is useful to estimate the amount of penetration for a point mass resting on
 the ground. In this case we have
 \begin{align*}
-	\phi &= \frac{mg}{k}, \\
-	&= \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2,\\
-	&= \frac{\beta^2}{4\pi^2}g\delta t^2,
+	\phi = \frac{mg}{k} = \frac{\beta^2}{4\pi^2}m\text{w}g\delta t^2 = \frac{\beta^2}{4\pi^2}g\delta t^2,
 \end{align*}
 independent of mass. Taking $\beta=1.0$ and Earth's gravitational constant, a
 typical simulation time step of $\delta t=10^{-3}~\text{s}$ leads to
@@ -71,14 +67,14 @@ use an $\mathcal{O}(n)$ approximation. Given contact $i$ involving trees $t_1$
 and $t_2$, we form the approximation $\mathbf{W}_{ii}\approx\mf{J}_{i
 t_1}\mf{M}_{t_1}^{-1}\mf{J}_{i t_1}^T+\mf{J}_{i t_2}\mf{M}_{t_2}^{-1}\mf{J}_{i
 t_2}^T$. Using this approximation, we estimate the frequency of the contact
-dynamics as $\omega_n=\sqrt{k\text{w}_i}$.
-
-Finally, we compute the regularization parameter in the normal direction as
+dynamics as $\omega_n=\sqrt{k\text{w}_i}$. Finally, we compute the
+regularization parameter in the normal direction as
 \begin{eqnarray}
     R_n = \max\left(\frac{\beta^2}{4\pi^2}\Vert\mathbf{W}_{ii}\Vert_\text{rms},
     \frac{1}{\delta t k(\delta t+\tau_d)}\right)
     \label{eq:normal_regularization}.
 \end{eqnarray}
+
 With this strategy, our model automatically switches between modeling compliant
 contact with stiffness $k$ when the time step $\delta t$ can resolve the
 temporal dynamics of the contact, and using stabilization to model near-rigid
@@ -126,8 +122,7 @@ simulation for other robotic applications, see Section \ref{sec:test_cases}.
 \ref{sec:physical_intuition}, we require $R_t/R_n\ll 1$ so that we model
 compliance accurately during sliding. Now, in the \emph{near-rigid} contact
 regime, the condition $R_t/R_n\ll 1$ is no longer required since in this regime
-regularization is only used to apply stabilization and avoid constraint drift.
-Therefore, we only need to verify this condition in the \emph{soft contact}
+regularization is used for stabilization. Therefore, we only need to verify this condition in the \emph{soft contact}
 regime, when time step $\delta t$ can properly resolve the contact dynamics,
 i.e. according to our criteria, when $\delta t < T_n$. In this regime,
 $R_n^{-1}\approx \delta t^2k$, and using Eq.

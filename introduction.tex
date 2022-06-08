@@ -147,12 +147,10 @@ To solve this formulation, we develop SAP---the Semi-Analytic Primal solver---in
 Section \ref{sec:sap_solver} and study its theoretical and practical
 convergence.  Crucially, we show that SAP globally converges from all initial
 conditions (Appendix \ref{app:sap_converge}) and warm-starts effectively using
-the previous time-step velocities, enabling simulation at interactive rates. We
-provide full details needed for implementation, including formulae for selecting
-a search direction, a line search procedure, and sparsity analysis. 
+the previous time-step velocities, enabling simulation at interactive rates.
 
 To address accuracy and model validity,
-Section \ref{sec:physical_intuition} provides compact expressions for the
+Section \ref{sec:physical_intuition} provides compact analytic formulae for the
 impulses that correspond to the optimal velocities of the convex approximation.
 This provides intuition for the approximation, even to those without
 optimization expertise. Moreover, the artifacts introduced by the approximation
@@ -165,12 +163,6 @@ allows us to incorporate not only compliant point contact, but also complex
 models of compliant surface patches \cite{bib:elandt2019pressure,
 bib:masterjohn2021discrete}, as we demonstrate in Section
 \ref{sec:slip_control}.}
-
-Section \ref{sec:conditioning} presents regularization
-procedures that improve numerical conditioning without sacrificing the accuracy
-needed for simulation of stiction and simulation of \emph{near-rigid} objects.
-This is critical for the simulation of demanding robotics tasks such as
-manipulation. 
 
 We demonstrate the effectiveness of our approach in Section \ref{sec:test_cases}
 in a number of simulation cases, including the simulation of the challenging
