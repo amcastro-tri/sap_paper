@@ -60,8 +60,6 @@ an internal elastic energy. Significantly more details will be provided in that
 piece of work. We updated the text in Section VII to briefly mention this
 discussion.
 
-\RedHighlight{TODO: add to Limitations section.}
-
 \vspace{5mm}
 
 \textcolor{blue}{R4-Q4: pag.7: on line search: have you considered to use an
@@ -111,46 +109,49 @@ t2 formed by L2 welded to H2. Therefore the mass matrix for each tree will be
 dominated by the mass of the heavy particle and the Delassus approximation works
 as desired in this case.
 
-However, as you pointed out, we can still come up with a counterexample. 
+However, as the reviewer pointed out, we can still come up with a
+counterexample. Consider a stack of books on a table, in particular the one book
+at the bottom of the stack in contact with the table. In the \emph{near-rigid}
+regime, our approximation will estimate a stiffness based solely on the mass of
+this one book. However, the normal force on this book will be the result of the
+accumulated weight of all other books on top of it. In this case, we will
+underestimate the required compliance and we might need the users's
+intervention. If we encounter such a case, we simply set $\beta=0$ (which means
+the stiffness is not bounded) and set the stiffness to a value that allows the
+book at the bottom to support the entire stack.
 
-\RedHighlight{TODO: Come up with an easy to explain counter example. Maybe a
-stack of objects is the easiest? but one with joints might be more satisfying if
-easy to explain.}
+The updated manuscript mentions this case in the \emph{Limitations} section.
 
 \vspace{5mm}
 \textcolor{blue}{R4-Q7: pag. 12: for scalability, you tested up to hundreds of
-bodies. Do you thing this approach (with the SAP solver, I mean) can scale up to
+bodies. Do you think this approach (with the SAP solver, I mean) can scale up to
 hundreds of thousands of bodies or millions? Are there limitations? Is it more
 practical for "low contact density" scenarios like robotics, or also for "high
 contact density" scenarios like granular flows, or both?}
 
-The scalability of SAP, like any second-order optimization method, depends
-on the complexity of solving the Newton system. For fully dense problems,
-this has $O(n^3)$ complexity, where $n$ denotes the number of variables. 
-For sparse problems, the complexity is $O(d^3)$, where
-$d$ is the size of the largest clique in a chordal completion of the 
-linear system matrix.  We see no reason the algorithm could not
-be applied to millions of bodies if the clique size $d$ is small.  When $d$ is
-large, SAP can be modified to improve scalability. Specifically, we can
-approximately solve the Newton system using the conjugate-gradient (CG) method.
-Note that if we terminate CG after one-iteration, SAP reduces to gradient
-descent, i.e., a first-order optimization algorithm.
+The scalability of SAP, like any second-order optimization method, depends on
+the complexity of solving the Newton system. For fully dense problems, direct
+methods have $\mathcal{O}(n^3)$ complexity, where $n$ denotes the number of
+variables. For sparse problems, the complexity is $\mathcal{O}(d^3)$, where $d$
+is the size of the largest clique in a chordal completion of the linear system
+matrix.  We see no reason the algorithm could not be applied to millions of
+bodies if the clique size $d$ is small.  When $d$ is large, SAP can be modified
+to improve scalability. Specifically, we can approximately solve the Newton
+system using the conjugate-gradient (CG) method. Note that if we terminate CG
+after one-iteration, SAP reduces to gradient descent, i.e., a first-order
+optimization algorithm.
 
-Note that the $O(d^3)$ per-iteration complexity of SAP is the same
-for interior-point methods (IPMs).  Our computational results show the per-iteration
+Note that the $\mathcal{O}(d^3)$ per-iteration complexity of SAP is the same for
+interior-point methods (IPMs).  Our computational results show the per-iteration
 complexity is comparable to Gurobi, a commercial implementation of an IPM.
 
 Recently, we tested the scalability of SAP for high contact density problems,
 though with a small $d$. That is, we performed a grid study with our most recent
 contact model that leads to thousands of contact pairs. Still, not all objects
-are in contact with each other and therefore SAP acchieves almost linear
+are in contact with each other and therefore SAP achieves almost linear
 convergence with the number of contact constraints (an exponent about $n\sim1.3$
 to be precise). Details of this scalability study are provided in
 \cite{bib:masterjohn2021discrete}.
 
-We added text at the end of Section IV.D and \RedHighlight{in the Limitations
-Section.}
+We added text at the end of Section IV.D and in Section VIII on Limitations.
 
-\RedHighlight{TODO: Add text in either conclusions or the "limitations"
-section, mentioning that scalability  and other iterative solvers like CG is
-future research.}

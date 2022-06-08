@@ -1,3 +1,45 @@
 \section{Limitations}
 \label{sec:limitations}
 
+All models are an approximation of reality, while numerical methods can only
+approximate our models. We list here the limitations we identified for our
+method.
+
+\textbf{Convex Approximation:} The convex approximation amounts to a
+\emph{gliding effect} during sliding at a distance $\phi\sim \delta
+t\mu\Vert\vf{v}_t\Vert$. Regularization amounts to \emph{compliance} in the
+normal direction, though in this work we see this as a property rather than as a
+limitation. In the tangential direction, regularization leads to a model of
+regularized friction, Eq. \eqref{eq:regularized_friction}. Details are provided
+in Section \ref{sec:contact_modeling_parameters}.
+
+\textbf{Stiffness and Dissipation:} \reviewquestion{R4-Q3}{Our method requires
+stiffness $\mf{K}$ and damping $\mf{D}$ matrices to be SPD or an SPD
+approximation must be used, Section \ref{sec:two_stage_scheme}. This is exact
+for joint level spring-dampers though only an approximation for other forces
+such as a spatial arrangement of springs (in an unstable configuration $\mf{K}$
+might not be SPD).}
+
+\textbf{Linear Approximations:} \reviewquestion{AE/R1-Q1/R1-Q2}{Algorithm
+\ref{alg:sap_time_stepping} evaluates the SPD gradient $\mf{A}$ once at
+$\mf{v}^*$ each time step. In other words, our method replaces the original
+balance of momentum \eqref{eq:scheme_momentum} with its linear approximation
+\eqref{eq:momentum_linearized}. This is exact for many important cases and
+second order in the general case, refer to Section
+\ref{sec:unconstrained_convex_formulation} for details.}
+
+\textbf{Delassus Operator Estimation:} \reviewquestion{R1-Q6}{In Section
+\ref{sec:conditioning} we use a diagonal approximation of the Delassus operator
+to estimate stiffness in the \emph{near-rigid} regime. Corner cases exist.
+Consider a pile of books. While the inertia of a contact at the bottom of the
+pile is estimated solely on the mass of one book, this contact is supporting the
+weight of the entire stack. Stiffness is underestimated and user intervention is
+needed to set proper parameters.}
+
+\textbf{Scalability:} \reviewquestion{R4-Q7}{We see no reason SAP with the
+direct supernodal solver explained in Section \ref{sec:problem_sparsity} could
+not scale to thousands of bodies. However, scalability needs to be studied
+further along with the usage of iterative solvers with pre-conditioning.}
+
+\RedHighlight{TODO: Inlude references provided by
+Frank that support the usage of direct solvers. ADMM paper from Boyd?.}

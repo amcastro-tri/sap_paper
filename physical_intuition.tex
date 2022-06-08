@@ -79,14 +79,15 @@ model.
 
 \textbf{Friction Impulses}. We see that friction impulses behave exactly as a model
 of regularized friction
-\begin{equation*}
+\begin{equation}
 	\bgamma_t = \min\left(\frac{\Vert\vf{v}_t\Vert}{R_t}, \mu\gamma_n\right)\hat{\vf{t}},
-\end{equation*}
+	\label{eq:regularized_friction}
+\end{equation}
 with $\bgamma_t$ linear with the (very small) slip velocity during stiction and
 with a maximum value given by $\mu\gamma_n$, effectively modeling Coulomb's
 friction. Notice that to better model stiction, we are interested in small
 values of $R_t$. We discuss our parameterization of $R_t$ in Section
-\ref{sec:understanding_model_parameters}. Moreover, since $\hat{\vf{t}} =
+\ref{sec:conditioning}. Moreover, since $\hat{\vf{t}} =
 \vf{y}_t/\Vert\vf{y}_t\Vert = -\vf{v}_t/\Vert\vf{v}_t\Vert$, friction impulses
 oppose sliding and therefore satisfy the principle of maximum dissipation.
 
@@ -100,7 +101,7 @@ $k_\text{eff}=k/(1+\tilde{\mu}^2)$ and dissipation
 $d_\text{eff}=d/(1+\tilde{\mu}^2)$, different from the physical values. This
 tell us that in order to accurately model compliance during sliding we must
 satisfy the condition $\tilde\mu=\mu\,(R_t/R_n)^{1/2} \approx 0$ or,
-equivalently, $R_t \ll R_n$. Section \ref{sec:understanding_model_parameters}
+equivalently, $R_t \ll R_n$. Section \ref{sec:conditioning}
 introduces a parameterization of $R_t$ that satisfies this condition.
 
 Secondly, while we'd like to recover $\gamma_n = -\delta t(k\,\phi + d\,v_n)$ as
@@ -137,7 +138,7 @@ applications:
 	$\delta t\mu\Vert\vf{v}_t\Vert$ is negligible.
 	\item For robotics applications, we are mostly interested in inelastic
 	contact. We will see that this can be effectively modeled with
-	$\tau_d\approx\delta t$ in Section \ref{sec:understanding_model_parameters}.
+	$\tau_d\approx\delta t$ in Section \ref{sec:conditioning}.
 	Therefore, in this regime, the term $\tau_d\mu\Vert\vf{v}_t\Vert$ also goes
 	to zero as $\delta t\rightarrow 0$.
 	\item We are definitely interested in the onset of sliding. This is captured
