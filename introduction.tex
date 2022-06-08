@@ -40,8 +40,9 @@ Nevertheless, the problem can be solved in a weaker formulation at the velocity
 level using a time-stepping scheme where the next step velocities and impulses
 are the unknowns at each time step \cite{bib:stewart1996implicit,
 bib:anitescu1997}. These formulations lead in general to a non-linear
-complementarity problem (NCP) or to a linear complementarity problem (LCP) when
-a polyhedral approximations of the friction cone is used. Even though LCP
+complementarity problem (NCP). A linear complementarity problem (LCP) can be
+formulated using a polyhedral approximations of the friction cone, though at the
+expense of non-physical anisotropy \cite{bib:li2018implicit}. Even though LCP
 formulations guarantee solution existence \cite{bib:anitescu1997,
 bib:stewart1998convergence}, solving them accurately and efficiently has
 remained difficult in practice. This has been explained partly due to the fact
@@ -91,7 +92,7 @@ the friction cone leading to an LCP formulation. Algoryx \cite{bib:algoryx} uses
 a \emph{split solver}, reminiscent of one iteration in the staggered projections
 method \cite{bib:Kaufman2008}. \reviewquestion{AE-Q3}{RaiSim \cite{bib:raisim}
 implements an iterative method with exact solution per-contact, a significant
-improvement over traditional Projected Gauss-Seidel (PGS) methods though still
+improvement over the popular PGS used in computer graphics, though still
 with no converge nor accuracy guarantees.} Drake \cite{bib:drake} solves
 compliant contact with regularized friction with its transition aware solver
 TAMSI \cite{bib:castro2020}.

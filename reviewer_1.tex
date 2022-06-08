@@ -106,14 +106,24 @@ represent the polyhedral cone." Please elaborate ``larger problems" here. Could
 the authors compare this to the assumptions that they need to take for the
 dynamics to work?}
 
-\RedHighlight{TODO: move this into the novel contributions section?}
-We are glad the reviewer asked this question. We do not linearize friction
-cones. One of the main benefits of this formulation is that it does not
-introduce new variables to handle contact constraints. Instead, it only works on
-the generalized velocities of the system. In addition, since we do not linearize
-contact constraints, we avoid the introduction of non-physical anisotropy. To
-address this question in the manuscript, and in particular to compare against
-LCP formulations, we added text in the conclusions.
+We removed this statement from the revised manuscript since we felt it was a
+distraction from the contributions in this work. We still discuss the
+role of LCPs in the introduction and mention the artificial anisotropy they
+introduce.
+
+However, we would still like to provide an answer to the reviewer on the
+question about what we meant by ``larger problems''.
+
+Our formulation does not linearize the friction cone but it works with the
+second order cone constraints directly, avoiding spurious non-physical
+anisotropy \cite{bib:li2018implicit}. We eliminate constraints analytically and
+solve an unconstrained convex problem. In comparison, an LCP formulation would
+introduce $(2u+1)$ constraints per contact \cite{bib:anitescu1997}, where $u$ is
+the number of edges in the polygonal approximation. This strongly affects the
+performance of solvers in practice given their worst case exponential complexity
+in the number of constraints
+\cite{bib:baraff1994fast},\cite{bib:erleben2007velocity}
+
 \vspace{5mm}
 
 \textcolor{blue}{R1-Q6: $\theta_q$, $\theta_v$, $\theta_{vq}$ could the authors
