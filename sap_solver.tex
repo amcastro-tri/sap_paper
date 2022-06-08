@@ -191,12 +191,10 @@ optimization method, depends on the complexity of solving the Newton system. For
 fully dense problems, this has $\mathcal{O}(n_v^3)$ complexity, with $n_v$ the
 number of generalized velocities. For sparse problems, the complexity is
 $\mathcal{O}(d^3)$, where $d$ is the size of the largest clique in a chordal
-completion of the linear system matrix. We study scalability with number of
-bodies in Section \ref{sec:clutter}. Recent work on the modeling on contact rich
-patches \cite{bib:masterjohn2021discrete} studies the scalability of SAP with
-the number of constraints.}
-
-\RedHighlight{TODO: Frank, reference that defines ``tree-widht'' d?.}
+extension of the linear system matrix \cite[\S 6]{bib:vandenberghe2015chordal}.
+We study scalability with number of bodies in Section \ref{sec:clutter}. Recent
+work on the modeling on contact rich patches \cite{bib:masterjohn2021discrete}
+studies the scalability of SAP with the number of constraints.}
 
 \subsection{Stopping Criteria}
 \label{sec:stopping_criteria}
