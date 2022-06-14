@@ -130,19 +130,21 @@ practical for "low contact density" scenarios like robotics, or also for "high
 contact density" scenarios like granular flows, or both?}
 
 The scalability of SAP, like any second-order optimization method, depends on
-the complexity of solving the Newton system. For fully dense problems, direct
-methods have $\mathcal{O}(n^3)$ complexity, where $n$ denotes the number of
-variables. For sparse problems, the complexity is $\mathcal{O}(d^3)$, where $d$
-is the size of the largest clique in a chordal completion of the linear system
-matrix.  We see no reason the algorithm could not be applied to millions of
-bodies if the clique size $d$ is small.  When $d$ is large, SAP can be modified
-to improve scalability. Specifically, we can approximately solve the Newton
-system using the conjugate-gradient (CG) method. Note that if we terminate CG
-after one-iteration, SAP reduces to gradient descent, i.e., a first-order
-optimization algorithm.
+the complexity of solving the Newton system. For fully dense problems,
+direct methods have $\mathcal{O}(n^3)$ complexity, where $n$
+denotes the number of variables.  For sparse problems, improved bounds can be
+stated in terms of \emph{tree-width} $d$, a complexity measure defined by the
+\cite{chordal-extensions} of the linear system matrix.
 
-Note that the $\mathcal{O}(d^3)$ per-iteration complexity of SAP is the same for
-interior-point methods (IPMs).  Our computational results show the per-iteration
+We see no reason that SAP could not be applied to millions of bodies if
+tree-width $d$ is small.  Further, when $d$ is large, SAP can be modified to improve
+scalability.  Specifically, we can approximately solve the Newton system using
+the conjugate-gradient (CG) method, which is widely used in large-scale
+optimization.  Note that if we terminate CG after one-iteration, SAP reduces to
+gradient descent, i.e., a first-order optimization algorithm. 
+
+Note that the  per-iteration complexity of SAP is the same
+for interior-point methods (IPMs).  Our computational results show the per-iteration
 complexity is comparable to Gurobi, a commercial implementation of an IPM.
 
 Recently, we tested the scalability of SAP for high contact density problems,

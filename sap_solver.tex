@@ -174,14 +174,13 @@ of $\mf{H}$ as input. We use the implementation from the Conex solver
 \end{figure*}
 
 \reviewquestion{R4-Q7}{The scalability of SAP, like any second-order
-optimization method, depends on the complexity of solving the Newton system. For
-fully dense problems, this has $\mathcal{O}(n_v^3)$ complexity, with $n_v$ the
-number of generalized velocities. For sparse problems, the complexity is
-$\mathcal{O}(d^3)$, where $d$ is the size of the largest clique in a chordal
-extension of the linear system matrix \cite[\S 6]{bib:vandenberghe2015chordal}.
-We study scalability with number of bodies in Section \ref{sec:clutter}. Recent
-work on the modeling on contact rich patches \cite{bib:masterjohn2021discrete}
-studies the scalability of SAP with the number of constraints.}
+optimization method, depends on the complexity of solving the Newton system. In
+general, this has $\mathcal{O}(n_v^3)$ complexity, where $n_v$ denotes the
+number of generalized velocities. For sparse problems the complexity can be
+dramatically reduced \cite{bib:davis2016survey}.  We study scalability with
+number of bodies in Section \ref{sec:clutter}. Recent work on the modeling of
+contact rich patches \cite{bib:masterjohn2021discrete} studies the scalability
+of SAP with the number of constraints.}
 
 \subsection{Stopping Criteria}
 \label{sec:stopping_criteria}

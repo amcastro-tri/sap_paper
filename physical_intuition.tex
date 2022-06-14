@@ -47,14 +47,14 @@ where $\phi_0$ is the previous step signed distance. The normal direction
 regularization parameters is taken as $R_n^{-1} = \delta t k(\delta t+\tau_d)$.
 To gain physical insight into our model, we substitute
 $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
-(\ref{eq:analytical_y_projection}) to obtain
+(\ref{eq:analytical_y_projection}) to obtain 
 \begin{align*}
 	&\bgamma(\vf{v}_c) = P_\mathcal{F}(\vf{y}(\vf{v}_c))\\
 &=\begin{dcases}
 	% Region I, stiction
 	\begin{bmatrix}
 		-\vf{v}_t/R_t\\
-		-\delta t(k\,\phi + d\,v_n)
+		-\delta t\,k\,(\phi + \tau_d\,v_n)
 	\end{bmatrix}
 	% When we  have: y_r < \mu y_n
 	& \text{stiction, } \\
@@ -63,8 +63,8 @@ $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
 	% Region II, sliding.
 	\begin{bmatrix}
 		\mu\gamma_n\hat{\vf{t}}\\
-		-\frac{\delta t}{1+\tilde\mu^2}\left(k(\phi-(\delta
-		t+\tau_d)\mu\Vert\vf{v}_t\Vert) + d\,v_n \right)
+		-\frac{\delta t}{1+\tilde\mu^2}k\left(\phi-(\delta
+		t+\tau_d)\mu\Vert\vf{v}_t\Vert + \tau_d\,v_n \right)
 	\end{bmatrix}
 	% When we  have:  -\mu \frac{R_t}{R_n} y_r < y_n \leq \frac{y_r}{\mu}
 	& \text{sliding, }\\
@@ -74,7 +74,9 @@ $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
     \vf{0} & \text{no contact, } \end{dcases}\nonumber	
 \end{align*}
 where $\phi= \phi_0 + \delta t\,v_n$ approximates the signed distance function
-at the next time step. Let us now analyze the resulting impulses from this
+at the next time step.
+
+Let us now analyze the resulting impulses from this
 model.
 
 \textbf{Friction Impulses}. We see that friction impulses behave exactly as a model
@@ -97,21 +99,15 @@ region, however, we see that the convex approximation introduces unphysical
 artifacts. 
 
 Firstly, the factor $1+\tilde{\mu}^2$ models an effective stiffness
-$k_\text{eff}=k/(1+\tilde{\mu}^2)$ and dissipation
-$d_\text{eff}=d/(1+\tilde{\mu}^2)$, different from the physical values. This
-tell us that in order to accurately model compliance during sliding we must
-satisfy the condition $\tilde\mu=\mu\,(R_t/R_n)^{1/2} \approx 0$ or,
-equivalently, $R_t \ll R_n$. Section \ref{sec:conditioning}
-introduces a parameterization of $R_t$ that satisfies this condition.
+$k_\text{eff}=k/(1+\tilde{\mu}^2)$ different from the physical value. Therefore
+to accurately model compliance during sliding we must satisfy the condition
+$\tilde\mu=\mu\,(R_t/R_n)^{1/2} \approx 0$ or, equivalently, $R_t \ll R_n$.
+Section \ref{sec:conditioning} introduces a parameterization of $R_t$ that
+satisfies this condition.
 
-Secondly, while we'd like to recover $\gamma_n = -\delta t(k\,\phi + d\,v_n)$ as
-in stiction, we instead see that the slip velocity $\vf{v}_t$ unphysically
-couples into the normal impulses as $\gamma_n=-\delta t(k(\phi-(\delta
-t+\tau_d)\mu\Vert\vf{v}_t\Vert) + d\,v_n)$. We can write this as
-\begin{equation*}
-  \gamma_n/\delta t=-(k\,\phi_\text{eff} + d\,v_n),
-\end{equation*}
-with an \textit{effective} signed distance $\phi_\text{eff} = \phi-(\delta
+Secondly, we see that the slip velocity $\vf{v}_t$ unphysically couples into the
+normal impulses as $\gamma_n=-\delta t k (\phi_\text{eff} + \tau_d\,v_n)$ with
+an \textit{effective} signed distance $\phi_\text{eff} = \phi-(\delta
 t+\tau_d)\mu\Vert\vf{v}_t\Vert$. That is, we recover the dynamics of compliant
 contact but with a spurious drift of magnitude $(\delta
 t+\tau_d)\mu\Vert\vf{v}_t\Vert$. This is consistent with the formulation in
@@ -121,8 +117,8 @@ distance $\phi=\delta t\mu\Vert\vf{v}_t\Vert$. Notice that the \textit{gliding}
 goes away as $\delta t\rightarrow 0$ since the formulation converges to the
 original contact problem \cite{bib:anitescu2006}. The effect of compliance is to
 \textit{soften} this gliding effect. With finite stiffness, the normal impulse
-when sliding goes to $-k(\phi-\tau_d\mu\Vert\vf{v}_t\Vert)-d\,v_n$ in the limit to
-$\delta t\rightarrow 0$. This tells us that, unlike the rigid case, the
+when sliding goes to $-k(\phi-\tau_d\mu\Vert\vf{v}_t\Vert)-d\,v_n$ in the limit
+to $\delta t\rightarrow 0$. This tells us that, unlike the rigid case, the
 \textit{gliding} effect unfortunately does not go away as $\delta t\rightarrow
 0$. It persists with a finite value that now depends on the dissipation rate,
 $\phi\approx\tau_d\mu\Vert\vf{v}_t\Vert$.
