@@ -51,11 +51,11 @@ Yes. Actually, we split the forces term $\mf{k}$ into $\mf{k}_1$ and $\mf{k}_2$
 precisely to ensure that the stiffness and damping matrices are symmetric
 positive definite. This then allows us to obtain an SPD approximation $\mf{A}$ of
 the gradient $\partial \mf{m}/\partial \mf{v}$. We highlighted edited text in
-Section II.D making specific mention to the important case of joint spring
+Section II.D making specific mentions to the important case of joint spring
 dampers, for which $\mf{K}$ and $\mf{D}$ are positive diagonal matrices.
 Regarding finite elements modeling, we are currently working on a new
-publication that incorporates our new solver SAP within a FEM framework. In this
-new work we essentially restrict to materials whose internal stress comes from
+publication that incorporates our new SAP solver within a FEM framework. In this
+new work, we essentially restrict to materials whose internal stress comes from
 an internal elastic energy. Significantly more details will be provided in that
 piece of work. We updated the text in Section VII to briefly mention this
 discussion.
@@ -100,13 +100,13 @@ underestimate the contact masses in the constraint metric. If this is the case,
 please add a comment on the practical limitation of this simplified Delassus
 formula, mentioning a real example like the one I wrote here.}
 
-This is an excellent question, thank you. This particular case you mention is
-not problematic because we are using joint coordinates. Lets call the two heavy
-bodies H1 and H2 and for simplicity, consider they are free. Lets refer to the
+This is an excellent question, thank you. This particular case mentioned here is
+not problematic because we are using joint coordinates. Let's call the two heavy
+bodies H1 and H2, and for simplicity, assume they are free. Let's refer to the
 light particle welded to H1 as L1 and to the light particle welded to H2 as L2.
 In joint coordinates, there will be two trees: t1 formed by L1 welded to H1 and
 t2 formed by L2 welded to H2. Therefore the mass matrix for each tree will be
-dominated by the mass of the heavy particle and the Delassus approximation works
+dominated by the mass of the heavy body and the Delassus approximation works
 as desired in this case.
 
 However, as the reviewer pointed out, we can still come up with a
@@ -115,8 +115,8 @@ at the bottom of the stack in contact with the table. In the \emph{near-rigid}
 regime, our approximation will estimate a stiffness based solely on the mass of
 this one book. However, the normal force on this book will be the result of the
 accumulated weight of all other books on top of it. In this case, we will
-underestimate the required compliance and we might need the users's
-intervention. If we encounter such a case, we simply set $\beta=0$ (which means
+underestimate the required compliance and we might need user intervention. 
+If we encounter such a case, we simply set $\beta=0$ (which means
 the stiffness is not bounded) and set the stiffness to a value that allows the
 book at the bottom to support the entire stack.
 

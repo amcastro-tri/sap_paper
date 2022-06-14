@@ -28,10 +28,11 @@ geometries will depend on whether the geometry engine provides support for
 non-convex geometries or not. The mathematical formulation presented here only
 requires the geometry engine to report \emph{contact pairs}, regardless of
 whether those pairs correspond to convex or non-convex geometries. We describe
-the characterization of contact pairs in in Section II.A. At the moment of this
-writing, Drake's support for non-convex geometry is limited, though we are
-actively working on it. However, coming back to the topic of this paper, the
-solver itself is not limited to convex geometry.
+the characterization of contact pairs in Section II.A. At the moment of this
+writing, Drake's support for non-convex geometries is limited, though we are
+actively working on it. However, this is merely an area of improvement for the
+geometry engine, and the contact solver itself is not limited to handling convex
+geometries.
 
 \vspace{5mm}
 \textcolor{blue}{R8-Q2: 2) Is it possible to incorporate maximum contact force
@@ -46,12 +47,12 @@ actuation limits on the hands, the parameters of the simulation are well within
 real specifications. To be more specific to the contribution of this work, our
 method does allow to specify these limits. 
 
-We believe it would be very interesting to investigate the limits of different
-parameters for this particular platform and task. However it was not our
-intention to investigate this particular task to inform for instance, how to
-build real platform. This robotic platform is only hypothetical and for
+We believe it would be very interesting to investigate the effect of limits of different
+parameters for this particular platform and task. However, it is not our
+intention to investigate this particular task to inform how to
+build real platforms. This robotic platform is only hypothetical and for
 demonstration purposes. The objective of this simulation demo is mostly to
-showcase the new capability.
+showcase the capability of the contact formuation and the solver.
 
 \vspace{5mm}
 \textcolor{blue}{R8-Q3: 3) It is not evident to me whether the proposed
@@ -62,7 +63,7 @@ object-manipulator contact may cause the object to slip and slide instead of
 pivoting on the edge. The change in contact modes can be used as feedback for
 adjusting the contact impulses provided by the manipulator to the object.}
 
-Our formulation does handle contact modes implicitly. As an example, consider
+Our formulation does handle contact mode transitions implicitly. As an example, consider
 the \emph{Slip Control} example in Section IV.D. In this example the controller
 commands a variable grip force to the gripper. In this case, the gripper always
 makes contact with the spatula. However, given the change in grip force, the

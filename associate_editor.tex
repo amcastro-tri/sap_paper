@@ -21,17 +21,17 @@ We explicitly state our linear approximations in the newly introduced
 \emph{Limitations} section in the updated manuscript.
 
 \textcolor{blue}{\begin{itemize}
-    \item It seems that the approach has an implicitly defined constraint,
+    \item It seems that the approach has an implicitly defined constraint, which
+    contradicts the claim of an unconstrained problem.
 \end{itemize}}
 Constraints in this formulation are eliminated using analytic formulae that we
-provide in this work. We provided more details in the answer to R1-Q7 in this
-document.
+provide in this work, and our formualtion is indeed \emph{unconstrained}. We
+provided more details in the answer to R1-Q7 in this document.
 
-\textcolor{blue}{which contradicts the claim of an unconstrained problem. If
-this impression is confirmed, then the global convergence of the method becomes
-unclear (Reviewer 1).}
+\textcolor{blue}{If this impression is confirmed, then the global convergence of
+the method becomes unclear (Reviewer 1).}
 
-We address this point in answer to R1-Q4, with mention specific theorems and
+We addressed this point in the answer to R1-Q4, with mentions to specific theorems and
 results in our work. We highlighted updates in the manuscript accordingly.
 
 \textcolor{blue}{
@@ -53,7 +53,7 @@ regards scalability (Reviewer 4), objects convexity (Reviewer 8), change in
 contact modes during the task( Reviewer 8), and possible others. \end{itemize}}
 
 Scalability is addressed in R4-Q7, objects convexity in R8-Q1, and changes in
-contact modes in R8-Q3, along specific updates to the manuscript.
+contact modes in R8-Q3, along with specific updates to the manuscript.
 
 In addition, we added Section VIII discussing these and other limitations we
 identified with our approach.
@@ -83,16 +83,16 @@ but [...]").\end{itemize}}
 We do realize the original organization of the contents was far from optimal. We
 are glad the reviewers agreed on the need for this change. We reorganized the
 updated manuscript in order to make the contents flow more linearly, group
-similar concepts together and avoid repetition. In the new manuscript Section II
+similar concepts together and avoid repetitions. In the updated manuscript, Section II
 introduces the mathematical model of multibody dynamics with frictional contact,
-introduces notation and establishes the non-linear complementarity problem (NCP)
+introduces notations, and establishes the non-linear complementarity problem (NCP)
 that must be solved in the most general case. Section III now is entirely
 focused to the convex approximation of this NCP formulation, effectively
 grouping together concepts previously scattered across different sections.
 Section IV now follows naturally, describing our proposed SAP strategy to solve
 the resulting unconstrained optimization problem. Finally, everything related to
 the physical interpretation and modeling parameters of the convex approximation
-is condensed in Section V.
+is condensed into Section V.
 
 \vspace{5mm}
 \textcolor{blue}{AE-Q2: On the other hand, the state of the art can be removed from
@@ -101,8 +101,8 @@ limitations of the approach as said above) should be addressed in separated
 subsections. Therefore, a considerable re-organization of the contents is
 suggested.}
 
-In the updated manuscript Section I.B summarizes available software that uses a
-convex approximation of contact, Section I.C states our contributions and
+In the updated manuscript, Section I.B summarizes available software that uses a
+convex approximation of contact, Section I.C states our contributions, and
 Section VIII explicitly states limitations of our approach.
 
 \textcolor{blue}{
@@ -135,8 +135,8 @@ previous Eq. (2) is now stated in Eq. (7).
 
 The reason $\delta t$ does not appear in the last term of Eq. (7) is because
 $\bgamma$ denote impulses, the integral (in this case over one time step) of the
-forces. Mean forces over a time step are recovered dividing impulses by $\delta
-t$. This shows in Eq. (2) for the modeling of compliance. We updated the
+forces. Mean forces over a time step are recovered by dividing impulses by $\delta
+t$. This also appears in Eq. (2) for the modeling of compliance. We updated the
 manuscript to explicitly state this.
 
 \textcolor{blue}{\begin{itemize}
@@ -160,7 +160,7 @@ is substantial, affecting the theoretical part.\end{itemize}}
 
 It is somewhat known that stabilization leads to \emph{numerical compliance}, a
 fact that Todorov uses effectively in his work. However, there is a substantial
-contribution here that must not be overlooked. That is, we do provide an exact
+contribution here that must not be overlooked. That is, we provide an exact
 mapping between regularization and physical compliance, something that has never
 been done before. This novel contribution means that:
 \begin{enumerate}

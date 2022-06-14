@@ -132,7 +132,7 @@ please provide explanations for these variables in Eq. (6).}
 We thank the reviewer for this question. While reviewing the manuscript we
 realized that we could perform an additional simplification thanks to this
 question. While in our original version we had three theta parameters, the
-revised version now only contains two parameters. We marked the relevant changes
+revised version now only contains two parameters. We highlighted the relevant changes
 in Section II.C. In addition, we added text at the end of Section II.C
 explaining that the reason for the additional parameter ($\theta_{vq}$) is so
 that we can also incorporate the popular symplectic Euler scheme. In total, our
@@ -142,7 +142,7 @@ support the symplectic Euler scheme. These scalar parameters are the weights
 that define the time stepping scheme. We refer the reviewer to the excellent
 book by
 \cite{bib:hairer2008solving}
-(Section II.7) for further details on this method. We marked the relevant text
+(Section II.7) for further details on this method. We highlighted the relevant text
 explaining these parameters in the revised manuscript.
 \vspace{5mm}
 
@@ -218,9 +218,9 @@ the authors please discuss the approximations that they mean here? Is this
 limited to the author's explanation of MuJoCo regularization, or do the authors
 claim to explain other artififacts as well?}
 
-The particular approximation we are talking about are the convex approximations
+The particular approximation we refer to is the convex approximation
 to the contact problem. The modeling of contact requires the solution of
-challenging Non-Linear Complementarity Problems (NCP), which are non-convex.
+challenging Non-linear Complementarity Problems (NCP), which are non-convex.
 Therefore, any convex formulation of contact is an approximation of reality.
 Therefore, we do not refer in particular to MuJoCo, but any solver that uses
 this approximation (we mention Chrono, MuJoCo and Siconos in Section I.B).
