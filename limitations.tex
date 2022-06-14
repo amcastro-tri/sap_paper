@@ -23,7 +23,7 @@ must be made as $\mf{K}$ might not be SPD in certain configurations.}
 $\mf{v}^*$ at each time step. In other words, our method replaces the original
 balance of momentum \eqref{eq:scheme_momentum} with its linear approximation
 \eqref{eq:momentum_linearized}. This is exact for many important cases and
-second order in the general case, refer to Section
+accurate to second-order in the general case. See Section
 \ref{sec:unconstrained_convex_formulation} for details.}
 
 \textbf{Delassus Operator Estimation:} \reviewquestion{R4-Q6}{In Section
@@ -36,6 +36,6 @@ needed to set proper parameters.}
 
 \textbf{Scalability:} \reviewquestion{R4-Q7}{We see no reason SAP with the
 direct supernodal algebra (Section \ref{sec:problem_sparsity}) could not scale
-to thousands of bodies. However, scalability needs to be studied further, along
+to thousands of bodies if there is structured sparsity. However, scalability needs to be studied further, along
 with the usage of iterative solvers such as conjugate-gradients (CG), widely
 used in optimization.}

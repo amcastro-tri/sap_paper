@@ -64,23 +64,22 @@ tuning.
 To improve computational tractability, Anitescu introduced a \textit{convex
 relaxation} of the contact problem \cite{bib:anitescu2006}. This relaxation is a
 convex approximation with proven convergence to the solution of a measure
-differential inclusion as the time step goes to zero. 
-\reviewquestion{R4-Q1}{For sliding contacts, the
-convex approximation introduces a \emph{gliding} artifact at a distance $\phi$
-proportional to the time step size $\delta t$, friction coefficient $\mu$ and to
-the sliding velocity $\Vert\vf{v}_t\Vert$ \cite{bib:mazhar2014}, i.e. $\phi\sim
-\delta t\mu\Vert\vf{v}_t\Vert$. This artifact can be irrelevant for problems
-with lubricated contacts (as in many mechanisms) and goes away for sticking
-contacts (dominant in robotic manipulation). For sliding contact, the
-approximation can be adequate for applications for which the
-product $\delta t\mu\Vert\vf{v}_t\Vert$ is usually sufficiently small.} For
-trajectory optimization, Todorov \cite{bib:todorov2011} introduces
-regularization into Anitescu's formulation in order to write a strictly convex
-formulation with a unique, smooth and invertible solution. For simulation,
-Todorov \cite{bib:todorov2014} uses regularization to introduce \emph{numerical
-compliance} that provides Baumgarte-like stabilization to avoid constraint
-drift. As a side effect, the regularized formulation can lead to a noticeable
-non-zero slip velocity even during stiction \cite{bib:simbenchmark}.
+differential inclusion as the time step goes to zero. \reviewquestion{R4-Q1}{For
+sliding contacts, the convex approximation introduces a \emph{gliding} artifact
+at a distance $\phi$ that is proportional to the time step $\delta t$, friction
+coefficient $\mu$ and sliding velocity $\Vert\vf{v}_t\Vert$
+\cite{bib:mazhar2014}, i.e. $\phi\sim \delta t\mu\Vert\vf{v}_t\Vert$. This
+artifact can be irrelevant for problems with lubricated contacts (as in many
+mechanisms) and goes away for sticking contacts (dominant in robotic
+manipulation). For sliding contact, the approximation can be adequate for
+applications for which the product $\delta t\mu\Vert\vf{v}_t\Vert$ is usually
+sufficiently small.} For trajectory optimization, Todorov \cite{bib:todorov2011}
+introduces regularization into Anitescu's formulation in order to write a
+strictly convex formulation with a unique, smooth and invertible solution. For
+simulation, Todorov \cite{bib:todorov2014} uses regularization to introduce
+\emph{numerical compliance} that provides Baumgarte-like stabilization to avoid
+constraint drift. As a side effect, the regularized formulation can lead to a
+noticeable non-zero slip velocity even during stiction \cite{bib:simbenchmark}.
 
 \subsection{Available Software}
 Even though these formulations introduce a tractable approximation of frictional
@@ -93,7 +92,7 @@ a \emph{split solver}, reminiscent of one iteration in the staggered projections
 method \cite{bib:Kaufman2008}. \reviewquestion{AE-Q3}{RaiSim \cite{bib:raisim}
 implements an iterative method with exact solution per-contact, a significant
 improvement over the popular PGS used in computer graphics, though still
-with no converge nor accuracy guarantees.} Drake \cite{bib:drake} solves
+with no convergence nor accuracy guarantees.} Drake \cite{bib:drake} solves
 compliant contact with regularized friction with its transition aware solver
 TAMSI \cite{bib:castro2020}.
 
@@ -156,7 +155,7 @@ optimization expertise. Moreover, the artifacts introduced by the approximation
 become apparent and can be characterized precisely. \reviewquestion{AE-Q7}{In
 particular, we provide an exact mapping between the regularization introduced by
 Todorov \cite{bib:todorov2014} to \emph{physical} parameters of compliance.
-Therefore regularization is no longer treated as a tunning parameter of the
+Therefore regularization is no longer treated as a tuning parameter of the
 algorithm but as a true physical parameterization of the contact model. This
 allows us to incorporate not only compliant point contact, but also complex
 models of compliant surface patches \cite{bib:elandt2019pressure,
