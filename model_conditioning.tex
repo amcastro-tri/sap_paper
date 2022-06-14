@@ -44,7 +44,7 @@ t^2k$, and we estimate the regularization parameter as
 \begin{equation*}
 	R_n = \frac{\beta^2}{4\pi^2}\text{w},
 \end{equation*}
-where we defined $\text{w}=1/m$.
+where we define $\text{w}=1/m$.
 
 It is useful to estimate the amount of penetration for a point mass resting on
 the ground. In this case we have
@@ -66,8 +66,7 @@ Explicitly forming the Delassus operator is an expensive operation. Instead we
 use an $\mathcal{O}(n)$ approximation. Given contact $i$ involving trees $t_1$
 and $t_2$, we form the approximation $\mathbf{W}_{ii}\approx\mf{J}_{i
 t_1}\mf{M}_{t_1}^{-1}\mf{J}_{i t_1}^T+\mf{J}_{i t_2}\mf{M}_{t_2}^{-1}\mf{J}_{i
-t_2}^T$. Using this approximation, we estimate the frequency of the contact
-dynamics as $\omega_n=\sqrt{k\text{w}_i}$. Finally, we compute the
+t_2}^T$. Finally, we compute the
 regularization parameter in the normal direction as
 \begin{eqnarray}
     R_n = \max\left(\frac{\beta^2}{4\pi^2}\Vert\mathbf{W}_{ii}\Vert_\text{rms},
@@ -107,7 +106,7 @@ we find the maximum slip velocity
 \end{equation}
 independent of the mass and linear with the time step size. Even though the
 friction coefficient $\mu$ can take any non-negative value, most often in
-practical applications $\mu < 1$. Values in the order of 1 are in fact
+practical applications $\mu < 1$. Values on the order of 1 are in fact
 considered as large friction values. Therefore, for this analysis we consider
 $\mu\approx 1$. In all of our simulations, we use $\sigma=10^{-3}$. With Earth's
 gravitational constant, a typical simulation with time step of $\delta
@@ -115,7 +114,7 @@ t=10^{-3}~\text{s}$ leads to a stiction velocity of $v_s\approx
 10^{-5}\text{m}/\text{s}$, and with a large step of $\delta t=10^{-2}~\text{s}$,
 $v_s\approx 10^{-4}\text{ m}/\text{s}$. Smaller friction coefficients lead to
 even tighter bounds. These values are well within acceptable bounds even for
-simulation of grasping tasks, which are significantly more demanding than
+simulation of grasping tasks, which is significantly more demanding than
 simulation for other robotic applications, see Section \ref{sec:test_cases}.
 
 \textbf{Sliding Soft Contact}. As we discussed in Section

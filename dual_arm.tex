@@ -1,7 +1,7 @@
 We demonstrate the effectiveness of our approach with the simulation of a
 complex manipulation task. In this scenario, two Kuka IIWA arms (7 DOFs each)
-are outfitted with anthropomorphic Allegro hands (16 DOFs each), see Fig.
-\ref{fig:dual_arm_frames}. In front of the robot, a table has a jar (with a lid,
+are outfitted with anthropomorphic Allegro hands (16 DOFs each) (Fig.
+\ref{fig:dual_arm_frames}). In front of the robot, a table has a jar (with a lid,
 12 DOFs) full of 16 marbles of $50$~gr each (96 DOFs) and a bowl (6 DOFs),
 completing the model with a total of 160 DOFs. Contact between the jar and the
 lid is modeled using Drake's hydroelastic model \cite{bib:elandt2019pressure,
@@ -14,14 +14,14 @@ keyframe poses, while the hands' controllers track prescribed \emph{open/close}
 configurations. We use force feedback to gauge successful grasps and to know
 when the jar makes contact with the table. The robot is commanded to open the
 jar, pour its contents into the bowl, close the lid and put the empty jar back
-in place, see keyframes in Fig. \ref{fig:dual_arm_frames} and the accompanying
-video. 
+in place (keyframes in Fig. \ref{fig:dual_arm_frames} and the accompanying
+video). 
 
 This particular task generates hundreds of contact constraints, as shown in Fig.
 \ref{fig:dual_arm_contacts} which also labels important events during the task.
 \reviewquestion{R8-Q3}{We remark that our framework predicts contact mode
 switching as a result of the computation. For instance, the lid initially
-closing the jar is held by stiction and it transitions to sliding as the robot
+covering the jar is held by stiction and it transitions to sliding as the robot
 pulls it out.}
 
 \begin{figure}[!h]
@@ -50,9 +50,9 @@ SAP guarantees that momentum errors are below the specified tolerance, given
 this is precisely its stopping criteria in Eq. \eqref{eq:stopping_criteria}. We
 see however that it is difficult to correlate the expected error to solver
 tolerance when using Gurobi or Geodesic IPM. In practice, we consistently
-observed that the simulation did not complete the task successfully when
-momentum errors were larger than about $10\%$, regardless of the solver.
-Therefore, we found that being able to specify a tolerance for the momentum
+observe that the robot does not complete the task successfully when
+momentum errors are larger than about $10\%$, regardless of the solver.
+Therefore, we find that being able to specify a tolerance for the momentum
 error directly is immensely useful. Given that SAP satisfies the complementarity
 slackness condition exactly, complementarity slackness error for SAP is not
 included in Fig. \ref{fig:dual_arm_slackness}.
@@ -103,8 +103,8 @@ implementation. The general purpose solver Gurobi on the other hand performs
 \end{figure}
 
 In summary, the simulation of this complex robotic task demonstrates how
-accuracy translates directly to robustness. We observed how the maximum momentum
+accuracy translates directly to robustness. We observe how the maximum momentum
 error defined in Eq. \eqref{eq:momentum_error} is a good proxy for robustness in
 simulation; simulations with errors larger than about $10\%$ could not complete
-the task successfully. In this regard SAP provides a certificate of accuracy
+the task successfully. In this regard, SAP provides a certificate of accuracy
 that proves useful in practice.

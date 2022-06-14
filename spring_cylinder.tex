@@ -51,7 +51,7 @@ and the same time step, $\delta t=0.02\text{ s}$, now discretizes one period of
 oscillation with about 27 steps.
 
 Total energy is shown in Fig. \ref{fig:spring_cylinder_energy}. Solutions
-computed with the implicit Euler and the symplectic Euler schemes show similar
+computed with the implicit Euler and the symplectic Euler scheme show similar
 trends to those in the frictionless case. The midpoint rule does not conserve
 energy exactly but it does significantly better, with a peak-to-peak variation
 of only 0.16\%. While the ideal rolling contact does not dissipate energy, the
@@ -83,7 +83,7 @@ where $x_e(t)$ is the known exact solution. We simulate for $T=5\text{s}$, about
 the position error as a function of the time step. We see that even with
 frictional contact, the two-stage approach with the midpoint rule achieves
 second order of accuracy. Both the implicit Euler and the symplectic Euler
-schemes are first order, though the error is significantly smaller when using
+scheme are first order, though the error is significantly smaller when using
 the symplectic Euler scheme.
 \begin{figure}[!h]
 	\centering

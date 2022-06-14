@@ -7,7 +7,7 @@ We incorporate the pressure field model \cite{bib:elandt2019pressure}
 implemented as part of Drake's \cite{bib:drake} \emph{hydroelastic contact}
 model. We use the discrete approximation introduced in
 \cite{bib:masterjohn2021discrete} to approximate each face of the contact
-surface as a compliant element at its centroid.
+surface as a compliant contact point at its centroid.
 
 To demonstrate this capability, we reproduce the test in
 \cite{bib:masterjohn2021discrete} that models a \emph{Soft-bubble} gripper
@@ -16,10 +16,10 @@ with air filled compliant surfaces. The aforementioned gripper is simulated
 anchored to the world holding a spatula by the handle horizontally. We use
 $\delta t=5\times 10^{-3}\text{ s}$. The grasp force is commanded to vary
 between 1 N and 16 N with square wave having a 6 second period and a 75\% duty
-cycle, left on Fig.~\ref{fig:slip_control_history}. \reviewquestion{R8-Q3}{This
+cycle (see Fig.~\ref{fig:slip_control_history}, left). \reviewquestion{R8-Q3}{This
 results in a periodic transition from a secure grip to a loose grip allowing the
-spatula to pitch in a controlled manner within grasp, see
-Fig.~\ref{fig:slip_control_history} and the accompanying video. These contact
+spatula to pitch in a controlled manner within grasp (see
+Fig.~\ref{fig:slip_control_history} and the accompanying video). These contact
 mode transitions are resolved by our model.} We observe that stiction during the
 secure grip is properly resolved with the tight bounds for the slip due to
 regularization discussed in Section \ref{sec:conditioning}.

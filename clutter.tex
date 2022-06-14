@@ -1,5 +1,5 @@
 Objects are dropped into an $80~\text{cm}\times80~\text{cm}\times80~\text{cm}$
-container in four different columns with the same number of objects each (see
+container in four different columns with the same number of objects in each (see
 Fig. \ref{fig:clutter_snapshots}). Each column consists of an arbitrary
 assortment of spheres of radius $5~\text{cm}$ and boxes with sides of
 $10~\text{cm}$ in length. With a density of $1000\text{kg}/\text{m}^3$, spheres
@@ -32,7 +32,7 @@ system reaches a steady state, however, SAP warm starts very effectively,
 performing only about $3$ iterations per time step. Even though SAP necessities
 a larger number of iterations to converge than Geodesic IPM during this initial
 transient, the wall-clock time per time step is very similar. Unlike SAP and
-Geodesic IPM that benefit from warm start, we see that Gurobi performs about $9$
+Geodesic IPM that benefit from warm start, Gurobi performs about $9$
 iterations per time step in both the initial transient and the steady state.
 \begin{figure}[!h]
 	\centering
@@ -45,7 +45,7 @@ iterations per time step in both the initial transient and the steady state.
 \end{figure}
 
 Figure \ref{fig:clutter_line_search} shows two examples of convergence history.
-We denote with $\ell^0$ to the cost evaluated at the initial guess, the previous
+We denote with $\ell^0$ the cost evaluated at the initial guess, the previous
 time step velocity. With $\ell_*$ we denote the optimal cost, which we
 approximate with its value from the last iteration. At step 60 during the
 initial transient for which SAP requires 21 iterations to converge, we observe
@@ -90,7 +90,7 @@ spent by a solver to the wall-clock time reported by Gurobi. Figure
 configuration with and without walls. The setup with walls is particularly
 difficult given that objects are constrained to pile up, leading to a
 configuration in which almost all objects are coupled with every other object by
-frictional contact (see Fig. \ref{fig:clutter_snapshots}). That is, the motion
+frictional contact (see Fig. \ref{fig:clutter_snapshots}). For example, the motion
 of an object at the bottom of the pile can lead to motion of another object far
 on top of the pile. In contrast, the simulation with no walls leads to
 \emph{islands} of objects that do not interact with each other.

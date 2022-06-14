@@ -1,34 +1,32 @@
 \section{Limitations}
 \label{sec:limitations}
 
-All models are an approximation of reality, while numerical methods can only
-approximate our models. We list here the limitations we identified for our
+All models are approximations of reality, while numerical methods can only
+approximate our models. We list here the limitations we identify for our
 method.
 
 \textbf{Convex Approximation:} The convex approximation amounts to a
 \emph{gliding effect} during sliding at a distance $\phi\sim \delta
-t\mu\Vert\vf{v}_t\Vert$. Regularization amounts to \emph{compliance} in the
-normal direction, though in this work we see this as a property rather than as a
-limitation. In the tangential direction, regularization leads to a model of
+t\mu\Vert\vf{v}_t\Vert$. Regularization leads to a model of
 regularized friction, Eq. \eqref{eq:regularized_friction}. Details are provided
 in Section \ref{sec:contact_modeling_parameters}.
 
 \textbf{Stiffness and Dissipation:} \reviewquestion{R4-Q3}{Our method requires
 stiffness $\mf{K}$ and damping $\mf{D}$ matrices to be SPD or an SPD
-approximation must be used, Section \ref{sec:two_stage_scheme}. This is exact
-for joint level spring-dampers though only an approximation for other forces
-such as a spatial arrangement of springs (in an unstable configuration $\mf{K}$
-might not be SPD).}
+approximation (see Section \ref{sec:two_stage_scheme}). 
+For joint level spring-dampers, the exact  $\mf{K}$ and $\mf{D}$ can be used, but for
+other forces such as those arising from a spatial arrangement of springs, an SPD approximation
+must be made as $\mf{K}$ might not be SPD in certain configurations.}
 
 \textbf{Linear Approximations:} \reviewquestion{AE/R1-Q1/R1-Q2}{Algorithm
 \ref{alg:sap_time_stepping} evaluates the SPD gradient $\mf{A}$ once at
-$\mf{v}^*$ each time step. In other words, our method replaces the original
+$\mf{v}^*$ at each time step. In other words, our method replaces the original
 balance of momentum \eqref{eq:scheme_momentum} with its linear approximation
 \eqref{eq:momentum_linearized}. This is exact for many important cases and
 second order in the general case, refer to Section
 \ref{sec:unconstrained_convex_formulation} for details.}
 
-\textbf{Delassus Operator Estimation:} \reviewquestion{R1-Q6}{In Section
+\textbf{Delassus Operator Estimation:} \reviewquestion{R4-Q6}{In Section
 \ref{sec:conditioning} we use a diagonal approximation of the Delassus operator
 to estimate stiffness in the \emph{near-rigid} regime. Corner cases exist.
 Consider a pile of books. While the inertia of a contact at the bottom of the

@@ -95,8 +95,7 @@ regularization parameters without having to tune tolerances in the line search.
 \subsection{Efficient Analytical Derivatives For Line Search}
 
 The algorithm \verb;rtsafe; requires the first and second directional
-derivatives of $\ell_p$, while the backtracking method only requires the first
-derivative to verify Armijo's stopping criteria. We show how to compute these
+derivatives of $\ell_p$. We show how to compute these
 derivatives efficiently in $\mathcal{O}(n)$ operations. Defining $\ell(\alpha) =
 \ell_p(\mf{v}+\alpha\Delta\mf{v})$, we compute first and second derivatives as
 \begin{align*}

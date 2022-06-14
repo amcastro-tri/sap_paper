@@ -29,7 +29,7 @@ $\bgamma\in\mathbb{R}^{3n_c}$ and multipliers ${\bm\lambda}\in\mathbb{R}^{n_c}$
 	t\,\mf{k}(\mf{q}^{\theta}(\mf{v}),\mf{v}^{\theta}(\mf{v})) +
 	\mf{J}(\mf{q}_0)^T\mf{\bgamma}, \label{eq:scheme_momentum}\\
     % Non-penetration condition.
-    &0 \le \phi_i(\mf{q}(\mf{v})) + \tau_{d,i}\,v_{n,i}(\mf{q}, \mf{v}) + c_i\gamma_{n,i}\nonumber\\
+    &0 \le \phi_i(\mf{q}(\mf{v})) + \tau_{d,i}\,v_{n,i}(\mf{q}, \mf{v}) + \frac{c_i}{\delta t}\gamma_{n,i}\nonumber\\
     &\qquad\perp \gamma_{n,i} \ge 0, \quad\qquad\qquad\qquad i\in\mathscr{C}(\mf{q}_0)
     \label{eq:scheme_nonpenetration}\\
     % Maximum dissipation principle.
