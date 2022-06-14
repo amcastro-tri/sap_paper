@@ -98,27 +98,26 @@ TAMSI \cite{bib:castro2020}.
 
 To our knowledge, Chrono \cite{bib:chrono2016}, Mujoco \cite{bib:mujoco} and
 Siconos \cite{bib:acary2019siconos} are the only packages that implement the
-convex approximation of contact. The multi-physics simulation package Chrono
-implements a variant of the PGS method for solving Anitescu's convex formulation
-\cite{bib:tasora2011}. This method is specially targeted to the simulation of
-very large scale systems such as those encountered in granular flow. Even though
-some convergence guarantees are provided in \cite{bib:anitescu2010}, the solver
-exhibits slow convergence rates. This is expected for such a first order method.
-MuJoCo is a software targeted at robotic applications that introduces
-regularization to make the problem tractable, though at the expense of
-pronounced drift artifacts \cite{bib:simbenchmark}. Moreover, the contact model
-is parameterized by a daunting number of parameters, most of which do not relate
-to physics. Still, it has become very popular in the reinforcement learning
-community given its performance.
-\reviewquestion{R1-Q8}{Siconos is an open-source software targeting large
-scale simulation of both rigid and deformable objects. The authors of Siconos
-perform an exhaustive benchmarking campaign in \cite{bib:acary2018solving} using
-the convex approximation of contact. The analysis reveals that there is no
-universal solver and that every solver technology suffers from accuracy,
-robustness and/or efficiency problems.}
-%The work studies the performance of four solver families and a total of
-%40 solver variants. The benchmark campaign includes 2368 problems organized into
-%11 sets from various applications. 
+convex approximation of contact. \reviewquestion{R4-Q2}{Chrono implements a
+variety of solvers for Anitescu's convex formulation \cite{bib:anitescu2006}
+including projected Jacobi and Gauss-Seidel methods \cite{bib:tasora2011},
+Accelerated Projected Gradient Descent (APGD) \cite{bib:mazhar2015}, Spectral
+Projected Gradients (SPG) \cite{bib:heyn2013using} and more recently Alternating
+Direction Method of Multipliers (ADMM) \cite{bib:tasora2021solving}. Though
+these methods are first order and often exhibit slow convergence, they are
+amenable to parallelization and have been applied successfully in the simulation
+of granular flows with millions of bodies.} MuJoCo is a software targeted at
+robotic applications that introduces regularization to make the problem
+tractable, though at the expense of pronounced drift artifacts
+\cite{bib:simbenchmark}. Moreover, the contact model is parameterized by a
+daunting number of parameters, most of which do not relate to physics. Still, it
+has become very popular in the reinforcement learning community given its
+performance. \reviewquestion{R1-Q8}{Siconos is an open-source software targeting
+large scale simulation of both rigid and deformable objects. The authors of
+Siconos perform an exhaustive benchmarking campaign in
+\cite{bib:acary2018solving} using the convex approximation of contact. The
+analysis reveals that there is no universal solver and that every solver
+technology suffers from accuracy, robustness and/or efficiency problems.}
 
 \reviewquestion{R1-Q9}{It is not even clear if these convex approximations
 present a real advantage when compared to approaches solving the original

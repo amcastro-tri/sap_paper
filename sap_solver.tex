@@ -81,7 +81,7 @@ factor $\rho \in (0, 1)$ as $\alpha\gets\rho\alpha$ until Armijo's criteria
 \cite[\S 3.1]{bib:nocedal2006numerical} is satisfied. We write Armijo's criteria
 as $~\ell_p(\mf{v}^m + \alpha \Delta\mf{v}^{m}) < \ell_p(\mf{v}^m) +
 c\,\alpha\,d\ell_p/d\alpha(\mf{v}^m)$. Typical parameters we use are $\rho=0.8$,
-$c=10^{-4}$ and $\alpha_\text{Max}=1.5$.
+$c=10^{-4}$ and $\alpha_\text{Max}=1.25$.
 
 For the exact line search we use the method \verb;rtsafe; \cite[\S
 9.4]{bib:numerical_recipes} to find the unique root of $d\ell/d\alpha$. This is
