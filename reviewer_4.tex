@@ -74,13 +74,13 @@ during zones of frequent constraint transitions.}
 
 We thank the reviewer for this suggestion, we were not familiar with this line
 search strategy. We studied the method in detail, implemented it in
-our code and re-run our benchmarking cases. We verified the correctness of the
-method in two ways:
+our code and re-ran our benchmarking cases. We verified the correctness of the
+method in several ways:
 \begin{itemize}
     \item As proved in the original GLL work \cite{bib:grippo1986nonmonotone},
     while the method allows for non-monotonic convergence, the sequence
-    $\{\max_{0\leq j \leq m(k)}\ell_{k-j}\}$ is nonincreasing, see Eq. (5) in
-    \cite{bib:grippo1986nonmonotone}. We verified this property in all of our
+    $\{\max_{0\leq j \leq m(k)}\ell_{k-j}\}$ is nonincreasing (see Eq. (5) in
+    \cite{bib:grippo1986nonmonotone}). We verified this property in all of our
     tests.
     \item Even if slow, convergence is guaranteed. We verified that the method
     does converge if we allow a very large number of Newton iterations. However,
@@ -90,35 +90,35 @@ method in two ways:
 \end{itemize}
 
 In summary, the GLL line-search performed very badly for our particular
-formulation. We believe the reason is that being our problem convex, the most
-performant strategy will always strive for monotonic convergence. We observed
+formulation. We believe the reason is that because our problem is convex, the most
+performant strategy will always strive for monotonic convergence. We observed that
 our exact line search and our backtracking line search in the original
-submission to perform best. We found our exact line search to be the most robust
-method. The Backtracking line-search can in some situations slow down
-convergence given it effectively applies a non-optimal over relaxation.
+submission perform the best. We found our exact line search to be the most robust
+method. The backtracking line-search can in some situations slow down
+convergence given that it effectively applies a non-optimal over relaxation.
 
 As an example, we run the \emph{Clutter} case from Section VI.C in the paper,
 where a number of bodies are dropped inside a bin. For both our backtracking
-line search and GLL we used $\rho=0.8$ (Section IV.C) and Armijo's parameter
-$c=10^{-4}$. GLL as presented in \cite{bib:grippo1986nonmonotone} as two
+line search and GLL, we used $\rho=0.8$ (Section IV.C) and Armijo's parameter
+$c=10^{-4}$. GLL as presented in \cite{bib:grippo1986nonmonotone} has two
 additional parameters; $N$ is the number of regular Armijo's line searches
-before the algorithm switches to GLL criterion and $M$ is the size of the cost
-history tracked by GLL, see \cite{bib:grippo1986nonmonotone} for details. $M=0$
+performed before the algorithm switches to GLL criterion, and $M$ is the size of the cost
+history tracked by GLL. See \cite{bib:grippo1986nonmonotone} for details. $M=0$
 corresponds to the traditional line search with Armijo's criterion. 
 
 We tried a wide range of these parameters as suggested in
-\cite{bib:grippo1986nonmonotone}. In all cases we obtained much worse
+\cite{bib:grippo1986nonmonotone}. In all cases, we obtained much worse
 performance when compared to our methods. We allowed SAP to perform a maximum of
-5000 iterations for testing purposes to allow GLL to converge. Table
+5000 Newton iterations to allow GLL to converge. Table
 \ref{tab:gll_test} summarizes wall-clock time for different line search
 strategies used to simulate 10 seconds of the clutter case (1000 time steps with
-$\delta t = 0.01\text{~s}$). In this table the \emph{Exact} and
+$\delta t = 0.01\text{~s}$). In this table, the \emph{Exact} and
 \emph{Backtracking} rows refer to the methods in our paper, \emph{Armijo} refers
-to GLL method when $M=0$. For these cases GLL uses the regular Armijo criterion
+to GLL method when $M=0$. For these cases, GLL uses the regular Armijo's criterion
 on the first iteration ($N=1$). We observed in these and other cases that GLL
 requires a significantly larger number of iterations to converge, and therefore
-the longer wall-clock times in Table \ref{tab:gll_test}. Entries with
-\emph{crosses} refer to cases for which GLL did not converge for the maximum
+the longer wall-clock time in Table \ref{tab:gll_test}. Entries with
+\emph{crosses} refer to cases for which GLL did not converge within the maximum
 number of Newton iterations allowed, 5000. For this particular example, the
 backtracking line search exhibits better performance than the exact line search.
 However as we mentioned before, the exact line search is more robust for a wider
