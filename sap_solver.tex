@@ -173,8 +173,8 @@ of $\mf{H}$ as input. We use the implementation from the Conex solver
 \end{figure*}
 
 \reviewquestion{R4-Q7}{The scalability of SAP, like any second-order
-optimization method, depends on the complexity of solving the Newton system. In
-general, this has $\mathcal{O}(n_v^3)$ complexity, where $n_v$ denotes the
+optimization method, depends on the complexity of solving the Newton system. For
+dense problems, this has $\mathcal{O}(n_v^3)$ complexity, where $n_v$ denotes the
 number of generalized velocities. For sparse problems the complexity can be
 dramatically reduced \cite{bib:davis2016survey}.  We study scalability with
 number of bodies in Section \ref{sec:clutter}. Recent work on the modeling of
@@ -184,7 +184,7 @@ of SAP with the number of constraints.}
 \subsection{Stopping Criteria}
 \label{sec:stopping_criteria}
 
-To assess convergence, we monitor the norm of optimality condition for the
+To assess convergence, we monitor the norm of the optimality condition for the
 unconstrained problem (\ref{eq:primal_unconstrained})
 \begin{equation*}
 	\nabla\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma.
