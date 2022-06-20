@@ -106,32 +106,31 @@ Projected Gradients (SPG) \cite{bib:heyn2013using} and more recently Alternating
 Direction Method of Multipliers (ADMM) \cite{bib:tasora2021solving}. Though
 these methods are first order and often exhibit slow convergence, they are
 amenable to parallelization and have been applied successfully in the simulation
-of granular flows with millions of bodies.} MuJoCo is a software targeted at
-robotic applications that introduces regularization to make the problem
-tractable, though at the expense of pronounced drift artifacts
-\cite{bib:simbenchmark}. Moreover, the contact model is parameterized by a
-daunting number of parameters, most of which do not relate to physics. Still, it
-has become very popular in the reinforcement learning community given its
-performance. \reviewquestion{R1-Q8}{Siconos is an open-source software targeting
+of granular flows with millions of bodies.} MuJoCo targets robotic applications.
+It's contact model is parameterized by a daunting number of non-physical
+parameters aimed at regularizing the problem, though at the expense of drift
+artifacts \cite{bib:simbenchmark}. Still, it has become very popular in the
+reinforcement learning community given its performance.
+\reviewquestion{R1-Q8}{Siconos is an open-source software targeting
 large scale simulation of both rigid and deformable objects. The authors of
 Siconos perform an exhaustive benchmarking campaign in
 \cite{bib:acary2018solving} using the convex approximation of contact. The
 analysis reveals that there is no universal solver and that every solver
 technology suffers from accuracy, robustness and/or efficiency problems.}
 
+\subsection{Outline and Novel Contributions}
 \reviewquestion{R1-Q9}{It is not even clear if these convex approximations
 present a real advantage when compared to approaches solving the original
 non-convex NCP problem and whether the artifacts introduced by the approximation
-are acceptable in robotics applications.} In this work, we propose a new
+are acceptable for robotics applications.} In this work, we propose a new
 unconstrained convex approximation and discuss techniques for its efficient
-implementation. We carefully quantify the artifacts introduced in the convex
+implementation. We carefully quantify the artifacts introduced by the convex
 approximation and evaluate the robustness and accuracy of our method on a family
 of examples.
 
-\subsection{Outline and Novel Contributions}
-Section \ref{sec:discrete_time_formulation} introduces a time stepping approach
-based on the $\theta\text{-method}$. This includes the popular symplectic Euler
-method and the implicit midpoint rule. In Section \ref{sec:spring_cylinder} we
+We introduce a two-stage time stepping approach (Section
+\ref{sec:discrete_time_formulation}) that allows us to incorporate both first
+and second order schemes such as the midpoit rule. In Section \ref{sec:spring_cylinder} we
 demonstrate that the midpoint rule can achieve second order accuracy even in
 problems with frictional contact. Unlike previous work
 \cite{bib:anitescu2010,bib:todorov2014} that formulates the problem in its dual
@@ -151,13 +150,13 @@ Section \ref{sec:physical_intuition} provides compact analytic formulae for the
 impulses that correspond to the optimal velocities of the convex approximation.
 This provides intuition for the approximation, even to those without
 optimization expertise. Moreover, the artifacts introduced by the approximation
-become apparent and can be characterized precisely. \reviewquestion{AE-Q7}{In
-particular, we provide an exact mapping between the regularization introduced by
-Todorov \cite{bib:todorov2014} to \emph{physical} parameters of compliance.
-Therefore regularization is no longer treated as a tuning parameter of the
-algorithm but as a true physical parameterization of the contact model. This
-allows us to incorporate not only compliant point contact, but also complex
-models of compliant surface patches \cite{bib:elandt2019pressure,
+become apparent and can be characterized precisely. \reviewquestion{AE-Q7}{We
+provide an exact mapping between the regularization introduced by Todorov
+\cite{bib:todorov2014} to \emph{physical} parameters of compliance. Therefore
+regularization is no longer treated as a tuning parameter of the algorithm but
+as a true physical parameterization of the contact model. This allows us to
+incorporate not only compliant point contact, but also complex models of
+compliant surface patches \cite{bib:elandt2019pressure,
 bib:masterjohn2021discrete}, as we demonstrate in Section
 \ref{sec:slip_control}.}
 
