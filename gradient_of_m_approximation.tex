@@ -70,12 +70,12 @@ Since contact is compliant, forces are finite within the finite interval $\delta
 t$ and therefore $\Vert\mf{v}-\mf{v}^*\Vert=\mathcal{O}(\delta t)$. Thus
 \begin{align*}
 	\mf{E}(\mf{v}-\mf{v}^*)=\mathcal{O}_E(\delta t^3), \\
-    \delta t\frac{\partial \mf{F}_2}{\partial \mf{v}}(\mf{v}-\mf{v}^*)=\mathcal{O}_G(\delta t^2), \\ 
+    \delta t\frac{\partial \mf{F}_2}{\partial \mf{v}}(\mf{v}-\mf{v}^*)=\mathcal{O}_{F_2}(\delta t^2), \\ 
     \mathcal{O}_m(\Vert\mf{v}-\mf{v}^*\Vert^2) = \mathcal{O}_m(\delta t^2).
 \end{align*}
 Therefore, the positive definite linearization
 \begin{align*}
-	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(\delta t^3) + \mathcal{O}_G(\delta t^2) +
+	\mf{A}(\mf{v}-\mf{v}^*) + \mathcal{O}_E(\delta t^3) + \mathcal{O}_{F_2}(\delta t^2) +
 	\mathcal{O}_m(\delta t^2) = \mf{J}^T\mf{\bgamma},
 \end{align*}
 agrees with the original momentum balance in Eq. (\ref{eq:scheme_momentum}) to second

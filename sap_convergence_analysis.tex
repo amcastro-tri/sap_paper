@@ -159,7 +159,7 @@ Subtracting $f_*$ from both sides and factoring shows
 \]
 It follows that each iteration $m$ satisfies
 \[
-  f(\vx_{m+1}) - f_* \le  (1-\frac{\mu}{\sigma^2 L})^{m}(f(\vx_{0}) - f_*).
+  f(\vx_{m}) - f_* \le  (1-\frac{\mu}{\sigma^2 L})^{m}(f(\vx_{0}) - f_*).
 \]
 Since $\sigma \ge 1$ and $L \ge \mu$, the iterations converge, and the proof is completed.
   \end{proof}
@@ -178,7 +178,7 @@ the optimum $\vx_*$.
   for some $r > 0$, then SAP exhibits quadratic convergence, i.e., for some finite
   $M$ and $\zeta > 0$
   \[
-    \|\vx_m - \vx_*\| \le \zeta \|\vx_{m+1} - \vx_*\|^2
+    \|\vx_{m+1} - \vx_*\| \le \zeta \|\vx_{m} - \vx_*\|^2
   \]
   for all $m > M$.
   \end{itemize}
