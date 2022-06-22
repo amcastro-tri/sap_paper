@@ -43,7 +43,7 @@ We outline our time-stepping scheme in Algorithm \ref{alg:sap_time_stepping}.
 		  $\mf{m}(\mf{v}^*)=\mf{0}$, Eq. \eqref{eq:m_definition}
 		  \State Solve $\displaystyle \mf{v} = \argmin_{\mf{v}} \ell_p(\mf{v})$, Eq. \eqref{eq:primal_unconstrained}
 		  \State Update positions $\displaystyle \mf{q} = \mf{q}_0 + \delta
-		  t\mf{N}(\mf{q}^{\theta})\mf{v}^{\theta_{vq}}$, Eq. \eqref{eq:scheme_q_update}
+		  t\mf{N}(\mf{q}^{\theta})\mf{v}^{\theta_{vq}}$, Eqs. \eqref{eq:qdot_map_to_v}-\eqref{eq:scheme_q_update}
 	  \end{algorithmic}
 \end{algorithm}
 
@@ -51,15 +51,8 @@ We outline our time-stepping scheme in Algorithm \ref{alg:sap_time_stepping}.
 \ref{alg:sap_time_stepping} is executed once per time step, with no inner
 iterations updating $\mf{A}$. That is, our strategy is not solving the original,
 possibly nonlinear, balance of momentum \eqref{eq:scheme_momentum} but its
-linear approximation in \eqref{eq:momentum_linearized}. It is important to note
-however that the approximation can be exact for many of the multibody systems
+(second-order accurate) linear approximation in \eqref{eq:momentum_linearized}. It is important to note
+however that the approximation can be exact for many multibody systems
 encountered in practice. Joint springs and dampers for instance contribute
 constant stiffness and damping matrices in \eqref{eq:expression_for_A} and
-therefore the approximation is exact. On the other side of the spectrum,
-Coriolis and gyroscopic terms are quadratic in the generalized velocities.
-However, they can still be included using their Fr\'echet derivative
-\cite{bib:potra2006linearly} in the Newton iteration used to compute $\mf{v}^*$.
-Further, our SPD linear approximation of Eq.~\eqref{eq:momentum_linearized} is
- accurate to second-order as stated in Proposition
-\ref{prop:gradient_of_m_approximation}, and proved in Appendix
-\ref{app:gradient_of_m_approximation}.}
+therefore the approximation is exact.} 

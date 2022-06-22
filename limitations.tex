@@ -12,8 +12,8 @@ regularized friction, Eq. \eqref{eq:regularized_friction}. Details are provided
 in Section \ref{sec:contact_modeling_parameters}.
 
 \textbf{Stiffness and Dissipation:} \reviewquestion{R4-Q3}{Our method requires
-stiffness $\mf{K}$ and damping $\mf{D}$ matrices to be SPD or an SPD
-approximation (see Section \ref{sec:two_stage_scheme}). 
+stiffness $\mf{K}$ and damping $\mf{D}$ matrices to be SPD or SPD
+approximations (see Section \ref{sec:two_stage_scheme}). 
 For joint level spring-dampers, the exact  $\mf{K}$ and $\mf{D}$ can be used, but for
 other forces such as those arising from a spatial arrangement of springs, an SPD approximation
 must be made as $\mf{K}$ might not be SPD in certain configurations.}
@@ -37,5 +37,5 @@ needed to set proper parameters.}
 \textbf{Scalability:} \reviewquestion{R4-Q7}{We see no reason SAP with the
 direct supernodal algebra (Section \ref{sec:problem_sparsity}) could not scale
 to thousands of bodies if there is structured sparsity. However, scalability needs to be studied further, along
-with the usage of iterative solvers such as conjugate-gradients (CG), widely
+with the usage of iterative solvers such as Conjugate Gradient (CG), widely
 used in optimization.}

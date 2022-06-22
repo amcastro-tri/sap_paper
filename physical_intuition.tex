@@ -43,7 +43,7 @@ Our compliant model of contact is defined by
 		\hat{v}_n \end{bmatrix}\nonumber,\\
 	\hat{v}_n &=& -\frac{\phi_0}{\delta t+\tau_d},
 \end{eqnarray*}
-where $\phi_0$ is the previous step signed distance. The normal direction
+where $\phi_0$ is the previous step signed distance reported by the geometry engine. The normal direction
 regularization parameters is taken as $R_n^{-1} = \delta t k(\delta t+\tau_d)$.
 To gain physical insight into our model, we substitute
 $\vf{y}=-\vf{R}^{-1}(\vf{v}_c - \hat{\vf{v}}_c)$ into Eq.
@@ -86,7 +86,7 @@ of regularized friction
 	\label{eq:regularized_friction}
 \end{equation}
 with $\bgamma_t$ linear with the (very small) slip velocity during stiction and
-with a maximum value given by $\mu\gamma_n$, effectively modeling Coulomb's
+with the maximum value given by $\mu\gamma_n$, effectively modeling Coulomb's
 friction. Notice that to better model stiction, we are interested in small
 values of $R_t$. We discuss our parameterization of $R_t$ in Section
 \ref{sec:conditioning}. Moreover, since $\hat{\vf{t}} =

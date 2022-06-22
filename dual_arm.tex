@@ -82,9 +82,9 @@ warm-starts from the previous time-step solution.
 
 To make a fair comparison among solvers, from Fig. \ref{fig:dual_arm_momentum}
 we choose tolerances for each solver that result in similar values of the mean
-momentum error. For Gurobi we set its tolerance parameter \verb+BarQCPConvTol+
-to $10^{-8}$, for Geodesic IPM, we set its complementary slackness tolerance to
-$10^{-6}$ and for SAP its relative tolerance is set to $10^{-3}$. Notice this is
+momentum error. For Gurobi, we set its tolerance parameter \verb+BarQCPConvTol+
+to $10^{-8}$. For Geodesic IPM, we set its complementary slackness tolerance to
+$10^{-6}$. For SAP, we set its relative tolerance to $10^{-3}$. Notice this is
 not entirely fair to SAP, given that SAP does guarantee the maximum momentum
 error to be below $10^{-3}$, while this is not true for the other two solvers.
 Still, SAP is 7.4 faster than Gurobi and 2.2 faster than Geodesic IPM. In terms

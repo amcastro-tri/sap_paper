@@ -7,7 +7,7 @@
 Inspired by Newton's method, \reviewquestion{R1-Q4}{our Semi-Analytic Primal
 Solver (SAP) seeks to solve \eqref{eq:primal_unconstrained} by 
 monotonically decreasing the primal cost $\ell_p(\mf{v})$} at each iteration, as
-outlined in Algorithm \ref{alg:sap}
+outlined in Algorithm \ref{alg:sap}.
 \begin{algorithm}[H]
 	\caption{The Semi-Analytic Primal Solver (SAP)}	
 	  \label{alg:sap}
@@ -38,7 +38,7 @@ are given in Appendix \ref{app:gradients_derivation}. Our convergence analysis
 in Appendix \ref{app:sap_converge} also accounts for this definition.
 
 \reviewquestion{R1-Q4}{As shown in Appendix \ref{app:sap_converge}, SAP
-globally convergences at least at a linear-rate. Further, SAP exhibits quadratic
+globally converges at least at a linear-rate. Further, SAP exhibits quadratic
 convergence when $\nabla^2 \ell_p$ exists in a neighborhood of the optimal
 $\mf{v}$. In practice, we initialize SAP with the previous time-step velocity
 $\mf{v}_0$.} The stopping criteria is discussed below in Section
@@ -141,7 +141,7 @@ a \emph{forest}. Consider the system in Fig. \ref{fig:sparsity_example}.
 \end{figure}
 In this example, a robot arm mounted on a mobile base constitutes its own tree,
 here labeled $t_1$. The number of degrees of freedom of the $t\text{-th}$ tree
-will be denoted with $n_t$. A free body is the common case of a tree with
+will be denoted with $n_t$. A free body is a common case of a tree with
 $n_t=6$. In general, matrix $\mf{A}$ has a block diagonal structure where each
 diagonal block corresponds to a tree.
 
