@@ -58,7 +58,7 @@ positive definite. This then allows us to obtain an SPD approximation $\mf{A}$ o
 the gradient $\partial \mf{m}/\partial \mf{v}$. We highlighted edited text in
 Section II.D making specific mentions to the important case of joint spring
 dampers, for which $\mf{K}$ and $\mf{D}$ are positive diagonal matrices.
-Regarding finite elements modeling, we are currently working on a new
+Regarding finite element modeling, we are currently working on a new
 publication that incorporates our new SAP solver within a FEM framework. In this
 new work, we essentially restrict to materials whose internal stress comes from
 an internal elastic energy. Significantly more details will be provided in that
@@ -75,7 +75,7 @@ during zones of frequent constraint transitions.}
 We thank the reviewer for this suggestion, we were not familiar with this line
 search strategy. We studied the method in detail, implemented it in
 our code and re-ran our benchmarking cases. We verified the correctness of the
-method in several ways:
+implementation in several ways:
 \begin{itemize}
     \item As proved in the original GLL work \cite{bib:grippo1986nonmonotone},
     while the method allows for non-monotonic convergence, the sequence
@@ -94,8 +94,8 @@ formulation. We believe the reason is that because our problem is convex, the mo
 performant strategy will always strive for monotonic convergence. We observed that
 our exact line search and our backtracking line search in the original
 submission perform the best. We found our exact line search to be the most robust
-method. The backtracking line-search can in some situations slow down
-convergence given that it effectively applies a non-optimal over relaxation.
+method. The backtracking line search can in some situations slow down
+convergence given that it effectively applies a non-optimal over-relaxation.
 
 As an example, we run the \emph{Clutter} case from Section VI.C in the paper,
 where a number of bodies are dropped inside a bin. For both our backtracking
@@ -116,7 +116,7 @@ $\delta t = 0.01\text{~s}$). In this table, the \emph{Exact} and
 \emph{Backtracking} rows refer to the methods in our paper, \emph{Armijo} refers
 to GLL method when $M=0$. For these cases, GLL uses the regular Armijo's criterion
 on the first iteration ($N=1$). We observed in these and other cases that GLL
-requires a significantly larger number of iterations to converge, and therefore
+requires a significantly larger number of iterations to converge, which explains
 the longer wall-clock time in Table \ref{tab:gll_test}. Entries with
 \emph{crosses} refer to cases for which GLL did not converge within the maximum
 number of Newton iterations allowed, 5000. For this particular example, the
@@ -212,7 +212,7 @@ stated in terms of \emph{tree-width} $d$, a complexity measure defined by the
 We see no reason that SAP could not be applied to millions of bodies if
 tree-width $d$ is small.  Further, when $d$ is large, SAP can be modified to improve
 scalability.  Specifically, we can approximately solve the Newton system using
-the conjugate-gradient (CG) method, which is widely used in large-scale
+the Conjugate Gradient (CG) method, which is widely used in large-scale
 optimization.  Note that if we terminate CG after one-iteration, SAP reduces to
 gradient descent, i.e., a first-order optimization algorithm. 
 
