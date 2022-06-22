@@ -47,12 +47,12 @@ We outline our time-stepping scheme in Algorithm \ref{alg:sap_time_stepping}.
 	  \end{algorithmic}
 \end{algorithm}
 
-\reviewquestion{R1-Q1/R1-Q2}{We note that Algorithm
-\ref{alg:sap_time_stepping} is executed once per time step, with no inner
-iterations updating $\mf{A}$. That is, our strategy is not solving the original,
-possibly nonlinear, balance of momentum \eqref{eq:scheme_momentum} but its
-(second-order accurate) linear approximation in \eqref{eq:momentum_linearized}. It is important to note
-however that the approximation can be exact for many multibody systems
-encountered in practice. Joint springs and dampers for instance contribute
-constant stiffness and damping matrices in \eqref{eq:expression_for_A} and
-therefore the approximation is exact.} 
+\reviewquestion{R1-Q1/R1-Q2}{We note that Algorithm \ref{alg:sap_time_stepping}
+is executed once per time step, with no inner iterations updating $\mf{A}$. That
+is, our strategy is not solving the original, possibly nonlinear, balance of
+momentum \eqref{eq:scheme_momentum} but its (second-order accurate) linear
+approximation in \eqref{eq:momentum_linearized}. This approximation can be exact
+for many multibody systems encountered in practice. For instance, joint springs
+and dampers contribute constant stiffness and damping matrices in
+\eqref{eq:expression_for_A}.}
+

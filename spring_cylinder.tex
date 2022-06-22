@@ -16,7 +16,7 @@ set free.
 \end{figure}
 
 For reference, we first simulate this setup with frictionless contact, i.e.
-$\mu=0$. Without friction, the cylinder does not rotate and we effectively have
+with $\mu=0$. Without friction, the cylinder does not rotate and we effectively have
 a spring-mass system with natural frequency $\omega_n=\sqrt{k_s/m}$. We use a
 rather coarse time step of $\delta t=0.02\text{ s}$, discretizing each period of
 oscillation with about $22$ steps. Figure
@@ -82,7 +82,7 @@ where $x_e(t)$ is the known exact solution. We simulate for $T=5\text{s}$, about
 10 periods of oscillation. Figure \ref{fig:spring_cylinder_position_error} shows
 the position error as a function of the time step. We see that even with
 frictional contact, the two-stage approach with the midpoint rule achieves
-second order of accuracy. Both the implicit Euler and the symplectic Euler
+second order accuracy. Both the implicit Euler and the symplectic Euler
 scheme are first order, though the error is significantly smaller when using
 the symplectic Euler scheme.
 \begin{figure}[!h]

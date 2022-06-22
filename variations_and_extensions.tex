@@ -10,15 +10,14 @@ constraints, PD controllers with force limits and even joint dry friction
 
 \textbf{Branch induced sparsity:} In this work we exploit sparsity only at the
 tree level. However, branch sparsity can lead to additional performance.
-Consider for instance a standing humanoid robot with a floating hip. Since arms and the upper
-torso are not in contact with the ground, they can be eliminated from the
-computation in terms of degrees of freedom in the legs. Additional performance
-gains could be attained using specialized algebra for multibody dynamics
-\cite{bib:carpentier2021}.
+Consider for instance a standing humanoid robot with a floating hip. Since arms
+and the upper torso are not in contact with the ground, they can be eliminated
+from the computation. Additional performance gains could be attained using
+specialized algebra for multibody dynamics \cite{bib:carpentier2021}.
 
 \textbf{Parallelization:} This work focuses on accuracy, robustness, and
 convergence properties of the algorithm executed in a single thread. The sparse
-algebra can be parallelized and, in particular, disjoints \emph{islands} of
+algebra can be parallelized and, in particular, disjoint \emph{islands} of
 bodies can be solved separately in different threads.
 
 \reviewquestion{R4-Q3}{\textbf{Deformable FEM models:} Using the SAP solver for the modeling of deformable objects with

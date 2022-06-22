@@ -30,12 +30,11 @@ where $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable, $\mf{H}(\mf v)$ is simply
 set equal to the Hessian of the cost function. In general, $\mf{H}(\mf v)$ is
 evaluated using a partition of its domain. For each set in the partition,
 $\nabla_\mf{v}\ell_p(\mf{v})$ is differentiable on the interior, and the Hessian
-admits a simple formula. Outside the interior, we evaluate $\mf{H}(\mf v)$ by
-using the Hessian formula derived for the interior. This procedure provides a
-globally valid definition for $\mf{H}(\mf v)$. The partition is described in
-Appendix \ref{app:analytical_inverse_dynamics_derivations}. The Hessian formula
-are given in Appendix \ref{app:gradients_derivation}. Our convergence analysis
-in Appendix \ref{app:sap_converge} also accounts for this definition.
+admits a simple formula. We globally define $\mf{H}(\mf v)$ by adopting one of
+these Hessian formulas on the boundary. The partition is described in Appendix
+\ref{app:analytical_inverse_dynamics_derivations}. The Hessian formula are given
+in Appendix \ref{app:gradients_derivation}. Our convergence analysis in Appendix
+\ref{app:sap_converge} also accounts for this definition.
 
 \reviewquestion{R1-Q4}{As shown in Appendix \ref{app:sap_converge}, SAP
 globally converges at least at a linear-rate. Further, SAP exhibits quadratic
