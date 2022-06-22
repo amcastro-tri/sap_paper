@@ -41,7 +41,7 @@ level using a time-stepping scheme where the next step velocities and impulses
 are the unknowns at each time step \cite{bib:stewart1996implicit,
 bib:anitescu1997}. These formulations lead in general to a non-linear
 complementarity problem (NCP). A linear complementarity problem (LCP) can be
-formulated using a polyhedral approximation of friction cones, though at the
+formulated using a polyhedral approximation of the friction cone, though at the
 expense of non-physical anisotropy \cite{bib:li2018implicit}. Even though LCP
 formulations guarantee solution existence \cite{bib:anitescu1997,
 bib:stewart1998convergence}, solving them accurately and efficiently has
@@ -107,7 +107,7 @@ Direction Method of Multipliers (ADMM) \cite{bib:tasora2021solving}. Though
 these methods are first order and often exhibit slow convergence, they are
 amenable to parallelization and have been applied successfully in the simulation
 of granular flows with millions of bodies.} MuJoCo targets robotic applications.
-It's contact model is parameterized by a daunting number of non-physical
+Its contact model is parameterized by a daunting number of non-physical
 parameters aimed at regularizing the problem, though at the expense of drift
 artifacts \cite{bib:simbenchmark}. Still, it has become very popular in the
 reinforcement learning community given its performance.
@@ -119,7 +119,7 @@ analysis reveals that there is no universal solver and that every solver
 technology suffers from accuracy, robustness and/or efficiency problems.}
 
 \subsection{Outline and Novel Contributions}
-\reviewquestion{R1-Q9}{It is not even clear if these convex approximations
+\reviewquestion{R1-Q9}{It is not clear if these convex approximations
 present a real advantage when compared to approaches solving the original
 non-convex NCP problem and whether the artifacts introduced by the approximation
 are acceptable for robotics applications.} In this work, we propose a new
@@ -130,7 +130,7 @@ of examples.
 
 We introduce a two-stage time stepping approach (Section
 \ref{sec:discrete_time_formulation}) that allows us to incorporate both first
-and second order schemes such as the midpoit rule. In Section \ref{sec:spring_cylinder} we
+and second order schemes such as the midpoint rule. In Section \ref{sec:spring_cylinder} we
 demonstrate that the midpoint rule can achieve second order accuracy even in
 problems with frictional contact. Unlike previous work
 \cite{bib:anitescu2010,bib:todorov2014} that formulates the problem in its dual
