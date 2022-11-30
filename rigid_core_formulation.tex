@@ -1,0 +1,124 @@
+\section{Rigid Core Formulation}
+\label{sec:rigid_core_formulation}
+
+
+The formulation in Eq. \eqref{eq:primal_unconstrained} reads
+\begin{eqnarray}
+	\min_{\mf{v}} \ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
+	\ell_R(\mf{v}),
+\end{eqnarray}
+with 
+\begin{eqnarray}
+    \ell_R(\mf{v})= \frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2.
+\end{eqnarray}
+
+Which seems to suggest that for as long as the penalty cost $\ell_R$ is convex,
+we can obtain a valid family of convex formulations.
+
+We therefore propose a more general formulation
+\begin{eqnarray}
+	\min_{\mf{v}} \ell_p(\mf{v}) = \frac{1}{2}\Vert\mf{v}-\mf{v}^*\Vert_{A}^2 +
+	\ell_b(\mf{v}),
+\end{eqnarray}
+where $\ell_b(\mf{v})$ is convex and separable (is the summation of
+contributions for each contact).
+
+The balance of momentum is obtained by taking the gradient
+\begin{equation*}
+	\nabla_\mf{v}\ell_p(\mf{v}) = \mf{A}(\mf{v}-\mf{v}^*) - \mf{J}^T\bgamma(\mf{v}),
+\end{equation*}
+with
+\begin{equation*}
+    \bgamma(\mf{v}) = -\frac{\ell_b}{\partial\mf{v}_c}.
+\end{equation*}    
+
+For reasons hopefully apparent in a bit, I define the \textit{barrier} cost as
+\begin{eqnarray}
+    \ell_b = \kappa\,b(\check{s}),
+    \label{eq:barrier_cost}\\
+    \check{s} = d_{\tilde{\mu}^\circ}(\check{y}),\\
+    \check{y} = \frac{\tilde{y}}{\kappa^{1/2}} = \kappa^{-1/2}\mf{R}^{1/2}\vf{y}.
+\end{eqnarray}
+
+Quantities with \textit{tilde} have units of root square of energy and are
+projected into the respective cone using the Euclidean norm. Quantities with the
+\textit{upside down hat} are \textit{dimensionless}, usually stemming from
+writing \textit{tilde} variables in dimensionless form using the root square of
+$\kappa$.
+
+\subsection{Compliant Model}
+
+The compliant model is recovered by choosing $b(s)=s^2/2$. In this case the cost
+reduces to
+\begin{equation}
+    \ell_b = \frac{1}{2}\kappa\,d_{\tilde{\mu}^\circ}^2(\check{y}) = 
+    \frac{1}{2}d_{\tilde{\mu}^\circ}^2(\tilde{y})
+    %\frac{1}{2}\Vert P_\mathcal{F}(\mf{y}(\mf{v}))\Vert_R^2,
+\end{equation}
+where the last equality is true since the constant scalar factor
+$1/\kappa^{1/2}$ can be factored out of the distance function
+$d_{\tilde{\mu}^\circ}$. $\kappa$ plays no role.
+
+Since $d_{\tilde{\mu}^\circ}(\tilde{\vf{y}}) = \Vert
+P_{\tilde\mu}(\tilde{\vf{y}}) \Vert = \Vert P_{\mu}(\vf{y}) \Vert_R$, we recover
+the compliant model.
+
+\subsection{Model with Singular Barrier}
+
+To keep objects from interpenetrating beyond a desired threshold, we propose the
+barrier function
+\begin{equation}
+    b(s) = -\frac{1}{2}s\log(1-s)
+\end{equation}
+
+For small values of $s$, the barrier function approximately equals $b(s)\approx
+s^2/2$ and we recover the compliant model. On the other end, this function
+behaves as a barrier which goes to infinity as $s\rightarrow 1$. And most
+importantly, function $b(s)$ is convex.
+
+\subsection{Model with Strong Barrier}
+The singular barrier model above requires a line search implementation that
+avoids $s \ge 1$. Alternatively, we can strongly penalize $s>1$ but
+with a continuous function that requires no modifications to the line search.
+We propose
+\begin{equation}
+    b(s) = \frac{s^2}{2}\exp(\lambda s), \text{ with }\lambda>0.
+\end{equation}
+which also recovers the compliant model for $s\ll 1$.
+
+\subsection{The role of $\kappa$}
+
+In our definition of Eq. (\ref{eq:barrier_cost}) we see that $\kappa$ is a
+parameter with units of energy. We use the square root of this parameter to
+write the dimensionless form $\check{\vf{y}}$ of $\tilde{\vf{y}}$. Since this
+enters the definition of $s$ and the barrier only allows $s < 1$, $\kappa$
+somehow measure the maximum amount of energy that we allow to store as potential
+energy.
+
+SAP's compliant contact model has an effective stiffness $k_e = (\delta t^2
+R_n)^{-1}$ (notice damping is ignored in this effective quantity, which will be
+justified shortly). If we think that we want a \textit{rigid core} at distance
+$\delta$, the maximum amount of potential energy we'd allow to store is, at this
+maximum distance, $\kappa = k_e\delta^2 = (\delta/\delta t)^2/R_n$.
+
+Consider now a case with zero slip velocity, then $\vf{y}=[0, 0, y_n]$ and
+similarly $\check{\vf{y}}=[0, 0, \check{y}_n]$. Then
+$s=d_{\tilde{\mu}^\circ}(\check{\vf{y}})= \check{y}_n$.
+
+Using our definitions above we see that
+\begin{eqnarray}
+    s = \check{y}_n =
+    \frac{\tilde{y}_n}{\kappa^{1/2}}=\frac{R_n^{1/2}}{\kappa^{1/2}}y_n=\frac{\delta
+    t}{\delta}R_n y_n,
+\end{eqnarray}
+where we used $\kappa = (\delta/\delta t)^2/R_n$.
+
+Now, we recall that $R_n\,y_n = -(v_n-\hat{v}_n) = -\phi/\delta t$, to obtain
+the final result for this case
+\begin{equation}
+    s = -\frac{\phi}{\delta}.
+\end{equation}
+
+Therefore a barrier on $s$ has the modeling effect of enforcing $-\phi <
+\delta$, as desired for modeling a rigid core at distance $\delta$ from the
+boundary of a compliant object.
