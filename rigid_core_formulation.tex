@@ -122,3 +122,174 @@ the final result for this case
 Therefore a barrier on $s$ has the modeling effect of enforcing $-\phi <
 \delta$, as desired for modeling a rigid core at distance $\delta$ from the
 boundary of a compliant object.
+
+\subsection{Gradients}
+
+For SAP's Newton iteration we need both first and second derivatives of
+$\ell_b$. Summarizing we need
+\begin{eqnarray}
+    \bgamma(\vf{v}_c) &=& -\frac{\partial\ell_b}{\partial\mf{v}_c}\text{ and,}
+    \label{eq:gamma_from_barrier}\\
+    \mf{G}&=& -\frac{\partial\bgamma}{\partial\mf{v}_c}.
+\end{eqnarray}
+
+In terms of these per contact gradients, the gradient and Hessian of the cost
+are
+\begin{eqnarray}
+    \nabla_\mf{v}\ell_p(\mf{v}) &=& \mf{A}(\mf{v}-\mf{v}^*) -
+    \mf{J}^T\bgamma(\mf{v})\text{ and,}\\
+    \mf{H}&=&\mf{A} + \mf{J}^T\mf{G}\mf{J}.
+\end{eqnarray}
+
+Recall that, by definition,
+\begin{eqnarray}
+    \check{\vf{y}} = \frac{\mf{R}^{1/2}}{\kappa^{1/2}}\vf{y},\\
+    \vf{y} = -\mf{R}^{-1}(\vf{v}_c-\hat{\vf{v}}).
+\end{eqnarray}
+
+Therefore
+\begin{equation}
+    \frac{\partial\check{\vf{y}}}{\partial\vf{v}_c} = -\frac{\mf{R}^{-1/2}}{\kappa^{1/2}}.
+\end{equation}
+
+A number of useful chain rule results
+\begin{eqnarray}
+    \frac{\partial\ell_b}{\partial\mf{v}_c} =
+    \frac{\partial\check{\vf{y}}}{\partial\vf{v}_c}^T\,\frac{\partial\ell_b}{\partial\check{\vf{y}}},\\
+    \frac{\partial\ell_b}{\partial\check{\vf{y}}} =
+    \kappa\,b^\prime(s)\,\frac{\partial d_{\tilde{\mu}^\circ}}{\partial\check{\vf{y}}}.
+\end{eqnarray}
+    
+which then allow us to write Eq. (\ref{eq:gamma_from_barrier}) in terms of the
+gradients of $b(s)$ and $d_{\tilde{\mu}^\circ}$
+\begin{eqnarray}
+    \bgamma =
+    \kappa^{1/2}\,\mf{R}^{-1/2}\,b^\prime(d_{\tilde{\mu}^\circ})\,\frac{\partial
+    d_{\tilde{\mu}^\circ}}{\partial\check{\vf{y}}}(\check{\vf{y}}),
+\end{eqnarray}
+or in terms of $\check{\bgamma}=\tilde{\bgamma}/\kappa^{1/2}$
+\begin{eqnarray}
+    \check{\bgamma} = b^\prime(d_{\tilde{\mu}^\circ})\,\frac{\partial
+    d_{\tilde{\mu}^\circ}}{\partial\check{\vf{y}}}(\check{\vf{y}}).
+\end{eqnarray}
+
+We can write $\mf{G}$ purely in terms of \textit{upside down hat} variables as
+\begin{eqnarray}
+    \mf{G} &=& -\frac{\partial\bgamma}{\partial\mf{v}_c} \nonumber\\
+    &=&-\frac{\partial\bgamma}{\partial\check{\bgamma}}\,\frac{\partial\check{\bgamma}}{\partial\check{\vf{y}}}\,\frac{\partial\check{\vf{y}}}{\partial\mf{v}_c}\nonumber\\
+    &=& \mf{R}^{-1/2}\,\frac{\partial\check{\bgamma}}{\partial\check{\vf{y}}}\,\mf{R}^{-1/2}
+\end{eqnarray}
+
+We can write $\frac{\partial\check{\bgamma}}{\partial\check{\vf{y}}}$ as
+\begin{eqnarray}
+    \frac{\partial\check{\bgamma}}{\partial\check{\vf{y}}} =
+    b''(d_{\tilde{\mu}^\circ})\,\frac{\partial
+    d_{\tilde{\mu}^\circ}}{\partial\check{\vf{y}}}\otimes\frac{\partial
+    d_{\tilde{\mu}^\circ}}{\partial\check{\vf{y}}} +
+    b'(d_{\tilde{\mu}^\circ})\,\frac{\partial^2
+    d_{\tilde{\mu}^\circ}}{\partial\check{\vf{y}}^2}
+\end{eqnarray}
+
+\subsection{\RedHighlight{TODOs}}
+\begin{enumerate}
+    \item Double check results are correct for compliant case.
+    \item When $\mf{R}$ is a multiple of identity, do we recover
+    essentially a barrier method for the rigid case?
+    \item Simple case 1: mass on the ground. Compliant and rigid limits.
+\end{enumerate}
+
+\subsection{Gradients of $d_{\tilde{\mu}^\circ}$}
+
+From Appendix \ref{app:analytical_inverse_dynamics_derivations} we know that
+\begin{align}
+	&P_{\tilde\mu^\circ}(\vf{y}) = 
+	\label{eq:ell_R_piecewise}\\	
+&\begin{dcases}
+	% Region I, stiction
+	\vf{y} & \text{stiction, } y_r \le \tilde\mu y_n\\
+	% Region II, sliding.
+	(\vf{y}\cdot\hat{\vf{f}})\hat{\vf{f}} & \text{sliding, } -\tilde\mu y_r < y_n \leq \frac{y_r}{\tilde\mu}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact, } y_n < -\tilde\mu y_r
+\end{dcases}\nonumber	
+\end{align}
+where $\hat{\vf{f}}=[\tilde{\mu}\hat{\vf{t}}, 1]/\sqrt{1+\tilde{\mu}^2}$.
+
+Therefore we can write the distance to (tilde) polar cone as
+\begin{align}
+	&d_{\tilde{\mu}^\circ}(\vf{y}) = 
+	\label{eq:distance_to_polar}\\	
+&\begin{dcases}
+	% Region I, stiction
+	\Vert\vf{y}\Vert & \text{stiction, } y_r \le \tilde\mu y_n\\
+	% Region II, sliding.
+	\frac{1}{\sqrt{1+\tilde\mu^2}}\left(y_n + \tilde\mu y_r\right) & \text{sliding, } -\tilde\mu y_r < y_n \leq \frac{y_r}{\tilde\mu}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact, } y_n < -\tilde\mu y_r
+\end{dcases}\nonumber
+\end{align}
+
+Direct differentiation of Eq. (\ref{eq:distance_to_polar}) results in the
+gradient
+\begin{align}
+	&\frac{\partial{d_{\tilde{\mu}^\circ}(\vf{y})}}{\partial\vf{y}} = 
+	\label{eq:gradient_distance_to_polar}\\
+&\begin{dcases}
+	% Region I, stiction
+	\hat{\vf{y}} & \text{stiction, } y_r \le \tilde\mu y_n\\
+	% Region II, sliding.
+	\hat{\vf{f}} & \text{sliding, } -\tilde\mu y_r < y_n \leq \frac{y_r}{\tilde\mu}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact, } y_n < -\tilde\mu y_r
+\end{dcases}\nonumber
+\end{align}
+with $\hat{\vf{y}}=\vf{y}/\Vert\vf{y}\Vert$.
+
+And for the Hessian of the distance
+\begin{align}
+	&\nabla_\vf{y}^2 d_{\tilde{\mu}^\circ}(\vf{y}) = 
+	\label{eq:hessian_distance_to_polar}\\
+&\begin{dcases}
+	%%%%%%%%%%%%%%%%%%%%
+	% Region I, stiction
+	\vf{P}^\perp(\hat{\vf{y}})/\Vert\hat{\vf{y}}\Vert & 
+	% when,
+	\text{stiction,}\\
+	%
+	%%%%%%%%%%%%%%%%%%%%
+	% Region II, sliding.	
+	\frac{1}{\sqrt{1+\tilde\mu^2}}
+	\begin{bmatrix}
+		% ∂²d/∂yₜ²:
+		\tilde\mu\vf{P}^\perp(\hat{\vf{t}})/y_r & 
+		% ∂²d/∂yₙ∂yₜ:
+		\vf{0}\\
+		% ∂²d/∂yₜ∂yₙ:
+		\vf{0}^T & 
+		% ∂²d/∂yₙ²:
+		0\\
+	\end{bmatrix} &
+	% when,
+	\text{sliding,}\\
+	% Region II, no contact.
+    \vf{0} & \text{no contact.}
+\end{dcases}\nonumber
+\end{align}
+
+where the $3\times 3$ projection matrices are
+\begin{equation*}
+	\vf{P}^\perp(\hat{\vf{y}})=\vf{I}_3 - \vf{P}(\hat{\vf{y}}),
+	\quad\text{with }
+	\vf{P}(\hat{\vf{y}}) = \hat{\vf{y}}\otimes\hat{\vf{y}}\nonumber.
+\end{equation*}
+
+\subsection{Test Cases}
+
+\begin{enumerate}
+    \item \textbf{Condition number 1:} Stack of bodies (spheres). Frictionless, only
+    compliance.
+    \item \textbf{Condition number 2:} Chain of spheres on revolute joints, \textit{with
+    preloaded} normal force. Apply rotation (or torque) on one end to drive the
+    chain (as if a gearbox). Analyze conditioning for this case where normal
+    forces are set.
+\end{enumerate}
