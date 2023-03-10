@@ -353,3 +353,28 @@ function $b(s)$ as
     forces are set.
 \end{enumerate}
 
+\section{Appendix Material: Soft Norms}
+\label{sec:soft_norms}
+
+We define the \emph{soft} norm of a vector $\mf{x}$ as
+\begin{equation}
+    \Vert\mf{x}\Vert_s = \sqrt{\Vert\mf{x}\Vert^2+\varepsilon_x^2}
+    \label{eq:soft_norm_gradient}
+\end{equation}
+where $\varepsilon_x>0$ is usually a small number with the units of $\mf{x}$. Notice that $\Vert\mf{0}\Vert_s=\varepsilon_x > 0$.
+
+The gradient of the soft norm is
+\begin{equation}
+    \frac{\partial\Vert\mf{x}\Vert_s}{\partial \mf{x}} = \frac{\mf{x}}{\Vert\mf{x}\Vert_s} = \hat{\mf{x}}_s
+    \label{eq:soft_norm_hessian}
+\end{equation}
+where we defined the \emph{soft unit vector} $\hat{\mf{x}}_s$. This vector has the nice property that numerically, is well defined even at $\mf{x}=\mf{0}$.
+
+The Hessian of the soft norm, the gradient of $\hat{\mf{x}}_s$, is
+\begin{equation}
+    \frac{\partial\hat{\mf{x}}_s}{\partial\mf{x}}=\frac{\partial^2\Vert\mf{x}\Vert_s}{\partial\mf{x}^2}=\frac{1}{\Vert\mf{x}\Vert_s}\left(\mf{I}-\mf{P}(\hat{\mf{x}}_s)\right)=\frac{\mf{P}^\perp(\hat{\mf{x}}_s)}{{\Vert\mf{x}\Vert_s}}
+\end{equation}
+where the projection matrix is defined as $\mf{P}(\mf{v})=\mf{v}\otimes\mf{v}$.
+
+Finally, notice that the expressions for the gradients in Eqs. \eqref{eq:soft_norm_gradient}-\eqref{eq:soft_norm_hessian} are the same as those without \emph{softening} (i.e. when $\varepsilon=0$). However, these softened versions are convenient in practice because they are well behaved at $\mf{x}=\mf{0}$ and are continuous.
+
