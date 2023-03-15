@@ -339,6 +339,47 @@ function $b(s)$ as
 
 \subsection{Lagged model}
 
+We define a friction potential in terms of a \emph{lagged} normal impulse $\gamma_{n0}$ as
+\begin{equation}
+    \ell_t(\mf{v}_t) = \mu\gamma_{n0}\,\varepsilon_s\,b(\Vert\mf{v}_t\Vert_s/\varepsilon_s)
+\end{equation}
+where $\varepsilon_s$ is the \emph{softening} parameter used in the \emph{soft norm} $\Vert\mf{v}_t\Vert_s$ and the dimensionless function $b(s)$ is chosen to be twice differentiable and convex. Since the smooth norm $\Vert\mf{v}_t\Vert_s$ is convex, $\ell_t(\mf{v}_t)$ is convex. The friction impulse is then
+\begin{equation}
+    \bgamma_t = -\frac{\partial\ell_t}{\partial\mf{v}_t}=-\mu\gamma_{n0}\,b'(s)\hat{\mf{v}}_{ts}
+\end{equation}
+where we defined $s=\Vert\mf{v}_t\Vert_s/\varepsilon_s$.
+
+The Hessian of this potential is given by
+\begin{eqnarray}
+    \frac{\partial^2\ell_t}{\partial\mf{v}_t^2}&=&-\frac{\partial\bgamma_t}{\partial\mf{v}_t}\nonumber\\
+    &=&\frac{\mu\gamma_{n0}}{\varepsilon_s}\left[b''(s)\mf{P}(\hat{\mf{v}}_{ts})+b'(s)\frac{\mf{P}^\perp(\hat{\mf{v}}_{ts})}{1+s}\right]
+\end{eqnarray}
+
+Since $b(s)$ is convex and non-decreasing, the Hessian of $\ell_t$ is the
+positive linear combination of two prejection matricies. Therefore $\ell_t$ is twice differentiable and convex.
+
+As an example, we consider the following functional form of $b(s)$ having continuous first and second order derivatives
+\begin{eqnarray}
+    b(s)=\begin{dcases}
+        s^2(1-s/3) & \text{stiction, } s \le 1\\        
+        s - 1/3 & \text{sliding, } s > 1
+    \end{dcases}
+\end{eqnarray}
+with first derivative
+\begin{eqnarray}
+    b'(s)=\begin{dcases}
+        s(2-s) & \text{stiction, } s \le 1\\        
+        1 & \text{sliding, } s > 1
+    \end{dcases}
+\end{eqnarray}
+and second derivative
+\begin{eqnarray}
+    b''(s)=\begin{dcases}
+        2(1-s) & \text{stiction, } s \le 1\\        
+        0 & \text{sliding, } s > 1
+    \end{dcases}
+\end{eqnarray}
+
 \subsection{Test Cases}
 
 \begin{enumerate}
