@@ -358,23 +358,24 @@ function $b(s)$ as
 
 We define the \emph{soft} norm of a vector $\mf{x}$ as
 \begin{equation}
-    \Vert\mf{x}\Vert_s = \sqrt{\Vert\mf{x}\Vert^2+\varepsilon_x^2}
+    \Vert\mf{x}\Vert_s = \sqrt{\Vert\mf{x}\Vert^2+\varepsilon_x^2}-\varepsilon_x
     \label{eq:soft_norm_gradient}
 \end{equation}
-where $\varepsilon_x>0$ is usually a small number with the units of $\mf{x}$. Notice that $\Vert\mf{0}\Vert_s=\varepsilon_x > 0$.
+where $\varepsilon_x>0$ has units of $\mf{x}$. Notice that $\Vert\mf{0}\Vert_s= 0$.
 
 The gradient of the soft norm is
 \begin{equation}
-    \frac{\partial\Vert\mf{x}\Vert_s}{\partial \mf{x}} = \frac{\mf{x}}{\Vert\mf{x}\Vert_s} = \hat{\mf{x}}_s
+    \frac{\partial\Vert\mf{x}\Vert_s}{\partial \mf{x}} = \frac{\mf{x}}{\Vert\mf{x}\Vert_s+\varepsilon_x} = \hat{\mf{x}}_s
     \label{eq:soft_norm_hessian}
 \end{equation}
 where we defined the \emph{soft unit vector} $\hat{\mf{x}}_s$. This vector has the nice property that numerically, is well defined even at $\mf{x}=\mf{0}$.
 
 The Hessian of the soft norm, the gradient of $\hat{\mf{x}}_s$, is
-\begin{equation}
-    \frac{\partial\hat{\mf{x}}_s}{\partial\mf{x}}=\frac{\partial^2\Vert\mf{x}\Vert_s}{\partial\mf{x}^2}=\frac{1}{\Vert\mf{x}\Vert_s}\left(\mf{I}-\mf{P}(\hat{\mf{x}}_s)\right)=\frac{\mf{P}^\perp(\hat{\mf{x}}_s)}{{\Vert\mf{x}\Vert_s}}
-\end{equation}
-where the projection matrix is defined as $\mf{P}(\mf{v})=\mf{v}\otimes\mf{v}$.
+\begin{eqnarray}
+    \frac{\partial\hat{\mf{x}}_s}{\partial\mf{x}}=\frac{\partial^2\Vert\mf{x}\Vert_s}{\partial\mf{x}^2}&=&\frac{1}{\Vert\mf{x}\Vert_s+\varepsilon_x}\left(\mf{I}-\mf{P}(\hat{\mf{x}}_s)\right)\nonumber\\
+    &=&\frac{\mf{P}^\perp(\hat{\mf{x}}_s)}{{\Vert\mf{x}\Vert_s+\varepsilon_x}}
+\end{eqnarray}
+where the projection matrix is defined as $\mf{P}(\hat{\mf{v}})=\hat{\mf{v}}\otimes\hat{\mf{v}}$. Also $\mf{P}(\hat{\mf{v}}) \succeq 0$ and $\mf{P}^\perp(\hat{\mf{v}}) \succeq 0$ for all unit vectors $\hat{\mf{v}}\in\mathbb{R}^n$. Therefore the soft norm is twice differentiable with positive semi-definite Hessian, and is therefore convex.
 
 Finally, notice that the expressions for the gradients in Eqs. \eqref{eq:soft_norm_gradient}-\eqref{eq:soft_norm_hessian} are the same as those without \emph{softening} (i.e. when $\varepsilon=0$). However, these softened versions are convenient in practice because they are well behaved at $\mf{x}=\mf{0}$ and are continuous.
 
