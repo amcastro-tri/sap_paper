@@ -63,7 +63,7 @@ Since $d_{\tilde{\mu}^\circ}(\tilde{\vf{y}}) = \Vert
 P_{\tilde\mu}(\tilde{\vf{y}}) \Vert = \Vert P_{\mu}(\vf{y}) \Vert_R$, we recover
 the compliant model.
 
-\subsection{Model with Singular Barrier}
+\subsection{Model with a Rigid Core}
 
 To keep objects from interpenetrating beyond a desired threshold, we propose the
 barrier function
@@ -76,7 +76,7 @@ s^2/2$ and we recover the compliant model. On the other end, this function
 behaves as a barrier which goes to infinity as $s\rightarrow 1$. And most
 importantly, function $b(s)$ is convex.
 
-\subsection{Model with Strong Barrier}
+\subsection{Model with a Stiff Core}
 The singular barrier model above requires a line search implementation that
 avoids $s \ge 1$. Alternatively, we can strongly penalize $s>1$ but
 with a continuous function that requires no modifications to the line search.
@@ -336,8 +336,90 @@ function $b(s)$ as
     b(s) &=& \frac{1}{2}|v_\phi\,d-1|s^2 + \frac{d\nu}{3}s^3
 \end{eqnarray}
 
+\subsection{Hunt \& Crossley model with Stiff Core}
+The (nonlinear) model of dissipation due to Hunt \& Crossley
+\cite{bib:hunt_crossley} can be written as 
+\begin{equation}
+    \gamma(x,\dot{x}) = \delta t\,k\,x_+\,(1+d\,\dot{x})_+
+\end{equation}
+where $x$ is the \emph{penetration distance}.
 
-\subsection{Lagged model}
+We want to augment the Hunt \& Crossley model to include either rigid or stiff
+cores. We follow the modeling ideas by Hunt \& Crossley \cite{bib:hunt_crossley}
+and propose to replace the linear elastic term $k(x)_+$ by a term that grows
+quickly as we reach the core at a distance $x_e$
+\begin{equation}
+    \gamma(x, \dot{x}) = \delta t\,k\,x_e\,b(x_+/x_e)\,(1+d\,\dot{x})_+
+\end{equation}
+where $b(s)$ is a \emph{barrier} function to model either a rigid or stiff core.
+As in the original Hunt \& Crossley model, the velocity term introduces
+hysteresis which causes the model to dissipate energy. Moreover, the model
+reduces to the orginal Hunt \& Crossley model for $x_+ \ll x_e$.
+
+In the discrete setting we approximate the approach velocity as $\dot{x} =
+(x-x_0)/\delta t$ to write the impulse $\gamma(x; x_0)$ for a penetration
+distance $x$ given a penetration distance $x_0$ at the previous time step
+\begin{equation}
+    \gamma(x; x_0) = \delta t\,k\,x_e\,b(x_+/x_e)\,((x-(x_0-x_d))/x_d)_+
+    \label{eq:discrete_hc_stiff}
+\end{equation}
+
+We look for a potential $\ell$ such that
+\begin{equation}
+    \gamma = -\frac{\partial\ell}{\partial v} = \delta t\frac{\partial\ell}{\partial x}
+\end{equation}
+where notice that $\dot{x}=-v$, and therefore
+\begin{equation}
+    \ell(x; x_0) = \int_{(x_0-x_d)_+}^{x}\gamma(x; x_0)\,dx + C
+\end{equation}
+where, since $x_d>0$, we used the fact that $\gamma=0$ for $x < \max(0,
+x_0-x_d)$ in Eq. \eqref{eq:discrete_hc_stiff}. Since we restrict to $b'(s) \ge 0$ we
+have that $d\gamma(x;x_0)/dx\ge 0$, $d^2\ell/dx^2 \ge 0$ and therefore $\ell(x;
+x_0)$ is convex.
+
+We perform the change of variables $u=x/x_e$ to write the result in
+terms of a dimensionless integral
+\begin{eqnarray}
+    \frac{1}{k\,x_e^2}\ell(x; x_0) &=& B(x/x_e)\\
+    B(u) &=& \int_{(x_0-x_d)_+/x_e}^{u}b(u)(b+cu)\,du + C
+\end{eqnarray}
+where 
+\begin{eqnarray*}
+   b &=&  -(x_0-x_d)/x_d = 1 - d/\delta t\,x_0\\
+   c &=& x_e/x_d = d/\delta t\,x_e
+\end{eqnarray*}
+and notice we no longer need $()_+$ inside the integrand since we know it is
+positive for $u\ge (x_0-x_d)_+/x_e$.
+
+Using the stiff core barrier $b(s)=s\,e^{\lambda s}$ this integral can be
+written analytically as
+\begin{eqnarray}
+    B(u) &=& \\
+    &&\frac{
+        \left( \lambda^2( c\, u+b)u-\lambda(2 c u+b) +2 c\right)
+        }{\lambda^3}\,e^{\lambda\,u} - \frac{-\lambda\,b+2c}{\lambda^3}\nonumber
+    \label{eq:discrete_hc_potential}
+\end{eqnarray}
+where the integration constant $C$ is arbitrarily chosen so that $B(0)=0$.
+
+\begin{figure}[!h]
+    \centering
+    %\vspace{6pt}
+    \includegraphics[width=0.8\columnwidth]{figures/discrete_hc.png}
+    \caption{Discrete Hunt \& Crossley model in Eq. \eqref{eq:discrete_hc_stiff}}
+    \label{fig:discrete_hc}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    %\vspace{6pt}
+    \includegraphics[width=0.8\columnwidth]{figures/discrete_hc_potential.png}
+    \caption{Discrete Hunt \& Crossley model in Eq. \eqref{eq:discrete_hc_potential}}
+    \label{fig:discrete_hc_potential}
+\end{figure}
+
+
+\subsection{Lagged model of Friction}
 
 We define a friction potential in terms of a \emph{lagged} normal impulse $\gamma_{n0}$ as
 \begin{equation}
