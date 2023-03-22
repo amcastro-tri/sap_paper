@@ -418,6 +418,15 @@ where the integration constant $C$ is arbitrarily chosen so that $B(0)=0$.
     \label{fig:discrete_hc_potential}
 \end{figure}
 
+The Hessian for this potential is then computed from
+\begin{align}
+    &G(v) = \frac{\partial^2\ell}{\partial v^2} = -\frac{\partial\gamma}{\partial
+    v_n}=\frac{\partial\gamma}{\partial\dot{x}}=\delta t\frac{\partial\gamma}{\partial x}\\
+    &=\delta t^2\,k
+    \left[b'(x_+/x_e)(1+d\,\dot{x})_+  + \frac{x_e\,d}{\delta t} H(1+d\,\dot{x})b(x_+/x_e) \right]\nonumber
+\end{align}
+where $\dot{x} = (x-x_0)/\delta t$ and $H(x)$ is the Heaviside function. Notice
+that $G(v) \ge 0$ and therefore the cost is convex.
 
 \subsection{Lagged model of Friction}
 
@@ -425,7 +434,12 @@ We define a friction potential in terms of a \emph{lagged} normal impulse $\gamm
 \begin{equation}
     \ell_t(\mf{v}_t) = \mu\gamma_{n0}\,\varepsilon_s\,b(\Vert\mf{v}_t\Vert_s/\varepsilon_s)
 \end{equation}
-where $\varepsilon_s$ is the \emph{softening} parameter used in the \emph{soft norm} $\Vert\mf{v}_t\Vert_s$ and the dimensionless function $b(s)$ is chosen to be twice differentiable and convex. Since the smooth norm $\Vert\mf{v}_t\Vert_s$ is convex, $\ell_t(\mf{v}_t)$ is convex. The friction impulse is then
+where $\varepsilon_s$ is the \emph{softening} parameter used in the \emph{soft
+norm} $\Vert\mf{v}_t\Vert_s$ and the dimensionless function $b(s)$ is chosen to
+be twice differentiable and convex. Notice that
+$\Vert\mf{v}_t\Vert_s/\varepsilon_s = 1$ when $v_s = \Vert\mf{v}_t\Vert_s =
+\sqrt{3}\,\varepsilon_s$. Since the smooth norm $\Vert\mf{v}_t\Vert_s$
+is convex, $\ell_t(\mf{v}_t)$ is convex. The friction impulse is then
 \begin{equation}
     \bgamma_t = -\frac{\partial\ell_t}{\partial\mf{v}_t}=-\mu\gamma_{n0}\,b'(s)\hat{\mf{v}}_{ts}
 \end{equation}
